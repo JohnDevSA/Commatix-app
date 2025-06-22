@@ -1,0 +1,11 @@
+parameters:
+  level: 5
+  paths:
+    - app
+    - config
+    - database/factories
+    - database/seeders
+  ignoreErrors:
+    - '#PHPDoc tag @var#'
+  checkMissingIterableValueType: false
+  noUnnecessaryCollectionCall: false

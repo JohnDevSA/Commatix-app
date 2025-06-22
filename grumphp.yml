@@ -1,0 +1,22 @@
+parameters:
+  bin_dir: ./vendor/bin
+  git_dir: .
+  tasks:
+    phpcs:
+      standard: PSR12
+      ignore_patterns:
+        - "*/database/*"
+        - "*/storage/*"
+        - "*/bootstrap/*"
+    phpcpd:
+      ignore_patterns:
+        - "*/database/*"
+        - "*/storage/*"
+        - "*/bootstrap/*"
+    phpstan:
+      configuration: ./phpstan.neon.dist
+    composer: ~
+    phpunit: ~
+#  ascii:
+#    failed: grumphp-grumpy.txt
+#    succeeded: grumphp-happy.txt

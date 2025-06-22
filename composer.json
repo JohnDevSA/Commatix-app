@@ -20,11 +20,15 @@
         "jasonmccreary/laravel-test-assertions": "^2.8",
         "laravel-shift/blueprint": "^2.12",
         "laravel/pail": "^1.1",
-        "laravel/pint": "^1.13",
+        "laravel/pint": "^1.22",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^11.0.1"
+        "phpro/grumphp": "^2.13",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.0.1",
+        "sebastian/phpcpd": "^2.0",
+        "squizlabs/php_codesniffer": "^3.13"
     },
     "autoload": {
         "psr-4": {
@@ -45,7 +49,8 @@
             "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php vendor/bin/grumphp git:init"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -58,6 +63,19 @@
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:work --tries=1\" \"npm run dev\" --names=server,queue,vite"
+        ],
+        "post-install-cmd": [
+            "@php vendor/bin/grumphp git:init"
+        ],
+        "grumphp": "grumphp run",
+        "lint": [
+            "pint --test",
+            "phpcs --standard=PSR12 app/ config/ database/",
+            "phpstan analyse"
+        ],
+        "lint:fix": [
+            "pint",
+            "phpcbf --standard=PSR12 app/ config/ database/"
         ]
     },
     "extra": {
@@ -71,7 +89,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "phpro/grumphp": true
         }
     },
     "minimum-stability": "stable",
