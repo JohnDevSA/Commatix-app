@@ -5,17 +5,17 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use App\Models\;
-use App\Models\User;
-use App\Models\UserType;
+use App\Models\DocumentType;
+use App\Models\DocumentTypeDivision;
 
-class UserFactory extends Factory
+class DocumentTypeDivisionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = User::class;
+    protected $model = DocumentTypeDivision::class;
 
     /**
      * Define the model's default state.
@@ -23,11 +23,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->safeEmail(),
-            'password' => fake()->password(),
-            'user_type_id' => UserType::factory(),
-            'tenant_id' => ::factory(),
+            'document_type_id' => DocumentType::factory(),
             'division_id' => ::factory(),
         ];
     }

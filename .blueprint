@@ -1,0 +1,73 @@
+created:
+    - database/factories/UserTypeFactory.php
+    - database/factories/AccessScopeFactory.php
+    - database/factories/UserFactory.php
+    - database/factories/TenantFactory.php
+    - database/factories/DivisionFactory.php
+    - database/factories/StatusTypeFactory.php
+    - database/factories/StatusScopeFactory.php
+    - database/factories/WorkflowTemplateFactory.php
+    - database/factories/MilestoneFactory.php
+    - database/factories/TaskFactory.php
+    - database/factories/TaskMilestoneFactory.php
+    - database/factories/TaskMilestoneActivityTypeFactory.php
+    - database/factories/DocumentTypeFactory.php
+    - database/factories/DocumentTypeDivisionFactory.php
+    - database/factories/AttachmentFactory.php
+    - database/factories/MilestoneActivityTypeFactory.php
+    - database/factories/MilestoneActivityFactory.php
+    - database/migrations/2025_06_24_224818_create_user_types_table.php
+    - database/migrations/2025_06_24_224819_create_access_scopes_table.php
+    - database/migrations/2025_06_24_224820_create_users_table.php
+    - database/migrations/2025_06_24_224821_create_tenants_table.php
+    - database/migrations/2025_06_24_224822_create_divisions_table.php
+    - database/migrations/2025_06_24_224823_create_status_types_table.php
+    - database/migrations/2025_06_24_224824_create_status_scopes_table.php
+    - database/migrations/2025_06_24_224825_create_workflow_templates_table.php
+    - database/migrations/2025_06_24_224826_create_milestones_table.php
+    - database/migrations/2025_06_24_224827_create_tasks_table.php
+    - database/migrations/2025_06_24_224828_create_task_milestones_table.php
+    - database/migrations/2025_06_24_224829_create_task_milestone_activity_types_table.php
+    - database/migrations/2025_06_24_224830_create_document_types_table.php
+    - database/migrations/2025_06_24_224831_create_document_type_divisions_table.php
+    - database/migrations/2025_06_24_224832_create_attachments_table.php
+    - database/migrations/2025_06_24_224833_create_milestone_activity_types_table.php
+    - database/migrations/2025_06_24_224834_create_milestone_activities_table.php
+    - database/migrations/2025_06_24_224835_create_status_scope_status_type_table.php
+    - database/migrations/2025_06_24_224836_create_milestone_milestone_activity_type_table.php
+    - app/Models/UserType.php
+    - app/Models/AccessScope.php
+    - app/Models/User.php
+    - app/Models/Tenant.php
+    - app/Models/Division.php
+    - app/Models/StatusType.php
+    - app/Models/StatusScope.php
+    - app/Models/WorkflowTemplate.php
+    - app/Models/Milestone.php
+    - app/Models/Task.php
+    - app/Models/TaskMilestone.php
+    - app/Models/TaskMilestoneActivityType.php
+    - app/Models/DocumentType.php
+    - app/Models/DocumentTypeDivision.php
+    - app/Models/Attachment.php
+    - app/Models/MilestoneActivityType.php
+    - app/Models/MilestoneActivity.php
+models:
+    User: { name: string, email: string, password: string, user_type_id: unsignedBigInteger, tenant_id: unsignedBigInteger, division_id: 'unsignedBigInteger nullable', relationships: { belongsTo: 'UserType, Tenant, Division' } }
+    UserType: { name: string, description: text, relationships: { hasMany: User } }
+    AccessScope: { name: 'string unique', label: 'string nullable', description: 'string nullable', relationships: { hasMany: 'DocumentType, WorkflowTemplate' } }
+    Tenant: { name: string, unique_code: string, status_id: unsignedBigInteger, relationships: { belongsTo: StatusType, hasMany: 'User, Division' } }
+    Division: { name: string, tenant_id: unsignedBigInteger, relationships: { belongsTo: Tenant, hasMany: 'WorkflowTemplate, User' } }
+    StatusType: { name: 'string unique', description: 'text nullable', relationships: { hasMany: 'WorkflowTemplate, Milestone, Task, TaskMilestone', belongsToMany: StatusScope } }
+    StatusContext: { name: 'string:unique', label: 'string nullable', description: 'string nullable', relationships: { belongsToMany: StatusType } }
+    WorkflowTemplate: { uuid: uuid, name: string, division_id: unsignedBigInteger, description: text, status_id: unsignedBigInteger, access_scope_id: 'foreign:AccessScope', relationships: { belongsTo: 'Division, StatusType,AccessScope', hasMany: Milestone } }
+    Milestone: { workflow_template_id: unsignedBigInteger, name: string, status_id: unsignedBigInteger, hint: 'text nullable', sla_days: integer, approval_group_id: 'unsignedBigInteger nullable', requires_docs: boolean, actions: json, relationships: { belongsTo: 'WorkflowTemplate, StatusType', belongsToMany: MilestoneActivityType } }
+    Task: { reference_number: 'string unique', workflow_template_id: unsignedBigInteger, status_id: unsignedBigInteger, tenant_id: unsignedBigInteger, division_id: unsignedBigInteger, created_by: unsignedBigInteger, assigned_to: unsignedBigInteger, created_at: timestamp, updated_at: timestamp, relationships: { belongsTo: 'WorkflowTemplate, StatusType, Tenant, Division', hasMany: TaskMilestone } }
+    TaskMilestone: { milestone_id: unsignedBigInteger, status_id: 'foreign:StatusType', sla_days: integer, approval_group_id: 'unsignedBigInteger nullable', requires_docs: boolean, actions: json, completed_at: 'timestamp nullable', relationships: { belongsTo: 'Milestone, StatusType', hasMany: TaskMilestoneActivityType } }
+    TaskMilestoneActivityType: { task_milestone_id: 'foreign:TaskMilestone', name: string, icon: 'string nullable', description: 'text nullable', relationships: { belongsTo: TaskMilestone } }
+    DocumentType: { name: string, description: 'text nullable', access_scope_id: 'foreign:AccessScope', tenant_id: 'foreign:Tenant nullable', relationships: { belongsTo: 'Tenant, AccessScope' } }
+    DocumentTypeDivision: { document_type_id: unsignedBigInteger, division_id: unsignedBigInteger, relationships: { belongsTo: 'DocumentType, Division' } }
+    Attachment: { task_milestone_id: unsignedBigInteger, document_type_id: unsignedBigInteger, required: boolean, file_url: string, uploaded_by: unsignedBigInteger, uploaded_at: timestamp, relationships: { belongsTo: 'TaskMilestone, DocumentType, User' } }
+    MilestoneActivityType: { name: 'string unique', description: 'string nullable', icon: 'string nullable', relationships: { hasMany: MilestoneActivity } }
+    MilestoneActivity: { milestone_id: unsignedBigInteger, milestone_activity_type_id: 'foreign:MilestoneActivityType', message: text, user_id: unsignedBigInteger, metadata: 'json nullable', created_at: timestamp, relationships: { belongsTo: 'Milestone, User, MilestoneActivityType' } }
+    StatusScope: { name: 'string unique', label: 'string nullable', description: 'string nullable', relationships: { belongsToMany: StatusType } }

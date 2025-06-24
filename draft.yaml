@@ -1,0 +1,150 @@
+models:
+  UserType:
+    name: string
+    description: text
+    relationships:
+      hasMany: User
+
+  AccessScope:
+    name: string unique   # e.g. "global", "tenant_custom", "private", "shared_with_tenant"
+    label: string nullable
+    description: string nullable
+    relationships:
+      hasMany: DocumentType, WorkflowTemplate
+  User:
+    name: string
+    email: string
+    password: string
+    user_type_id: unsignedBigInteger  # Changed from id
+    tenant_id: unsignedBigInteger     # Changed from id
+    division_id: unsignedBigInteger nullable  # Changed from id
+    relationships:
+      belongsTo: UserType, Tenant, Division  # Added Division
+
+  Tenant:
+    name: string
+    unique_code: string
+    status_id: unsignedBigInteger
+    relationships:
+      belongsTo: StatusType
+      hasMany: User, Division
+
+  Division:
+    name: string
+    tenant_id: unsignedBigInteger  # Changed from id
+    relationships:
+      belongsTo: Tenant
+      hasMany: WorkflowTemplate, User  # Added User
+
+  StatusType:
+    name: string unique
+    description: text nullable
+    relationships:
+      hasMany: WorkflowTemplate, Milestone, Task, TaskMilestone
+      belongsToMany: StatusScope
+
+  StatusScope :
+    name: string unique     # e.g. workflow_template, milestone, task, task_milestone
+    label: string nullable
+    description: string nullable
+    relationships:
+      belongsToMany: StatusType
+
+  WorkflowTemplate:
+    uuid: uuid
+    name: string
+    division_id: unsignedBigInteger
+    description: text
+    status_id: unsignedBigInteger
+    access_scope_id: foreign:AccessScope
+    relationships:
+      belongsTo: Division, StatusType,AccessScope
+      hasMany: Milestone
+
+  Milestone:
+    workflow_template_id: unsignedBigInteger
+    name: string
+    status_id: unsignedBigInteger  # Changed from unsignedInteger
+    hint: text nullable
+    sla_days: integer
+    approval_group_id: unsignedBigInteger nullable  # Changed from id
+    requires_docs: boolean
+    actions: json
+    relationships:
+      belongsTo: WorkflowTemplate, StatusType
+      belongsToMany: MilestoneActivityType
+
+  Task:
+    reference_number: string unique
+    workflow_template_id: unsignedBigInteger  # Changed from id
+    status_id: unsignedBigInteger  # Changed from unsignedInteger
+    tenant_id: unsignedBigInteger  # Changed from id
+    division_id: unsignedBigInteger  # Changed from id
+    created_by: unsignedBigInteger  # Changed from id
+    assigned_to: unsignedBigInteger  # Changed from id
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsTo: WorkflowTemplate, StatusType, Tenant, Division  # Added relationships
+      hasMany: TaskMilestone
+
+  TaskMilestone:
+    milestone_id: unsignedBigInteger
+    status_id: foreign:StatusType
+    sla_days: integer
+    approval_group_id: unsignedBigInteger nullable
+    requires_docs: boolean
+    actions: json
+    completed_at: timestamp nullable
+    relationships:
+      belongsTo: Milestone, StatusType
+      hasMany: TaskMilestoneActivityType
+
+  TaskMilestoneActivityType:
+    task_milestone_id: foreign:TaskMilestone
+    name: string
+    icon: string nullable
+    description: text nullable
+    relationships:
+      belongsTo: TaskMilestone
+
+  DocumentType:
+    name: string
+    description: text nullable
+    access_scope_id: foreign:AccessScope
+    tenant_id: foreign:Tenant nullable
+    relationships:
+      belongsTo: Tenant, AccessScope
+
+  DocumentTypeDivision:
+    document_type_id: unsignedBigInteger
+    division_id: unsignedBigInteger
+    relationships:
+      belongsTo: DocumentType, Division
+
+  Attachment:
+    task_milestone_id: unsignedBigInteger
+    document_type_id: unsignedBigInteger
+    required: boolean
+    file_url: string
+    uploaded_by: unsignedBigInteger
+    uploaded_at: timestamp
+    relationships:
+      belongsTo: TaskMilestone, DocumentType, User
+
+  MilestoneActivityType:
+    name: string unique
+    description: string nullable
+    icon: string nullable
+    relationships:
+      hasMany: MilestoneActivity
+
+  MilestoneActivity:
+    milestone_id: unsignedBigInteger
+    milestone_activity_type_id: foreign:MilestoneActivityType
+    message: text
+    user_id: unsignedBigInteger
+    metadata: json nullable
+    created_at: timestamp
+    relationships:
+      belongsTo: Milestone, User, MilestoneActivityType

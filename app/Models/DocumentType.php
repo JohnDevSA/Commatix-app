@@ -6,32 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class User extends Model
+class DocumentType extends Model
 {
     use HasFactory;
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
-    ];
 
     protected function casts(): array
     {
         return [
             'id' => 'integer',
-            'user_type_id' => 'integer',
+            'access_scope_id' => 'integer',
             'tenant_id' => 'integer',
-            'division_id' => 'integer',
         ];
-    }
-
-    public function userType(): BelongsTo
-    {
-        return $this->belongsTo(UserType::class);
     }
 
     public function tenant(): BelongsTo
@@ -39,8 +24,8 @@ class User extends Model
         return $this->belongsTo(Tenant::class);
     }
 
-    public function division(): BelongsTo
+    public function accessScope(): BelongsTo
     {
-        return $this->belongsTo(Division::class);
+        return $this->belongsTo(AccessScope::class);
     }
 }
