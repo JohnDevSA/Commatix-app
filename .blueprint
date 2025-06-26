@@ -16,25 +16,25 @@ created:
     - database/factories/AttachmentFactory.php
     - database/factories/MilestoneActivityTypeFactory.php
     - database/factories/MilestoneActivityFactory.php
-    - database/migrations/2025_06_26_135906_create_user_types_table.php
-    - database/migrations/2025_06_26_135907_create_access_scopes_table.php
-    - database/migrations/2025_06_26_135908_create_users_table.php
-    - database/migrations/2025_06_26_135909_create_tenants_table.php
-    - database/migrations/2025_06_26_135910_create_divisions_table.php
-    - database/migrations/2025_06_26_135911_create_status_types_table.php
-    - database/migrations/2025_06_26_135912_create_status_scopes_table.php
-    - database/migrations/2025_06_26_135913_create_workflow_templates_table.php
-    - database/migrations/2025_06_26_135914_create_milestones_table.php
-    - database/migrations/2025_06_26_135915_create_tasks_table.php
-    - database/migrations/2025_06_26_135916_create_task_milestones_table.php
-    - database/migrations/2025_06_26_135917_create_task_milestone_activity_types_table.php
-    - database/migrations/2025_06_26_135918_create_document_types_table.php
-    - database/migrations/2025_06_26_135919_create_document_type_divisions_table.php
-    - database/migrations/2025_06_26_135920_create_attachments_table.php
-    - database/migrations/2025_06_26_135921_create_milestone_activity_types_table.php
-    - database/migrations/2025_06_26_135922_create_milestone_activities_table.php
-    - database/migrations/2025_06_26_135923_create_status_scope_status_type_table.php
-    - database/migrations/2025_06_26_135924_create_milestone_milestone_activity_type_table.php
+    - database/migrations/2025_06_26_144734_create_user_types_table.php
+    - database/migrations/2025_06_26_144735_create_access_scopes_table.php
+    - database/migrations/2025_06_26_144736_create_users_table.php
+    - database/migrations/2025_06_26_144737_create_tenants_table.php
+    - database/migrations/2025_06_26_144738_create_divisions_table.php
+    - database/migrations/2025_06_26_144739_create_status_types_table.php
+    - database/migrations/2025_06_26_144740_create_status_scopes_table.php
+    - database/migrations/2025_06_26_144741_create_workflow_templates_table.php
+    - database/migrations/2025_06_26_144742_create_milestones_table.php
+    - database/migrations/2025_06_26_144743_create_tasks_table.php
+    - database/migrations/2025_06_26_144744_create_task_milestones_table.php
+    - database/migrations/2025_06_26_144745_create_task_milestone_activity_types_table.php
+    - database/migrations/2025_06_26_144746_create_document_types_table.php
+    - database/migrations/2025_06_26_144747_create_document_type_divisions_table.php
+    - database/migrations/2025_06_26_144748_create_attachments_table.php
+    - database/migrations/2025_06_26_144749_create_milestone_activity_types_table.php
+    - database/migrations/2025_06_26_144750_create_milestone_activities_table.php
+    - database/migrations/2025_06_26_144751_create_status_scope_status_type_table.php
+    - database/migrations/2025_06_26_144752_create_milestone_milestone_activity_type_table.php
     - app/Models/UserType.php
     - app/Models/AccessScope.php
     - app/Models/User.php
@@ -67,6 +67,6 @@ models:
     TaskMilestone: { milestone_id: unsignedBigInteger, status_id: unsignedBigInteger, sla_days: integer, approval_group_id: 'unsignedBigInteger nullable', requires_docs: boolean, actions: json, completed_at: 'timestamp nullable', relationships: { belongsTo: 'Milestone, StatusType', hasMany: TaskMilestoneActivityType } }
     TaskMilestoneActivityType: { task_milestone_id: unsignedBigInteger, name: string, icon: 'string nullable', description: 'text nullable', relationships: { belongsTo: TaskMilestone } }
     Tenant: { name: string, unique_code: string, status_id: unsignedBigInteger, relationships: { belongsTo: StatusType, hasMany: 'User, Division' } }
-    User: { name: string, email: string, password: string, user_type_id: unsignedBigInteger, tenant_id: unsignedBigInteger, email_verified_at: 'timestamp nullable', remember_token: rememberToken, division_id: 'unsignedBigInteger nullable', relationships: { belongsTo: 'UserType, Tenant, Division' } }
+    User: { name: string, email: string, password: string, user_type_id: 'unsignedBigInteger default:1', tenant_id: 'unsignedBigInteger default:1', email_verified_at: 'timestamp nullable', remember_token: rememberToken, division_id: 'unsignedBigInteger nullable', relationships: { belongsTo: 'UserType, Tenant, Division' } }
     UserType: { name: string, description: text, relationships: { hasMany: User } }
     WorkflowTemplate: { uuid: uuid, name: string, division_id: unsignedBigInteger, description: text, status_id: unsignedBigInteger, access_scope_id: unsignedBigInteger, relationships: { belongsTo: 'Division, StatusType,AccessScope', hasMany: Milestone } }

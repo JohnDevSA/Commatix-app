@@ -15,8 +15,8 @@ models:
     name: string
     email: string
     password: string
-    user_type_id: unsignedBigInteger  # Changed from id
-    tenant_id: unsignedBigInteger     # Changed from id
+    user_type_id: unsignedBigInteger default:1  # Changed from id
+    tenant_id: unsignedBigInteger default:1   # Changed from id
     email_verified_at: timestamp nullable
     remember_token: rememberToken
     division_id: unsignedBigInteger nullable  # Changed from id
