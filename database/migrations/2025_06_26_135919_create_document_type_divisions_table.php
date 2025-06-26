@@ -11,17 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('milestone_activity_types', function (Blueprint $table) {
+        Schema::create('document_type_divisions', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('description')->nullable();
-            $table->string('icon')->nullable();
+            $table->foreignId('document_type_id');
+            $table->foreignId('division_id');
             $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -29,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('milestone_activity_types');
+        Schema::dropIfExists('document_type_divisions');
     }
 };

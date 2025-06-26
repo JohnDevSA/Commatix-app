@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('document_type_divisions', function (Blueprint $table) {
+        Schema::create('document_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('document_type_id');
-            $table->foreignId('division_id');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->foreignId('access_scope_id');
+            $table->foreignId('tenant_id')->nullable();
             $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('document_type_divisions');
+        Schema::dropIfExists('document_types');
     }
 };

@@ -11,8 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('task_milestone_id');
@@ -24,8 +22,6 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**

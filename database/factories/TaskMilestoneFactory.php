@@ -24,7 +24,7 @@ class TaskMilestoneFactory extends Factory
     {
         return [
             'milestone_id' => Milestone::factory(),
-            'status_id' => StatusType::factory(),
+            'status_id' => fake()->randomNumber(),
             'sla_days' => fake()->numberBetween(-10000, 10000),
             'approval_group_id' => fake()->randomNumber(),
             'requires_docs' => fake()->boolean(),

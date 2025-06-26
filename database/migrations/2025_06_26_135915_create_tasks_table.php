@@ -11,21 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('workflow_templates', function (Blueprint $table) {
+        Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid');
-            $table->string('name');
-            $table->foreignId('division_id');
-            $table->text('description');
+            $table->string('reference_number')->unique();
+            $table->foreignId('workflow_template_id');
             $table->unsignedBigInteger('status_id');
-            $table->foreignId('access_scope_id')->constrained('accessscopes');
+            $table->foreignId('tenant_id');
+            $table->foreignId('division_id');
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('assigned_to');
             $table->foreignId('status_type_id');
             $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('workflow_templates');
+        Schema::dropIfExists('tasks');
     }
 };

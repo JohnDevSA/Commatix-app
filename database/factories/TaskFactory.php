@@ -31,8 +31,6 @@ class TaskFactory extends Factory
             'division_id' => ::factory(),
             'created_by' => fake()->randomNumber(),
             'assigned_to' => fake()->randomNumber(),
-            'created_at' => fake()->dateTime(),
-            'updated_at' => fake()->dateTime(),
             'status_type_id' => StatusType::factory(),
         ];
     }

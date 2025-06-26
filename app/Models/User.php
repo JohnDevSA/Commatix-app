@@ -5,12 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use HasFactory,Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -19,6 +17,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
     protected function casts(): array
@@ -27,6 +26,7 @@ class User extends Authenticatable
             'id' => 'integer',
             'user_type_id' => 'integer',
             'tenant_id' => 'integer',
+            'email_verified_at' => 'timestamp',
             'division_id' => 'integer',
         ];
     }

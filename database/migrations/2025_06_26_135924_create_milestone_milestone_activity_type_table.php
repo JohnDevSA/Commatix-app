@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
         Schema::create('milestone_milestone_activity_type', function (Blueprint $table) {
             $table->foreignId('milestone_id');
             $table->foreignId('milestone_activity_type_id');
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**

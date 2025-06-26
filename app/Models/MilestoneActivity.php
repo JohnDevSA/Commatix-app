@@ -18,7 +18,6 @@ class MilestoneActivity extends Model
             'milestone_activity_type_id' => 'integer',
             'user_id' => 'integer',
             'metadata' => 'array',
-            'created_at' => 'timestamp',
         ];
     }
 

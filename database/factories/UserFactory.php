@@ -28,6 +28,8 @@ class UserFactory extends Factory
             'password' => fake()->password(),
             'user_type_id' => UserType::factory(),
             'tenant_id' => ::factory(),
+            'email_verified_at' => fake()->dateTime(),
+            'remember_token' => Str::random(10),
             'division_id' => ::factory(),
         ];
     }

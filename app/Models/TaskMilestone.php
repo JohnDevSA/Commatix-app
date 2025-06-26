@@ -35,11 +35,6 @@ class TaskMilestone extends Model
         return $this->belongsTo(StatusType::class);
     }
 
-    public function status(): BelongsTo
-    {
-        return $this->belongsTo(StatusType::class);
-    }
-
     public function taskMilestoneActivityTypes(): HasMany
     {
         return $this->hasMany(TaskMilestoneActivityType::class);

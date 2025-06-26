@@ -11,22 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('task_milestones', function (Blueprint $table) {
+        Schema::create('milestones', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('milestone_id');
-            $table->foreignId('status_id')->constrained('status_types');
+            $table->foreignId('workflow_template_id');
+            $table->string('name');
+            $table->unsignedBigInteger('status_id');
+            $table->text('hint')->nullable();
             $table->integer('sla_days');
             $table->unsignedBigInteger('approval_group_id')->nullable();
             $table->boolean('requires_docs');
             $table->json('actions');
-            $table->timestamp('completed_at')->nullable();
             $table->foreignId('status_type_id');
             $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -34,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_milestones');
+        Schema::dropIfExists('milestones');
     }
 };

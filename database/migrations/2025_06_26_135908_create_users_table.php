@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('task_milestone_activity_types', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('task_milestone_id')->constrained('taskmilestones');
             $table->string('name');
-            $table->string('icon')->nullable();
-            $table->text('description')->nullable();
+            $table->string('email');
+            $table->string('password');
+            $table->foreignId('user_type_id');
+            $table->foreignId('tenant_id');
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
+            $table->foreignId('division_id')->nullable();
             $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_milestone_activity_types');
+        Schema::dropIfExists('users');
     }
 };

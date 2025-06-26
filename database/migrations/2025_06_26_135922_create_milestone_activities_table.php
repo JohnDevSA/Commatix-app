@@ -11,20 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
         Schema::create('milestone_activities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('milestone_id');
-            $table->foreignId('milestone_activity_type_id')->constrained('');
+            $table->foreignId('milestone_activity_type_id');
             $table->text('message');
             $table->foreignId('user_id');
             $table->json('metadata')->nullable();
-            $table->timestamp('created_at');
             $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**

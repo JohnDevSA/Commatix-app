@@ -21,8 +21,6 @@ class Task extends Model
             'division_id' => 'integer',
             'created_by' => 'integer',
             'assigned_to' => 'integer',
-            'created_at' => 'timestamp',
-            'updated_at' => 'timestamp',
             'status_type_id' => 'integer',
         ];
     }
