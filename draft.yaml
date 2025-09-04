@@ -11,32 +11,185 @@ models:
     description: string nullable
     relationships:
       hasMany: DocumentType, WorkflowTemplate
+
   User:
     name: string
     email: string
     password: string
-    user_type_id: unsignedBigInteger default:1  # Changed from id
-    tenant_id: unsignedBigInteger default:1   # Changed from id
+    user_type_id: unsignedBigInteger default:1
+    tenant_id: string  # String UUID for stancl/tenancy
     email_verified_at: timestamp nullable
     remember_token: rememberToken
-    division_id: unsignedBigInteger nullable  # Changed from id
+    division_id: unsignedBigInteger nullable
     relationships:
-      belongsTo: UserType, Tenant, Division  # Added Division
+      belongsTo: UserType, Tenant, Division
 
+  # ENHANCED SA Tenant Model with String ID
   Tenant:
+    id: string primary  # UUID primary key
+
+    # Basic Company Info
     name: string
-    unique_code: string
-    status_id: unsignedBigInteger
+    trading_name: string nullable
+    unique_code: string unique
+
+    # South African Business Registration
+    company_registration_number: string unique nullable  # CK number format: 2019/123456/07
+    vat_number: string unique nullable  # 10-digit VAT number
+    tax_reference_number: string nullable
+    bee_level: enum:1,2,3,4,5,6,7,8,non-compliant nullable
+    industry_classification: string nullable  # SIC codes
+    company_type: enum:pty_ltd,public,close_corp,partnership,sole_prop,npo,trust default:pty_ltd
+
+    # Contact Information
+    primary_contact_person: string
+    primary_email: string
+    primary_phone: string  # SA format: +27123456789
+    billing_contact_person: string nullable
+    billing_email: string nullable
+    billing_phone: string nullable
+
+    # Physical Address (SA format)
+    physical_address_line1: string
+    physical_address_line2: string nullable
+    physical_city: string
+    physical_province: enum:gauteng,western_cape,kwazulu_natal,eastern_cape,northern_cape,free_state,limpopo,mpumalanga,north_west
+    physical_postal_code: string  # 4-digit SA postal code
+
+    # Postal Address (if different)
+    postal_address_line1: string nullable
+    postal_address_line2: string nullable
+    postal_city: string nullable
+    postal_province: string nullable
+    postal_code: string nullable
+
+    # Subscription & Limits
+    subscription_tier: enum:starter,business,enterprise,custom default:starter
+    billing_cycle: enum:monthly,annually default:monthly
+    subscription_start_date: date nullable
+    subscription_end_date: date nullable
+    max_users: integer default:5
+    max_subscribers: integer default:1000
+    max_campaigns_per_month: integer default:10
+    max_emails_per_month: integer default:5000
+    max_sms_per_month: integer default:1000
+    max_whatsapp_per_month: integer default:500
+
+    # Communication Settings
+    allowed_channels: json  # ['email', 'sms', 'whatsapp', 'voice']
+    default_sender_name: string nullable
+    default_sender_email: string nullable
+    default_sender_phone: string nullable
+    communication_timezone: string default:'Africa/Johannesburg'
+
+    # Compliance (POPIA & GDPR)
+    popia_consent_obtained: boolean default:false
+    popia_consent_date: timestamp nullable
+    data_retention_period_days: integer default:2555  # 7 years SA legal requirement
+    gdpr_applicable: boolean default:false
+    privacy_policy_url: string nullable
+    terms_of_service_url: string nullable
+
+    # Business Operations
+    business_hours_start: time default:'08:00'
+    business_hours_end: time default:'17:00'
+    business_days: json  # ["monday","tuesday","wednesday","thursday","friday"]
+
+    # System Status & Verification
+    status: enum:trial,active,inactive,suspended,cancelled default:trial
+    is_verified: boolean default:false
+    verification_documents: json nullable
+    onboarding_completed: boolean default:false
+    onboarding_step: integer default:1
+
+    # Financial & Usage
+    monthly_spend_limit: decimal nullable
+    current_month_spend: decimal default:0.00
+    currency: string default:'ZAR'
+
+    # Audit & Timestamps
+    created_at: timestamp
+    updated_at: timestamp
+    verified_at: timestamp nullable
+    last_active_at: timestamp nullable
+    suspended_at: timestamp nullable
+
     relationships:
-      belongsTo: StatusType
-      hasMany: User, Division
+      hasMany: User, Division, Subscriber, Campaign, MessageTemplate, TenantSubscription, TenantUsage, TenantAuditLog
+
+  # Subscription Management
+  TenantSubscription:
+    tenant_id: string  # Foreign key to tenants.id
+    plan_name: string
+    billing_interval: enum:monthly,annually
+    amount: decimal
+    currency: string default:'ZAR'
+    status: enum:active,cancelled,past_due,unpaid,trialing
+    current_period_start: timestamp
+    current_period_end: timestamp
+    trial_ends_at: timestamp nullable
+    cancel_at_period_end: boolean default:false
+    stripe_subscription_id: string nullable
+    payfast_subscription_id: string nullable  # SA payment gateway
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsTo: Tenant
+
+  # Usage Tracking
+  TenantUsage:
+    tenant_id: string  # Foreign key to tenants.id
+    period_start: timestamp
+    period_end: timestamp
+    emails_sent: integer default:0
+    sms_sent: integer default:0
+    whatsapp_sent: integer default:0
+    voice_calls: integer default:0
+    storage_used_mb: decimal default:0
+    api_calls: integer default:0
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsTo: Tenant
+
+  # Audit Logging (POPIA Compliance)
+  TenantAuditLog:
+    tenant_id: string  # Foreign key to tenants.id
+    user_id: unsignedBigInteger nullable
+    action: string  # 'created', 'updated', 'deleted', 'viewed', 'exported'
+    resource_type: string  # 'Campaign', 'Subscriber', 'MessageTemplate'
+    resource_id: string
+    old_values: json nullable
+    new_values: json nullable
+    ip_address: string
+    user_agent: text nullable
+    created_at: timestamp
+    relationships:
+      belongsTo: Tenant, User
+
+  # Data Consent Management (POPIA)
+  DataConsentRecord:
+    tenant_id: string  # Foreign key to tenants.id
+    subscriber_id: unsignedBigInteger
+    consent_type: enum:marketing,transactional,analytics,profiling
+    consent_given: boolean
+    consent_date: timestamp
+    consent_method: enum:web_form,api,manual,import,phone,email
+    consent_source: string nullable  # URL or description
+    ip_address: string nullable
+    legal_basis: enum:consent,legitimate_interest,contract,legal_obligation,vital_interests,public_task
+    withdrawn_at: timestamp nullable
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsTo: Tenant, Subscriber
 
   Division:
     name: string
-    tenant_id: unsignedBigInteger  # Changed from id
+    tenant_id: string  # Foreign key to tenants.id
     relationships:
       belongsTo: Tenant
-      hasMany: WorkflowTemplate, User  # Added User
+      hasMany: WorkflowTemplate, User
 
   StatusType:
     name: string unique
@@ -45,13 +198,14 @@ models:
       hasMany: WorkflowTemplate, Milestone, Task, TaskMilestone
       belongsToMany: StatusScope
 
-  StatusScope :
-    name: string unique     # e.g. workflow_template, milestone, task, task_milestone
+  StatusScope:
+    name: string unique
     label: string nullable
     description: string nullable
     relationships:
       belongsToMany: StatusType
 
+  # ENHANCED WorkflowTemplate with Template Management
   WorkflowTemplate:
     uuid: uuid
     name: string
@@ -59,17 +213,89 @@ models:
     description: text
     status_id: unsignedBigInteger
     access_scope_id: unsignedBigInteger
+
+    # Template Hierarchy & Copying Features
+    template_type: enum:system,industry,custom,copied default:custom
+    parent_template_id: unsignedBigInteger nullable  # For copied templates
+    industry_category: string nullable  # finance, healthcare, retail, manufacturing, etc.
+    template_version: string default:'1.0'
+
+    # Ownership & Access
+    created_by: unsignedBigInteger
+    is_public: boolean default:false  # Can other tenants see this as template?
+    is_system_template: boolean default:false  # System-provided templates
+    tenant_id: string nullable  # null for system templates, set for tenant-specific
+
+    # Usage & Analytics
+    usage_count: integer default:0  # How many times copied/used
+    last_used_at: timestamp nullable
+
+    # Template Metadata
+    tags: json nullable  # ['onboarding', 'compliance', 'approval-heavy']
+    estimated_duration_days: integer nullable
+    complexity_level: enum:simple,medium,complex default:medium
+
+    # Customization Settings
+    is_customizable: boolean default:true
+    locked_milestones: json nullable  # Array of milestone IDs that cannot be modified
+    required_roles: json nullable  # Required roles to execute this workflow
+
+    # Versioning & Publishing
+    is_published: boolean default:false
+    published_at: timestamp nullable
+    change_log: text nullable
+
+    created_at: timestamp
+    updated_at: timestamp
+
     relationships:
-      belongsTo: Division, StatusType,AccessScope
-      hasMany: Milestone
+      belongsTo: Division, StatusType, AccessScope, User, ParentTemplate
+      hasMany: Milestone, Task, ChildTemplates, WorkflowTemplateUsage
+      belongsToMany: WorkflowTemplateTag
+
+  # Template Tags for Categorization
+  WorkflowTemplateTag:
+    name: string unique
+    description: text nullable
+    color: string default:'blue'
+    icon: string nullable
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsToMany: WorkflowTemplate
+
+  # Template Usage History (Analytics)
+  WorkflowTemplateUsage:
+    workflow_template_id: unsignedBigInteger
+    tenant_id: string  # Foreign key to tenants.id
+    user_id: unsignedBigInteger
+    action: enum:copied,used,modified,published
+    metadata: json nullable  # Store what was changed, copied, etc.
+    created_at: timestamp
+    relationships:
+      belongsTo: WorkflowTemplate, Tenant, User
+
+  # Industry Template Categories
+  IndustryTemplate:
+    name: string  # "Financial Services Onboarding"
+    industry: enum:finance,healthcare,retail,manufacturing,education,government,nonprofit,technology
+    description: text
+    workflow_template_id: unsignedBigInteger
+    compliance_requirements: json nullable  # POPIA, GDPR, industry-specific
+    typical_duration_days: integer
+    complexity_score: integer  # 1-10
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsTo: WorkflowTemplate
 
   Milestone:
     workflow_template_id: unsignedBigInteger
     name: string
-    status_id: unsignedBigInteger  # Changed from unsignedInteger
+    status_id: unsignedBigInteger
     hint: text nullable
     sla_days: integer
-    approval_group_id: unsignedBigInteger nullable  # Changed from id
+    approval_group_id: unsignedBigInteger nullable
     requires_docs: boolean
     actions: json
     relationships:
@@ -78,14 +304,14 @@ models:
 
   Task:
     reference_number: string unique
-    workflow_template_id: unsignedBigInteger  # Changed from id
-    status_id: unsignedBigInteger  # Changed from unsignedInteger
-    tenant_id: unsignedBigInteger  # Changed from id
-    division_id: unsignedBigInteger  # Changed from id
-    created_by: unsignedBigInteger  # Changed from id
-    assigned_to: unsignedBigInteger  # Changed from id
+    workflow_template_id: unsignedBigInteger
+    status_id: unsignedBigInteger
+    tenant_id: string  # Foreign key to tenants.id
+    division_id: unsignedBigInteger
+    created_by: unsignedBigInteger
+    assigned_to: unsignedBigInteger
     relationships:
-      belongsTo: WorkflowTemplate, StatusType, Tenant, Division  # Added relationships
+      belongsTo: WorkflowTemplate, StatusType, Tenant, Division
       hasMany: TaskMilestone
 
   TaskMilestone:
@@ -112,7 +338,7 @@ models:
     name: string
     description: text nullable
     access_scope_id: unsignedBigInteger
-    tenant_id: unsignedBigInteger nullable
+    tenant_id: string nullable  # Foreign key to tenants.id
     relationships:
       belongsTo: Tenant, AccessScope
 
@@ -147,3 +373,89 @@ models:
     metadata: json nullable
     relationships:
       belongsTo: Milestone, User, MilestoneActivityType
+
+  # Communication Models
+  Subscriber:
+    email: string
+    phone: string nullable
+    whatsapp: string nullable
+    first_name: string nullable
+    last_name: string nullable
+    tenant_id: string  # Foreign key to tenants.id
+    subscriber_list_id: unsignedBigInteger
+    status: enum:active,inactive,unsubscribed,bounced default:active
+    opt_out_date: timestamp nullable
+    source: enum:manual,import,api,web_form nullable
+    tags: json nullable
+    custom_fields: json nullable
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsTo: Tenant, SubscriberList
+      hasMany: CampaignMessage, DataConsentRecord
+
+  SubscriberList:
+    name: string
+    description: text nullable
+    tenant_id: string  # Foreign key to tenants.id
+    total_subscribers: integer default:0
+    active_subscribers: integer default:0
+    is_public: boolean default:false
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsTo: Tenant
+      hasMany: Subscriber, Campaign
+
+  Campaign:
+    name: string
+    type: enum:email,sms,whatsapp,voice
+    status: enum:draft,scheduled,sending,completed,failed,cancelled,paused default:draft
+    tenant_id: string  # Foreign key to tenants.id
+    subscriber_list_id: unsignedBigInteger
+    message_template_id: unsignedBigInteger nullable
+    scheduled_at: timestamp nullable
+    started_at: timestamp nullable
+    completed_at: timestamp nullable
+    sent_count: integer default:0
+    delivered_count: integer default:0
+    failed_count: integer default:0
+    opened_count: integer default:0
+    clicked_count: integer default:0
+    unsubscribed_count: integer default:0
+    created_by: unsignedBigInteger
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsTo: Tenant, SubscriberList, MessageTemplate, User
+      hasMany: CampaignMessage
+
+  MessageTemplate:
+    name: string
+    type: enum:email,sms,whatsapp,voice
+    subject: string nullable
+    content: text
+    variables: json nullable  # Template variables like {{first_name}}
+    tenant_id: string  # Foreign key to tenants.id
+    is_active: boolean default:true
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsTo: Tenant
+      hasMany: Campaign
+
+  CampaignMessage:
+    campaign_id: unsignedBigInteger
+    subscriber_id: unsignedBigInteger
+    status: enum:pending,sent,delivered,failed,bounced,opened,clicked,unsubscribed default:pending
+    sent_at: timestamp nullable
+    delivered_at: timestamp nullable
+    opened_at: timestamp nullable
+    clicked_at: timestamp nullable
+    error_message: text nullable
+    provider_message_id: string nullable
+    provider_response: json nullable
+    created_at: timestamp
+    updated_at: timestamp
+    relationships:
+      belongsTo: Campaign, Subscriber
