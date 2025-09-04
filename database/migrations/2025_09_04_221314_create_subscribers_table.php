@@ -25,8 +25,6 @@ return new class extends Migration
             $table->enum('source', ["manual","import","api","web_form"])->nullable();
             $table->json('tags')->nullable();
             $table->json('custom_fields')->nullable();
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
             $table->timestamps();
         });
     }

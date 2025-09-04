@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('workflow_templates', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid');
+            $table->uuid();
             $table->string('name');
             $table->foreignId('division_id');
             $table->text('description');
@@ -38,8 +38,6 @@ return new class extends Migration
             $table->boolean('is_published')->default(false);
             $table->timestamp('published_at')->nullable();
             $table->text('change_log')->nullable();
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
             $table->foreignId('status_type_id');
             $table->foreignId('user_id');
             $table->timestamps();

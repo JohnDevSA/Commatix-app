@@ -23,8 +23,6 @@ return new class extends Migration
             $table->text('error_message')->nullable();
             $table->string('provider_message_id')->nullable();
             $table->json('provider_response')->nullable();
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
             $table->timestamps();
         });
     }

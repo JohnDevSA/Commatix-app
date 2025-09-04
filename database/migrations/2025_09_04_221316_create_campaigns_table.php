@@ -29,8 +29,6 @@ return new class extends Migration
             $table->integer('clicked_count')->default(0);
             $table->integer('unsubscribed_count')->default(0);
             $table->unsignedBigInteger('created_by');
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
             $table->foreignId('user_id');
             $table->timestamps();
         });

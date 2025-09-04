@@ -17,8 +17,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('color')->default('blue');
             $table->string('icon')->nullable();
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
             $table->timestamps();
         });
     }

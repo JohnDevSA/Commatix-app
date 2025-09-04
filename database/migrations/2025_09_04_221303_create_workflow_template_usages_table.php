@@ -19,7 +19,6 @@ return new class extends Migration
             $table->enum('action', ["copied","used","modified","published"]);
             $table->json('metadata')->nullable();
             $table->timestamp('created_at');
-            $table->timestamps();
         });
     }
 

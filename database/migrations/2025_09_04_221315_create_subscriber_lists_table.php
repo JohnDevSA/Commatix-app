@@ -19,8 +19,6 @@ return new class extends Migration
             $table->integer('total_subscribers')->default(0);
             $table->integer('active_subscribers')->default(0);
             $table->boolean('is_public')->default(false);
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
             $table->timestamps();
         });
     }

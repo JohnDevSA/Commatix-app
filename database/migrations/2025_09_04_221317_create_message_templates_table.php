@@ -20,8 +20,6 @@ return new class extends Migration
             $table->json('variables')->nullable();
             $table->foreignId('tenant_id');
             $table->boolean('is_active')->default(true);
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
             $table->timestamps();
         });
     }

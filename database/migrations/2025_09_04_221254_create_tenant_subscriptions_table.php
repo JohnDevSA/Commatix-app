@@ -13,21 +13,22 @@ return new class extends Migration
     {
         Schema::create('tenant_subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id');
+            $table->string('tenant_id'); // Changed to string for UUID
             $table->string('plan_name');
             $table->enum('billing_interval', ["monthly","annually"]);
-            $table->decimal('amount');
+            $table->decimal('amount', 10, 2); // Added precision
             $table->string('currency')->default('ZAR');
             $table->enum('status', ["active","cancelled","past_due","unpaid","trialing"]);
-            $table->timestamp('current_period_start');
-            $table->timestamp('current_period_end');
+            $table->timestamp('current_period_start')->nullable(); // Made nullable
+            $table->timestamp('current_period_end')->nullable(); // Made nullable
             $table->timestamp('trial_ends_at')->nullable();
             $table->boolean('cancel_at_period_end')->default(false);
             $table->string('stripe_subscription_id')->nullable();
             $table->string('payfast_subscription_id')->nullable();
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
             $table->timestamps();
+            
+            // Add foreign key constraint
+            $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
         });
     }
 

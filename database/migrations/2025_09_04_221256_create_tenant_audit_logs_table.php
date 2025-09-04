@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('ip_address');
             $table->text('user_agent')->nullable();
             $table->timestamp('created_at');
-            $table->timestamps();
         });
     }
 

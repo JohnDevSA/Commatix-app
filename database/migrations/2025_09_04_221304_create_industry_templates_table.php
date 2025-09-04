@@ -20,8 +20,6 @@ return new class extends Migration
             $table->json('compliance_requirements')->nullable();
             $table->integer('typical_duration_days');
             $table->integer('complexity_score');
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
             $table->timestamps();
         });
     }

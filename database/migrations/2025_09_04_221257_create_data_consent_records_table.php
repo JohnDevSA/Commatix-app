@@ -23,8 +23,6 @@ return new class extends Migration
             $table->string('ip_address')->nullable();
             $table->enum('legal_basis', ["consent","legitimate_interest","contract","legal_obligation","vital_interests","public_task"]);
             $table->timestamp('withdrawn_at')->nullable();
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
             $table->timestamps();
         });
     }
