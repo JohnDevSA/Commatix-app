@@ -14,7 +14,7 @@ class TenantSubscription extends Model
     {
         return [
             'id' => 'integer',
-            'tenant_id' => 'integer',
+            'tenant_id' => 'string',
             'amount' => 'decimal',
             'current_period_start' => 'timestamp',
             'current_period_end' => 'timestamp',
