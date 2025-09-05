@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('document_types', function (Blueprint $table) {
+        Schema::create('sa_company_types', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
             $table->string('name');
-            $table->text('description')->nullable();
-            $table->foreignId('access_scope_id');
-            $table->string('tenant_id')->nullable();
+            $table->text('description');
             $table->timestamps();
-
-            $table->index('tenant_id');
-            $table->index('access_scope_id');
         });
     }
 
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('document_types');
+        Schema::dropIfExists('sa_company_types');
     }
 };

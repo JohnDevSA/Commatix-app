@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tenant_id');
             $table->foreignId('subscriber_id');
-            $table->enum('consent_type', ["marketing","transactional","analytics","profiling"]);
+            $table->enum('consent_type', ["popia","marketing","transactional","analytics","profiling"])->default('popia');
             $table->boolean('consent_given');
             $table->timestamp('consent_date');
             $table->enum('consent_method', ["web_form","api","manual","import","phone","email"]);
@@ -24,6 +24,9 @@ return new class extends Migration
             $table->enum('legal_basis', ["consent","legitimate_interest","contract","legal_obligation","vital_interests","public_task"]);
             $table->timestamp('withdrawn_at')->nullable();
             $table->timestamps();
+
+            $table->index('tenant_id');
+            $table->index('consent_type');
         });
     }
 

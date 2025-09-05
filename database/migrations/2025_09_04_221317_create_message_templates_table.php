@@ -14,13 +14,18 @@ return new class extends Migration
         Schema::create('message_templates', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ["email","sms","whatsapp","voice"]);
+            $table->text('description')->nullable();
+            $table->string('tenant_id'); // Changed from foreignId to string
+            $table->enum('channel', ["email","sms","whatsapp","voice"])->default('email');
             $table->string('subject')->nullable();
             $table->text('content');
             $table->json('variables')->nullable();
-            $table->foreignId('tenant_id');
             $table->boolean('is_active')->default(true);
+            $table->foreignId('created_by');
             $table->timestamps();
+
+            $table->index('tenant_id');
+            $table->index('channel');
         });
     }
 

@@ -13,16 +13,18 @@ return new class extends Migration
     {
         Schema::create('tenant_audit_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id');
-            $table->foreignId('user_id')->nullable();
+            $table->string('tenant_id'); // Changed from foreignId to string
             $table->string('action');
-            $table->string('resource_type');
-            $table->string('resource_id');
+            $table->text('description')->nullable();
             $table->json('old_values')->nullable();
             $table->json('new_values')->nullable();
-            $table->string('ip_address');
-            $table->text('user_agent')->nullable();
-            $table->timestamp('created_at');
+            $table->string('ip_address')->nullable();
+            $table->string('user_agent')->nullable();
+            $table->foreignId('user_id')->nullable();
+            $table->timestamps();
+
+            $table->index('tenant_id');
+            $table->index('action');
         });
     }
 

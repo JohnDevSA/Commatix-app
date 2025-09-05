@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('divisions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('tenant_id');
+            $table->string('tenant_id');
             $table->timestamps();
+
+            $table->index('tenant_id');
         });
     }
 

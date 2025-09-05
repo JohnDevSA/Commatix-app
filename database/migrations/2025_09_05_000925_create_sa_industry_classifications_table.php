@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('document_types', function (Blueprint $table) {
+        Schema::create('sa_industry_classifications', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->foreignId('access_scope_id');
-            $table->string('tenant_id')->nullable();
+            $table->string('sic_code', 10)->unique();
+            $table->string('description');
+            $table->string('sector');
             $table->timestamps();
-
-            $table->index('tenant_id');
-            $table->index('access_scope_id');
         });
     }
 
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('document_types');
+        Schema::dropIfExists('sa_industry_classifications');
     }
 };

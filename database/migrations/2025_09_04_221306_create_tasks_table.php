@@ -16,12 +16,15 @@ return new class extends Migration
             $table->string('reference_number')->unique();
             $table->foreignId('workflow_template_id');
             $table->unsignedBigInteger('status_id');
-            $table->foreignId('tenant_id');
+            $table->string('tenant_id'); // Changed from foreignId to string
             $table->foreignId('division_id');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('assigned_to');
             $table->foreignId('status_type_id');
             $table->timestamps();
+
+            $table->index('tenant_id');
+            $table->index('reference_number');
         });
     }
 

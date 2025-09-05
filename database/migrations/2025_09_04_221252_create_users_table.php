@@ -17,11 +17,14 @@ return new class extends Migration
             $table->string('email');
             $table->string('password');
             $table->foreignId('user_type_id')->default('1');
-            $table->foreignId('tenant_id');
+            $table->string('tenant_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->foreignId('division_id')->nullable();
             $table->timestamps();
+
+            $table->index(['tenant_id', 'email']);
+            $table->index('user_type_id');
         });
     }
 

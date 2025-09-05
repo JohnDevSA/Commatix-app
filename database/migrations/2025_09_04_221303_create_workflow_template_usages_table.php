@@ -14,11 +14,15 @@ return new class extends Migration
         Schema::create('workflow_template_usages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('workflow_template_id');
-            $table->foreignId('tenant_id');
+            $table->string('tenant_id'); // Changed from foreignId to string
             $table->foreignId('user_id');
-            $table->enum('action', ["copied","used","modified","published"]);
-            $table->json('metadata')->nullable();
-            $table->timestamp('created_at');
+            $table->timestamp('used_at');
+            $table->string('usage_type')->default('copy');
+            $table->text('customizations')->nullable();
+            $table->timestamps();
+
+            $table->index('tenant_id');
+            $table->index('workflow_template_id');
         });
     }
 

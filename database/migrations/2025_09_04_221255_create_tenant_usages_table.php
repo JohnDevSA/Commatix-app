@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tenant_usages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id');
+            $table->string('tenant_id');
             $table->timestamp('period_start')->nullable();
             $table->timestamp('period_end')->nullable();
             $table->integer('emails_sent')->default(0);

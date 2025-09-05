@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('whatsapp')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->foreignId('tenant_id');
+            $table->string('tenant_id'); // Changed from foreignId to string
             $table->foreignId('subscriber_list_id');
             $table->enum('status', ["active","inactive","unsubscribed","bounced"])->default('active');
             $table->timestamp('opt_out_date')->nullable();
@@ -26,6 +26,9 @@ return new class extends Migration
             $table->json('tags')->nullable();
             $table->json('custom_fields')->nullable();
             $table->timestamps();
+
+            $table->index('tenant_id');
+            $table->index(['email', 'tenant_id']);
         });
     }
 

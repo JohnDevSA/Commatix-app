@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->foreignId('tenant_id');
+            $table->string('tenant_id'); // Changed from foreignId to string
             $table->integer('total_subscribers')->default(0);
             $table->integer('active_subscribers')->default(0);
             $table->boolean('is_public')->default(false);
             $table->timestamps();
+
+            $table->index('tenant_id');
+            $table->index('name');
         });
     }
 

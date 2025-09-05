@@ -2,9 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Division;
+use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\;
 use App\Models\User;
 use App\Models\UserType;
 
@@ -27,10 +28,10 @@ class UserFactory extends Factory
             'email' => fake()->safeEmail(),
             'password' => fake()->password(),
             'user_type_id' => UserType::factory(),
-            'tenant_id' => ::factory(),
-            'email_verified_at' => fake()->dateTime(),
+            'tenant_id' => Tenant::factory(),
+            'email_verified_at' => now(),
             'remember_token' => Str::random(10),
-            'division_id' => ::factory(),
+            'division_id' => Division::factory(),
         ];
     }
 }
