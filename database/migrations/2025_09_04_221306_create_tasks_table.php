@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->foreignId('workflow_template_id')->constrained();
-            $table->foreignId('subscriber_id')->constrained();
+            $table->foreignId('subscriber_id')->nullable();
             $table->string('tenant_id'); // String for UUID tenants
             $table->foreignId('division_id')->nullable();
             $table->foreignId('created_by')->constrained('users');

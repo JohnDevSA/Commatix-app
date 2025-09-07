@@ -17,10 +17,19 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->foreignId('access_scope_id');
             $table->string('tenant_id')->nullable();
+            
+            // Additional configuration fields
+            $table->string('industry_category')->nullable();
+            $table->boolean('is_required')->default(false);
+            $table->boolean('allows_multiple')->default(true);
+            $table->integer('max_file_size_mb')->default(10);
+            $table->json('allowed_file_types')->nullable();
+            
             $table->timestamps();
 
             $table->index('tenant_id');
             $table->index('access_scope_id');
+            $table->index('industry_category');
         });
     }
 

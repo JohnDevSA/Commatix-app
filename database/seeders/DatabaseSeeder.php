@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             SouthAfricanBusinessSeeder::class,
             CommunicationProviderSeeder::class,
             GlobalTemplateSeeder::class,
+            DocumentTypeSeeder::class,
             DemoTenantSeeder::class,
         ]);
 
