@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\WorkflowTemplateResource\RelationManagers;
+namespace App\Filament\Resources\TenantWorkflowTemplateResource\RelationManagers;
 
 use App\Models\Milestone;
 use Filament\Forms;
@@ -200,10 +200,14 @@ class MilestonesRelationManager extends RelationManager
             ->defaultSort('sequence_order');
     }
 
-    private function updateWorkflowDuration(): void
+    protected function updateWorkflowDuration(): void
     {
-        $totalDuration = $this->getOwnerRecord()->milestones()->sum('estimated_duration_days');
-        $this->getOwnerRecord()->update(['estimated_duration_days' => $totalDuration]);
+        $workflow = $this->getOwnerRecord();
+        $totalDuration = $workflow->milestones()->sum('estimated_duration_days');
+
+        $workflow->update([
+            'estimated_duration_days' => $totalDuration
+        ]);
 
         Notification::make()
             ->title('Workflow Duration Updated')

@@ -6,6 +6,7 @@ use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\CreateTenantWork
 use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\EditTenantWorkflowTemplate;
 use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\ListTenantWorkflowTemplates;
 use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\ViewTenantWorkflowTemplate;
+use App\Filament\Resources\TenantWorkflowTemplateResource\RelationManagers\MilestonesRelationManager;
 use App\Models\WorkflowTemplate;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -161,8 +162,8 @@ class TenantWorkflowTemplateResource extends Resource
                 Tables\Columns\TextColumn::make('industry_category')
                     ->label('Industry')
                     ->searchable()
-                    ->formatStateUsing(fn (string $state): string =>
-                    str_replace('_', ' ', title_case($state))
+                    ->formatStateUsing(fn (?string $state): string =>
+                    $state ? Str::title(str_replace('_', ' ', $state)) : 'N/A'
                     ),
 
                 Tables\Columns\TextColumn::make('milestones_count')
@@ -273,4 +274,12 @@ class TenantWorkflowTemplateResource extends Resource
                     ),
             ]);
     }
+
+    public static function getRelations(): array
+    {
+        return [
+            MilestonesRelationManager::class,
+        ];
+    }
+
 }

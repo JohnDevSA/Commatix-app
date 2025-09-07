@@ -11,6 +11,34 @@ class Subscriber extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'tenant_id',
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'subscriber_list_id',
+        'opt_in_date',
+        'opt_out_date',
+        'status',
+        'tags',
+        'custom_fields',
+        'notes',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->tenant_id) && tenant()) {
+                $model->tenant_id = tenant()->id;
+            }else {
+                echo "Tenant ID is empty";
+            }
+        });
+    }
+
     protected function casts(): array
     {
         return [
@@ -43,5 +71,10 @@ class Subscriber extends Model
     public function dataConsentRecords(): HasMany
     {
         return $this->hasMany(DataConsentRecord::class);
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
     }
 }

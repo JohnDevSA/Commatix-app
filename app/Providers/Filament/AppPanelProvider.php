@@ -30,10 +30,30 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('/')
             ->login()
+            ->brandName('Commatix')
+            ->brandLogo(asset('images/commatix-logo.svg'))
+            ->brandLogoHeight('2rem')
+            ->favicon(asset('images/favicon.ico'))
             ->colors([
-                'primary' => Color::Indigo,
+                'primary' => Color::Blue,
                 'secondary' => Color::Slate,
+                'success' => Color::Green,
+                'warning' => Color::Amber,
+                'danger' => Color::Red,
             ])
+            ->font('Figtree')
+            ->darkMode(false)
+            ->sidebarCollapsibleOnDesktop()
+            ->sidebarWidth('17rem')
+            ->navigationGroups([
+                'Dashboard',
+                'Multi-Tenant Management',
+                'Communication Hub',
+                'Workflow Engine',
+                'Analytics & Reports',
+                'System Administration',
+            ])
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -41,8 +61,10 @@ class AppPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
+                SystemOverviewWidget::class,
+                TenantGrowthChart::class,
+                RecentTenantsWidget::class,
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

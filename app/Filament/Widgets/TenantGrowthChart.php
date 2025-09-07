@@ -8,9 +8,11 @@ use Carbon\Carbon;
 
 class TenantGrowthChart extends ChartWidget
 {
-    protected static ?string $heading = 'Tenant Growth Over Time';
+    protected static ?string $heading = 'Tenant Growth Analytics';
+    protected static ?string $description = 'Real-time tenant acquisition tracking across South African markets';
     protected static ?int $sort = 2;
-    protected static ?string $maxHeight = '300px';
+    protected static ?string $maxHeight = '350px';
+    protected static ?string $pollingInterval = '60s';
 
     protected function getData(): array
     {
@@ -35,12 +37,26 @@ class TenantGrowthChart extends ChartWidget
             ->get()
             ->keyBy('date');
 
+        // Get cumulative data
+        $cumulativeData = Tenant::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->where('created_at', '<=', $endDate)
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        $runningTotal = 0;
+        $cumulativeCounts = collect();
+
         // Fill in missing dates with 0 counts
-        $chartData = $dates->map(function ($date) use ($tenantData) {
+        $chartData = $dates->map(function ($date) use ($tenantData, &$runningTotal, $cumulativeData) {
             $dateString = $date->format('Y-m-d');
+            $dailyCount = $tenantData->get($dateString)?->count ?? 0;
+            $runningTotal += $dailyCount;
+            
             return [
                 'date' => $dateString,
-                'count' => $tenantData->get($dateString)?->count ?? 0,
+                'count' => $dailyCount,
+                'cumulative' => $runningTotal,
                 'label' => $date->format('M j')
             ];
         });
@@ -48,13 +64,32 @@ class TenantGrowthChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'New Tenants',
+                    'label' => 'New Tenants (Daily)',
                     'data' => $chartData->pluck('count')->toArray(),
-                    'backgroundColor' => 'rgba(99, 102, 241, 0.1)',
-                    'borderColor' => 'rgb(99, 102, 241)',
-                    'borderWidth' => 2,
+                    'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
+                    'borderColor' => 'rgb(59, 130, 246)',
+                    'borderWidth' => 3,
                     'fill' => true,
                     'tension' => 0.4,
+                    'pointBackgroundColor' => 'rgb(59, 130, 246)',
+                    'pointBorderColor' => '#fff',
+                    'pointBorderWidth' => 2,
+                    'pointRadius' => 4,
+                    'pointHoverRadius' => 6,
+                ],
+                [
+                    'label' => 'Total Tenants (Cumulative)',
+                    'data' => $chartData->pluck('cumulative')->toArray(),
+                    'backgroundColor' => 'rgba(16, 185, 129, 0.05)',
+                    'borderColor' => 'rgb(16, 185, 129)',
+                    'borderWidth' => 2,
+                    'fill' => false,
+                    'tension' => 0.4,
+                    'pointBackgroundColor' => 'rgb(16, 185, 129)',
+                    'pointBorderColor' => '#fff',
+                    'pointBorderWidth' => 2,
+                    'pointRadius' => 3,
+                    'yAxisID' => 'y1',
                 ]
             ],
             'labels' => $chartData->pluck('label')->toArray(),
@@ -69,17 +104,98 @@ class TenantGrowthChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
-            'scales' => [
-                'y' => [
-                    'beginAtZero' => true,
-                    'ticks' => [
-                        'stepSize' => 1,
-                    ],
-                ],
+            'responsive' => true,
+            'maintainAspectRatio' => false,
+            'interaction' => [
+                'mode' => 'index',
+                'intersect' => false,
             ],
             'plugins' => [
                 'legend' => [
-                    'display' => false,
+                    'display' => true,
+                    'position' => 'top',
+                    'labels' => [
+                        'usePointStyle' => true,
+                        'padding' => 20,
+                        'font' => [
+                            'size' => 12,
+                            'weight' => '500',
+                        ],
+                    ],
+                ],
+                'tooltip' => [
+                    'backgroundColor' => 'rgba(255, 255, 255, 0.95)',
+                    'titleColor' => '#1f2937',
+                    'bodyColor' => '#1f2937',
+                    'borderColor' => 'rgba(59, 130, 246, 0.2)',
+                    'borderWidth' => 1,
+                    'cornerRadius' => 8,
+                    'displayColors' => true,
+                ],
+            ],
+            'scales' => [
+                'x' => [
+                    'display' => true,
+                    'grid' => [
+                        'color' => 'rgba(0, 0, 0, 0.05)',
+                        'borderColor' => 'rgba(0, 0, 0, 0.1)',
+                    ],
+                    'ticks' => [
+                        'color' => '#6b7280',
+                        'font' => [
+                            'size' => 11,
+                        ],
+                    ],
+                ],
+                'y' => [
+                    'type' => 'linear',
+                    'display' => true,
+                    'position' => 'left',
+                    'beginAtZero' => true,
+                    'grid' => [
+                        'color' => 'rgba(0, 0, 0, 0.05)',
+                        'borderColor' => 'rgba(0, 0, 0, 0.1)',
+                    ],
+                    'ticks' => [
+                        'stepSize' => 1,
+                        'color' => '#6b7280',
+                        'font' => [
+                            'size' => 11,
+                        ],
+                    ],
+                    'title' => [
+                        'display' => true,
+                        'text' => 'New Tenants',
+                        'color' => '#374151',
+                        'font' => [
+                            'size' => 12,
+                            'weight' => '600',
+                        ],
+                    ],
+                ],
+                'y1' => [
+                    'type' => 'linear',
+                    'display' => true,
+                    'position' => 'right',
+                    'beginAtZero' => true,
+                    'grid' => [
+                        'drawOnChartArea' => false,
+                    ],
+                    'ticks' => [
+                        'color' => '#6b7280',
+                        'font' => [
+                            'size' => 11,
+                        ],
+                    ],
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Total Tenants',
+                        'color' => '#374151',
+                        'font' => [
+                            'size' => 12,
+                            'weight' => '600',
+                        ],
+                    ],
                 ],
             ],
         ];

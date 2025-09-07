@@ -1,0 +1,278 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\TaskResource\Pages\CreateTask;
+use App\Filament\Resources\TaskResource\Pages\EditTask;
+use App\Filament\Resources\TaskResource\Pages\ListTasks;
+use App\Filament\Resources\TaskResource\Pages\ViewTask;
+use App\Models\Task;
+use App\Models\WorkflowTemplate;
+use App\Models\Subscriber;
+use App\Models\User;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Filament\Notifications\Notification;
+use Carbon\Carbon;
+
+class TaskResource extends Resource
+{
+    protected static ?string $model = Task::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+
+    protected static ?string $navigationLabel = 'Tasks';
+
+    protected static ?string $navigationGroup = 'Workflow Management';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\Section::make('Task Details')
+                    ->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Textarea::make('description')
+                            ->rows(3),
+                        Forms\Components\Select::make('workflow_template_id')
+                            ->label('Workflow Template')
+                            ->relationship('workflowTemplate', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                if ($state) {
+                                    $workflow = WorkflowTemplate::find($state);
+                                    if ($workflow && $workflow->estimated_duration_days) {
+                                        $set('due_date', now()->addDays($workflow->estimated_duration_days)->toDateString());
+                                    }
+                                }
+                            }),
+                        Forms\Components\Select::make('subscriber_id')
+                            ->label('Subscriber')
+                            ->relationship('subscriber', 'email')
+                            ->searchable(['email', 'first_name', 'last_name'])
+                            ->preload()
+                            ->required()
+                            ->getOptionLabelFromRecordUsing(fn (Subscriber $record): string =>
+                            "{$record->first_name} {$record->last_name} ({$record->email})"
+                            )
+                            ->createOptionForm([
+                                Forms\Components\Hidden::make('tenant_id')
+                                    ->default(fn () => tenant() ? tenant()->id : null),
+                                Forms\Components\TextInput::make('first_name')
+                                    ->required(),
+                                Forms\Components\TextInput::make('last_name')
+                                    ->required(),
+                                Forms\Components\TextInput::make('email')
+                                    ->email()
+                                    ->required(),
+                                Forms\Components\TextInput::make('phone'),
+                                Forms\Components\Select::make('subscriber_list_id')
+                                    ->label('Subscriber List')
+                                    ->relationship('subscriberList', 'name')
+                                    ->required(),
+                            ])
+                            ->createOptionUsing(function (array $data): int {
+                                // Ensure tenant_id is set for new subscribers
+                                if (tenant()) {
+                                    $data['tenant_id'] = tenant()->id;
+                                }
+
+                                $subscriber = Subscriber::create($data);
+                                return $subscriber->id;
+                            }),
+                    ])
+                    ->columns(1),
+
+                Forms\Components\Section::make('Assignment & Scheduling')
+                    ->schema([
+                        Forms\Components\Select::make('assigned_to')
+                            ->label('Assigned To')
+                            ->options(User::pluck('name', 'id'))
+                            ->searchable()
+                            ->required(),
+                        Forms\Components\Select::make('priority')
+                            ->options([
+                                'low' => 'Low',
+                                'medium' => 'Medium',
+                                'high' => 'High',
+                                'critical' => 'Critical',
+                            ])
+                            ->default('medium')
+                            ->required(),
+                        Forms\Components\DatePicker::make('scheduled_start_date')
+                            ->label('Scheduled Start Date')
+                            ->default(now())
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                // Auto-set status based on start date
+                                if ($state && Carbon::parse($state)->isFuture()) {
+                                    $set('status', 'scheduled');
+                                } else {
+                                    $set('status', 'draft');
+                                }
+                            }),
+                        Forms\Components\DatePicker::make('due_date')
+                            ->label('Due Date'),
+                        Forms\Components\Select::make('status')
+                            ->options([
+                                'draft' => 'Draft',
+                                'scheduled' => 'Scheduled',
+                                'in_progress' => 'In Progress',
+                                'on_hold' => 'On Hold',
+                                'completed' => 'Completed',
+                                'cancelled' => 'Cancelled',
+                            ])
+                            ->default('draft')
+                            ->required(),
+                    ])
+                    ->columns(2),
+
+                Forms\Components\Section::make('Additional Information')
+                    ->schema([
+                        Forms\Components\Textarea::make('notes')
+                            ->rows(3),
+                    ])
+                    ->collapsible(),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('subscriber.email')
+                    ->label('Subscriber')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn ($record) =>
+                    "{$record->subscriber->first_name} {$record->subscriber->last_name}"
+                    ),
+                Tables\Columns\TextColumn::make('workflowTemplate.name')
+                    ->label('Workflow')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'draft' => 'gray',
+                        'scheduled' => 'info',
+                        'in_progress' => 'warning',
+                        'on_hold' => 'danger',
+                        'completed' => 'success',
+                        'cancelled' => 'gray',
+                        default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('priority')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'low' => 'gray',
+                        'medium' => 'info',
+                        'high' => 'warning',
+                        'critical' => 'danger',
+                        default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('assignedTo.name')
+                    ->label('Assigned To'),
+                Tables\Columns\TextColumn::make('scheduled_start_date')
+                    ->label('Start Date')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('due_date')
+                    ->label('Due Date')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('currentMilestone.name')
+                    ->label('Current Step')
+                    ->badge()
+                    ->color('info'),
+            ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'scheduled' => 'Scheduled',
+                        'in_progress' => 'In Progress',
+                        'on_hold' => 'On Hold',
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                    ]),
+                Tables\Filters\SelectFilter::make('priority')
+                    ->options([
+                        'low' => 'Low',
+                        'medium' => 'Medium',
+                        'high' => 'High',
+                        'critical' => 'Critical',
+                    ]),
+                Tables\Filters\Filter::make('due_soon')
+                    ->label('Due This Week')
+                    ->query(fn ($query) => $query->whereBetween('due_date', [now(), now()->addWeek()])),
+            ])
+            ->actions([
+                Tables\Actions\Action::make('start_early')
+                    ->label('Start Early')
+                    ->icon('heroicon-o-play')
+                    ->color('success')
+                    ->visible(fn (Task $record) => $record->canStartEarly())
+                    ->form([
+                        Forms\Components\Textarea::make('reason')
+                            ->label('Reason for Early Start')
+                            ->required()
+                            ->helperText('Please provide a reason for starting this task before the scheduled date'),
+                    ])
+                    ->action(function (Task $record, array $data) {
+                        if ($record->startTask($data['reason'])) {
+                            Notification::make()
+                                ->title('Task Started Early')
+                                ->body('The task has been started before the scheduled date.')
+                                ->success()
+                                ->send();
+                        }
+                    }),
+
+                Tables\Actions\Action::make('start_task')
+                    ->label('Start Task')
+                    ->icon('heroicon-o-play')
+                    ->color('primary')
+                    ->visible(fn (Task $record) => $record->shouldAutoStart())
+                    ->action(function (Task $record) {
+                        if ($record->startTask()) {
+                            Notification::make()
+                                ->title('Task Started')
+                                ->body('The task has been started and is now in progress.')
+                                ->success()
+                                ->send();
+                        }
+                    }),
+
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ])
+            ->defaultSort('created_at', 'desc');
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListTasks::route('/'),
+            'create' => CreateTask::route('/create'),
+            'view' => ViewTask::route('/{record}'),
+            'edit' => EditTask::route('/{record}/edit'),
+        ];
+    }
+}

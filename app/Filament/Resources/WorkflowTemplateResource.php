@@ -26,6 +26,8 @@ class WorkflowTemplateResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function canAccess(): bool
     {
         return auth()->user()?->isSuperAdmin() ?? false;
@@ -35,178 +37,313 @@ class WorkflowTemplateResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Grid::make(3)
-                    ->schema([
-                        Forms\Components\Section::make('Basic Information')
+                Forms\Components\Tabs::make('Workflow Template Configuration')
+                    ->tabs([
+                        Forms\Components\Tabs\Tab::make('Basic Information')
+                            ->icon('heroicon-m-document-text')
                             ->schema([
-                                Forms\Components\TextInput::make('name')
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\Select::make('template_type')
-                                    ->options([
-                                        'system' => 'System Template',
-                                        'industry' => 'Industry Template',
-                                        'custom' => 'Custom Template',
-                                        'copied' => 'Copied from Template',
+                                Forms\Components\Section::make('Template Identification')
+                                    ->description('Essential template information and categorization')
+                                    ->icon('heroicon-m-identification')
+                                    ->schema([
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('name')
+                                                    ->label('Template Name')
+                                                    ->required()
+                                                    ->maxLength(255)
+                                                    ->placeholder('FICA KYC Verification Workflow')
+                                                    ->extraInputAttributes(['class' => 'glass-input'])
+                                                    ->columnSpanFull(),
+
+                                                Forms\Components\Select::make('template_type')
+                                                    ->label('Template Type')
+                                                    ->options([
+                                                        'system' => '🔧 System Template',
+                                                        'industry' => '🏭 Industry Template',
+                                                        'custom' => '✨ Custom Template',
+                                                        'copied' => '📋 Copied from Template',
+                                                    ])
+                                                    ->default('custom')
+                                                    ->required()
+                                                    ->reactive()
+                                                    ->extraAttributes(['class' => 'glass-input'])
+                                                    ->afterStateUpdated(fn ($state, callable $set) =>
+                                                    $state === 'copied' ? $set('parent_template_id', null) : null
+                                                    ),
+
+                                                Forms\Components\TextInput::make('template_version')
+                                                    ->label('Version')
+                                                    ->default('1.0')
+                                                    ->required()
+                                                    ->placeholder('1.0')
+                                                    ->extraInputAttributes(['class' => 'glass-input'])
+                                                    ->helperText('Semantic versioning (e.g., 1.0, 1.1, 2.0)'),
+                                            ])
                                     ])
-                                    ->default('custom')
-                                    ->required()
-                                    ->reactive()
-                                    ->afterStateUpdated(fn ($state, callable $set) =>
-                                    $state === 'copied' ? $set('parent_template_id', null) : null
-                                    ),
-                                Forms\Components\Select::make('industry_category')
-                                    ->options([
-                                        'financial_services' => 'Financial Services (FICA/KYC)',
-                                        'healthcare' => 'Healthcare (Appointments)',
-                                        'education' => 'Education (Enrollment)',
-                                        'real_estate' => 'Real Estate (Lead Nurturing)',
-                                        'retail' => 'Retail & E-commerce',
-                                        'manufacturing' => 'Manufacturing',
-                                        'construction' => 'Construction',
-                                        'hospitality' => 'Hospitality & Tourism',
-                                        'logistics' => 'Logistics & Transportation',
-                                        'government' => 'Government Services',
-                                        'other' => 'Other Industry',
+                                    ->extraAttributes(['class' => 'glass-card animate-fade-in']),
+
+                                Forms\Components\Section::make('Industry Classification')
+                                    ->description('Categorize template for South African business sectors')
+                                    ->icon('heroicon-m-building-office-2')
+                                    ->schema([
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Select::make('industry_category')
+                                                    ->label('Primary Industry')
+                                                    ->options([
+                                                        'financial_services' => '🏦 Financial Services (FICA/KYC)',
+                                                        'healthcare' => '🏥 Healthcare (Appointments)',
+                                                        'education' => '🎓 Education (Enrollment)',
+                                                        'real_estate' => '🏘️ Real Estate (Lead Nurturing)',
+                                                        'retail' => '🛍️ Retail & E-commerce',
+                                                        'manufacturing' => '🏭 Manufacturing',
+                                                        'construction' => '🏗️ Construction',
+                                                        'hospitality' => '🏨 Hospitality & Tourism',
+                                                        'logistics' => '🚚 Logistics & Transportation',
+                                                        'government' => '🏛️ Government Services',
+                                                        'other' => '📄 Other Industry',
+                                                    ])
+                                                    ->searchable()
+                                                    ->required()
+                                                    ->extraAttributes(['class' => 'glass-input'])
+                                                    ->helperText('Select the primary industry this workflow serves'),
+
+                                                Forms\Components\Select::make('complexity_level')
+                                                    ->label('Complexity Level')
+                                                    ->options([
+                                                        'simple' => '🟢 Simple (1-3 steps)',
+                                                        'medium' => '🟡 Medium (4-8 steps)',
+                                                        'complex' => '🔴 Complex (9+ steps)'
+                                                    ])
+                                                    ->default('medium')
+                                                    ->required()
+                                                    ->extraAttributes(['class' => 'glass-input']),
+                                            ])
                                     ])
-                                    ->searchable()
-                                    ->required()
-                                    ->helperText('Select the industry this workflow is designed for'),
-                                Forms\Components\TextInput::make('template_version')
-                                    ->default('1.0')
-                                    ->required(),
-                            ])
-                            ->columnSpan(2),
+                                    ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
 
-                        Forms\Components\Section::make('Template Source')
-                            ->schema([
-                                Forms\Components\Select::make('parent_template_id')
-                                    ->relationship('parentTemplate', 'name')
-                                    ->searchable()
-                                    ->visible(fn (callable $get) => $get('template_type') === 'copied')
-                                    ->helperText('Select existing template to copy from')
-                                    ->options(function () {
-                                        return WorkflowTemplate::where('is_published', true)
-                                            ->where('template_type', '!=', 'custom')
-                                            ->pluck('name', 'id');
-                                    }),
-                                Forms\Components\Toggle::make('copy_milestones')
-                                    ->label('Copy Milestones from Parent')
-                                    ->default(true)
-                                    ->visible(fn (callable $get) => $get('template_type') === 'copied'),
-                                Forms\Components\TextArea::make('customization_notes')
-                                    ->label('Customization Notes')
-                                    ->visible(fn (callable $get) => $get('template_type') === 'copied')
-                                    ->helperText('Describe how this differs from the parent template'),
-                            ])
-                            ->columnSpan(1)
-                            ->visible(fn (callable $get) => in_array($get('template_type'), ['copied', 'industry'])),
-
-                        Forms\Components\Section::make('Categorization')
-                            ->schema([
-                                Forms\Components\TextInput::make('industry_category')
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('category')
-                                    ->maxLength(255),
-                                Forms\Components\Select::make('complexity_level')
-                                    ->options([
-                                        'simple' => 'Simple',
-                                        'medium' => 'Medium',
-                                        'complex' => 'Complex'
+                                Forms\Components\Section::make('Template Description')
+                                    ->description('Detailed description and purpose of this workflow')
+                                    ->icon('heroicon-m-document-text')
+                                    ->schema([
+                                        Forms\Components\Textarea::make('description')
+                                            ->label('Template Description')
+                                            ->required()
+                                            ->rows(4)
+                                            ->placeholder('Describe the purpose, process, and expected outcomes of this workflow template...')
+                                            ->extraInputAttributes(['class' => 'glass-input'])
+                                            ->columnSpanFull(),
                                     ])
-                                    ->default('medium')
-                                    ->required(),
-                                Forms\Components\TextInput::make('estimated_duration_days')
-                                    ->numeric()
-                                    ->suffix('days'),
-                            ])
-                            ->columnSpan(1),
-
-                        Forms\Components\Section::make('Configuration')
-                            ->schema([
-                                Forms\Components\Select::make('access_scope_id')
-                                    ->relationship('accessScope', 'name')
-                                    ->required(),
-                                Forms\Components\Select::make('parent_template_id')
-                                    ->relationship('parentTemplate', 'name')
-                                    ->searchable(),
-                                Forms\Components\TagsInput::make('tags')
-                                    ->separator(','),
-                            ])
-                            ->columnSpan(1),
-                    ]),
-
-                Forms\Components\Section::make('Description & Content')
-                    ->schema([
-                        Forms\Components\Grid::make(2)
-                            ->schema([
-                                Forms\Components\Textarea::make('description')
-                                    ->required()
-                                    ->rows(4),
-                                Forms\Components\Textarea::make('change_log')
-                                    ->rows(4)
-                                    ->placeholder('Document template changes...'),
+                                    ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.2s']),
                             ]),
 
-                        Forms\Components\Grid::make(2)
+                        Forms\Components\Tabs\Tab::make('Template Source & Inheritance')
+                            ->icon('heroicon-m-document-duplicate')
                             ->schema([
-                                Forms\Components\Textarea::make('channels')
-                                    ->label('Communication Channels (JSON)')
-                                    ->rows(6)
-                                    ->helperText('Define available communication channels')
-                                    ->placeholder('{"email": true, "sms": false, "whatsapp": true}'),
-                                Forms\Components\Textarea::make('steps')
-                                    ->label('Workflow Steps (JSON)')
-                                    ->rows(6)
-                                    ->helperText('Define the workflow step sequence')
-                                    ->placeholder('[{"step": 1, "name": "Initial Review"}, ...]'),
+                                Forms\Components\Section::make('Parent Template Configuration')
+                                    ->description('Configure template inheritance and copying behavior')
+                                    ->icon('heroicon-m-arrow-up-circle')
+                                    ->schema([
+                                        Forms\Components\Grid::make(1)
+                                            ->schema([
+                                                Forms\Components\Select::make('parent_template_id')
+                                                    ->label('Parent Template')
+                                                    ->relationship('parentTemplate', 'name')
+                                                    ->searchable()
+                                                    ->visible(fn (callable $get) => $get('template_type') === 'copied')
+                                                    ->extraAttributes(['class' => 'glass-input'])
+                                                    ->helperText('Select existing template to copy from')
+                                                    ->options(function () {
+                                                        return WorkflowTemplate::where('is_published', true)
+                                                            ->where('template_type', '!=', 'custom')
+                                                            ->pluck('name', 'id');
+                                                    }),
+                                            ])
+                                    ])
+                                    ->visible(fn (callable $get) => $get('template_type') === 'copied')
+                                    ->extraAttributes(['class' => 'glass-card animate-fade-in']),
+
+                                Forms\Components\Section::make('Copy Configuration')
+                                    ->description('Define what to copy from the parent template')
+                                    ->icon('heroicon-m-clipboard-document-check')
+                                    ->schema([
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Toggle::make('copy_milestones')
+                                                    ->label('Copy Milestones from Parent')
+                                                    ->default(true)
+                                                    ->helperText('Include all milestones from parent template')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+
+                                                Forms\Components\Toggle::make('copy_settings')
+                                                    ->label('Copy Settings & Configuration')
+                                                    ->default(true)
+                                                    ->helperText('Include communication settings and channels')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+                                            ])
+                                    ])
+                                    ->visible(fn (callable $get) => $get('template_type') === 'copied')
+                                    ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
+
+                                Forms\Components\Section::make('Customization Notes')
+                                    ->description('Document changes and customizations made to this template')
+                                    ->icon('heroicon-m-pencil-square')
+                                    ->schema([
+                                        Forms\Components\Textarea::make('customization_notes')
+                                            ->label('Customization Notes')
+                                            ->rows(4)
+                                            ->placeholder('Describe how this template differs from the parent template...')
+                                            ->extraInputAttributes(['class' => 'glass-input'])
+                                            ->columnSpanFull(),
+
+                                        Forms\Components\Textarea::make('change_log')
+                                            ->label('Change Log')
+                                            ->rows(4)
+                                            ->placeholder('Document template changes and version history...')
+                                            ->extraInputAttributes(['class' => 'glass-input'])
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->visible(fn (callable $get) => in_array($get('template_type'), ['copied', 'industry']))
+                                    ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.2s']),
+                            ]),
+
+                        Forms\Components\Tabs\Tab::make('Workflow Configuration')
+                            ->icon('heroicon-m-cog-6-tooth')
+                            ->schema([
+                                Forms\Components\Section::make('Communication Channels')
+                                    ->description('Define available communication methods for this workflow')
+                                    ->icon('heroicon-m-chat-bubble-left-right')
+                                    ->schema([
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Toggle::make('email_enabled')
+                                                    ->label('📧 Email Notifications')
+                                                    ->default(true)
+                                                    ->helperText('Send email notifications')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+
+                                                Forms\Components\Toggle::make('sms_enabled')
+                                                    ->label('📱 SMS Notifications')
+                                                    ->default(false)
+                                                    ->helperText('Send SMS notifications')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+
+                                                Forms\Components\Toggle::make('whatsapp_enabled')
+                                                    ->label('💬 WhatsApp Messages')
+                                                    ->default(false)
+                                                    ->helperText('Send WhatsApp messages')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+
+                                                Forms\Components\Toggle::make('voice_enabled')
+                                                    ->label('📞 Voice Calls')
+                                                    ->default(false)
+                                                    ->helperText('Make automated voice calls')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+                                            ])
+                                    ])
+                                    ->extraAttributes(['class' => 'glass-card animate-fade-in']),
+
+                                Forms\Components\Section::make('Workflow Settings')
+                                    ->description('Configure workflow behavior and timing')
+                                    ->icon('heroicon-m-clock')
+                                    ->schema([
+                                        Forms\Components\Grid::make(3)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('estimated_duration_days')
+                                                    ->label('Estimated Duration')
+                                                    ->numeric()
+                                                    ->suffix('days')
+                                                    ->placeholder('7')
+                                                    ->extraInputAttributes(['class' => 'glass-input'])
+                                                    ->helperText('Expected workflow completion time'),
+
+                                                Forms\Components\Select::make('access_scope_id')
+                                                    ->label('Access Scope')
+                                                    ->relationship('accessScope', 'name')
+                                                    ->required()
+                                                    ->extraAttributes(['class' => 'glass-input'])
+                                                    ->helperText('Who can use this template'),
+
+                                                Forms\Components\TagsInput::make('tags')
+                                                    ->label('Tags')
+                                                    ->separator(',')
+                                                    ->placeholder('Add tags...')
+                                                    ->extraInputAttributes(['class' => 'glass-input'])
+                                                    ->helperText('Keywords for template discovery'),
+                                            ])
+                                    ])
+                                    ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
+                            ]),
+
+                        Forms\Components\Tabs\Tab::make('Publishing & Permissions')
+                            ->icon('heroicon-m-shield-check')
+                            ->schema([
+                                Forms\Components\Section::make('Publication Status')
+                                    ->description('Control template availability and publication')
+                                    ->icon('heroicon-m-eye')
+                                    ->schema([
+                                        Forms\Components\Grid::make(3)
+                                            ->schema([
+                                                Forms\Components\Toggle::make('is_published')
+                                                    ->label('📢 Published')
+                                                    ->helperText('Available for use by tenants')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+
+                                                Forms\Components\Toggle::make('is_active')
+                                                    ->label('✅ Active')
+                                                    ->default(true)
+                                                    ->helperText('Template is currently active')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+
+                                                Forms\Components\DateTimePicker::make('published_at')
+                                                    ->label('Publication Date')
+                                                    ->extraInputAttributes(['class' => 'glass-input'])
+                                                    ->helperText('When this template was published'),
+                                            ])
+                                    ])
+                                    ->extraAttributes(['class' => 'glass-card animate-fade-in']),
+
+                                Forms\Components\Section::make('Access & Visibility')
+                                    ->description('Configure who can view and use this template')
+                                    ->icon('heroicon-m-lock-closed')
+                                    ->schema([
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Toggle::make('is_public')
+                                                    ->label('🌍 Public Template')
+                                                    ->helperText('Visible to all tenants')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+
+                                                Forms\Components\Toggle::make('is_system_template')
+                                                    ->label('🔧 System Template')
+                                                    ->helperText('Core system template (cannot be deleted)')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+
+                                                Forms\Components\Toggle::make('is_customizable')
+                                                    ->label('✏️ Allow Customization')
+                                                    ->default(true)
+                                                    ->helperText('Tenants can modify this template')
+                                                    ->extraAttributes(['class' => 'glass-card']),
+                                            ])
+                                    ]),
+
+                                Forms\Components\Section::make('Advanced Security')
+                                    ->description('Lock specific milestones and define restrictions')
+                                    ->icon('heroicon-m-shield-exclamation')
+                                    ->schema([
+                                        Forms\Components\Textarea::make('locked_milestones')
+                                            ->label('Locked Milestones (JSON)')
+                                            ->rows(3)
+                                            ->placeholder('[1, 3, 5]')
+                                            ->extraInputAttributes(['class' => 'glass-input'])
+                                            ->helperText('Milestone IDs that cannot be modified by tenants')
+                                            ->columnSpanFull(),
+                                    ])
+
                             ]),
                     ])
-                    ->collapsible(),
-
-                Forms\Components\Grid::make(2)
-                    ->schema([
-                        Forms\Components\Section::make('Permissions & Visibility')
-                            ->schema([
-                                Forms\Components\Grid::make(2)
-                                    ->schema([
-                                        Forms\Components\Toggle::make('is_public')
-                                            ->label('Public Template')
-                                            ->helperText('Visible to all tenants'),
-                                        Forms\Components\Toggle::make('is_system_template')
-                                            ->label('System Template')
-                                            ->helperText('Core system template'),
-                                        Forms\Components\Toggle::make('is_customizable')
-                                            ->label('Allow Customization')
-                                            ->default(true),
-                                        Forms\Components\Toggle::make('is_published')
-                                            ->label('Published')
-                                            ->helperText('Available for use'),
-                                        Forms\Components\Toggle::make('is_active')
-                                            ->label('Active')
-                                            ->default(true),
-                                    ]),
-                                Forms\Components\DateTimePicker::make('published_at')
-                                    ->label('Publication Date'),
-                            ])
-                            ->columnSpan(1),
-
-                        Forms\Components\Section::make('Advanced Settings')
-                            ->schema([
-                                Forms\Components\Textarea::make('locked_milestones')
-                                    ->label('Locked Milestones (JSON)')
-                                    ->rows(3)
-                                    ->helperText('Milestone IDs that cannot be modified')
-                                    ->placeholder('[1, 3, 5]'),
-                                Forms\Components\Textarea::make('required_roles')
-                                    ->label('Required Roles (JSON)')
-                                    ->rows(3)
-                                    ->helperText('Roles required to use this template')
-                                    ->placeholder('["admin", "manager"]'),
-                            ])
-                            ->columnSpan(1)
-                            ->collapsible(),
-                    ]),
+                    ->columnSpanFull()
             ]);
     }
 
