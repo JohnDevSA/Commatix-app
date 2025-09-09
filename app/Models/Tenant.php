@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
@@ -287,5 +288,47 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
         // Ensure 10 digits for SA VAT
         return str_pad($this->vat_number, 10, '0', STR_PAD_LEFT);
+    }
+
+    protected static function booted(): void
+    {
+        parent::booted();
+
+        static::saved(function ($tenant) {
+            // Clear tenant-specific cache keys
+            Cache::forget("tenant_data_{$tenant->id}");
+            Cache::forget("document_types_{$tenant->id}");
+            Cache::forget("users_query_{$tenant->id}");
+            Cache::forget("tenant_divisions_{$tenant->id}");
+            Cache::forget("tenant_users_{$tenant->id}");
+
+            // Also clear the old tenantCache method for backward compatibility
+            Cache::tenantCache($tenant->id)->flush();
+        });
+
+        static::deleted(function ($tenant) {
+            // Clear tenant-specific cache keys
+            Cache::forget("tenant_data_{$tenant->id}");
+            Cache::forget("document_types_{$tenant->id}");
+            Cache::forget("users_query_{$tenant->id}");
+            Cache::forget("tenant_divisions_{$tenant->id}");
+            Cache::forget("tenant_users_{$tenant->id}");
+            // Also clear the old tenantCache method for backward compatibility
+            Cache::tenantCache($tenant->id)->flush();
+        });
+    }
+
+    public function getCachedDivisions()
+    {
+        return Cache::remember("tenant_divisions_{$this->id}", 3600, function () {
+            return $this->divisions()->get();
+        });
+    }
+
+    public function getCachedUsers()
+    {
+        return Cache::remember("tenant_users_{$this->id}", 1800, function () {
+            return $this->users()->with('userType')->get();
+        });
     }
 }

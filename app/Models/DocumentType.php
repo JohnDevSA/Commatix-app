@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 
 class DocumentType extends Model
 {
@@ -193,5 +194,16 @@ class DocumentType extends Model
         })->map(function ($group) {
             return $group->pluck('name', 'id')->toArray();
         })->toArray();
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(function ($documentType) {
+            Cache::documentTypeCache($documentType->tenant_id)->flush();
+        });
+
+        static::deleted(function ($documentType) {
+            Cache::documentTypeCache($documentType->tenant_id)->flush();
+        });
     }
 }

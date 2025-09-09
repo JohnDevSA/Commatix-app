@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 
 class User extends Authenticatable
 {
@@ -81,5 +82,18 @@ class User extends Authenticatable
     public function hasGlobalAccess(): bool
     {
         return $this->isSuperAdmin() && $this->tenant_id === null;
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(function ($user) {
+            Cache::userCache($user->id)->flush();
+            Cache::tenantCache($user->tenant_id)->flush();
+        });
+
+        static::deleted(function ($user) {
+            Cache::userCache($user->id)->flush();
+            Cache::tenantCache($user->tenant_id)->flush();
+        });
     }
 }

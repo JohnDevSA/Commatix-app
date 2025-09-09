@@ -7,6 +7,7 @@ use App\Filament\Resources\DocumentTypeResource\RelationManagers;
 use App\Models\AccessScope;
 use App\Models\DocumentType;
 use App\Models\Industry;
+use Illuminate\Support\Facades\Cache;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
