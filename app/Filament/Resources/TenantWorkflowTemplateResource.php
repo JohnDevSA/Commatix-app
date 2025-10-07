@@ -30,6 +30,11 @@ class TenantWorkflowTemplateResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->canManageWorkflows() ?? false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -68,7 +73,9 @@ class TenantWorkflowTemplateResource extends Resource
                             ->default(0)
                             ->required(),
                     ])
-                    ->columns(1),
+                    ->columns(1)
+                    ->collapsible()
+                    ->collapsed(),
 
                 Forms\Components\Section::make('Settings')
                     ->schema([
@@ -101,7 +108,9 @@ class TenantWorkflowTemplateResource extends Resource
                             ->label('Published')
                             ->default(false),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->collapsible()
+                    ->collapsed(),
             ]);
     }
 

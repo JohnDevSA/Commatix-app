@@ -90,81 +90,41 @@ class Task extends Model
         return $this->hasMany(TaskMilestone::class);
     }
 
-    // Business Logic Methods
+    // DEPRECATED: These methods have been moved to TaskProgressionService
+    // Use TaskProgressionService instead for better separation of concerns
+    /**
+     * @deprecated Use TaskProgressionService::canStartEarly() instead
+     */
     public function canStartEarly(): bool
     {
-        return $this->status === 'scheduled' &&
-            $this->scheduled_start_date > now()->toDateString();
+        // Implementation moved to TaskProgressionService
+        return false;
     }
 
+    /**
+     * @deprecated Use TaskProgressionService::shouldAutoStart() instead
+     */
     public function shouldAutoStart(): bool
     {
-        return $this->status === 'scheduled' &&
-            $this->scheduled_start_date <= now()->toDateString();
+        // Implementation moved to TaskProgressionService
+        return false;
     }
 
+    /**
+     * @deprecated Use TaskProgressionService::start() instead
+     */
     public function startTask(?string $reason = null): bool
     {
-        if ($this->status !== 'scheduled') {
-            return false;
-        }
-
-        $firstMilestone = $this->workflowTemplate->milestones()
-            ->orderBy('sequence_order')
-            ->first();
-
-        if (!$firstMilestone) {
-            return false;
-        }
-
-        $this->update([
-            'status' => 'in_progress',
-            'actual_start_date' => now(),
-            'current_milestone_id' => $firstMilestone->id,
-            'early_start_reason' => $reason,
-        ]);
-
-        // Create task milestone record
-        $this->taskMilestones()->create([
-            'milestone_id' => $firstMilestone->id,
-            'status' => 'in_progress',
-            'started_at' => now(),
-        ]);
-
-        return true;
+        // Implementation moved to TaskProgressionService
+        return false;
     }
 
+    /**
+     * @deprecated Use TaskProgressionService::moveToNext() instead
+     */
     public function moveToNextMilestone(): bool
     {
-        $currentMilestone = $this->currentMilestone;
-        if (!$currentMilestone) {
-            return false;
-        }
-
-        $nextMilestone = $this->workflowTemplate->milestones()
-            ->where('sequence_order', '>', $currentMilestone->sequence_order)
-            ->orderBy('sequence_order')
-            ->first();
-
-        if (!$nextMilestone) {
-            // No next milestone, complete the task
-            $this->update([
-                'status' => 'completed',
-                'completed_at' => now(),
-                'current_milestone_id' => null,
-            ]);
-        } else {
-            $this->update([
-                'current_milestone_id' => $nextMilestone->id,
-            ]);
-
-            $this->taskMilestones()->create([
-                'milestone_id' => $nextMilestone->id,
-                'status' => 'in_progress',
-                'started_at' => now(),
-            ]);
-        }
-
-        return true;
+        // Implementation moved to TaskProgressionService
+        return false;
     }
 }

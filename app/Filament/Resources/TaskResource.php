@@ -28,6 +28,23 @@ class TaskResource extends Resource
 
     protected static ?string $navigationGroup = 'Workflow Management';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if (!$user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        if ($user->isSuperAdmin()) {
+            return $query; // Super admins see all tasks
+        }
+
+        // Tenant users only see tasks from their tenant
+        return $query->where('tenant_id', $user->tenant_id);
+    }
+
     public static function form(Form $form): Form
     {
         return $form

@@ -26,11 +26,11 @@ class UserType extends Model
     protected static function booted(): void
     {
         static::saved(function ($userType) {
-            Cache::userTypeCache()->flush();
+            Cache::forget('user_types');
         });
 
         static::deleted(function ($userType) {
-            Cache::userTypeCache()->flush();
+            Cache::forget('user_types');
         });
     }
 }

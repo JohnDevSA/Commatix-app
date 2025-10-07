@@ -11,6 +11,20 @@ class TaskMilestone extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'milestone_id',
+        'status_id',
+        'sla_days',
+        'sla_hours',
+        'sla_minutes',
+        'approval_group_id',
+        'approval_group_name',
+        'requires_docs',
+        'actions',
+        'completed_at',
+        'status_type_id',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -22,6 +36,9 @@ class TaskMilestone extends Model
             'actions' => 'array',
             'completed_at' => 'timestamp',
             'status_type_id' => 'integer',
+            'sla_days' => 'integer',
+            'sla_hours' => 'integer',
+            'sla_minutes' => 'integer',
         ];
     }
 
@@ -38,5 +55,10 @@ class TaskMilestone extends Model
     public function taskMilestoneActivityTypes(): HasMany
     {
         return $this->hasMany(TaskMilestoneActivityType::class);
+    }
+
+    public function milestoneResults(): HasMany
+    {
+        return $this->hasMany(MilestoneResult::class);
     }
 }

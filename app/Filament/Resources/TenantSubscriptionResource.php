@@ -23,6 +23,11 @@ class TenantSubscriptionResource extends Resource
 
     protected static ?string $navigationLabel = 'Subscriptions';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->canAccessGlobalResources() ?? false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form

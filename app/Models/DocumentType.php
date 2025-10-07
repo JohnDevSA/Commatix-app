@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
 
 class DocumentType extends Model
@@ -44,6 +45,11 @@ class DocumentType extends Model
     public function accessScope(): BelongsTo
     {
         return $this->belongsTo(AccessScope::class);
+    }
+
+    public function documentAttachments(): HasMany
+    {
+        return $this->hasMany(MilestoneDocumentAttachment::class);
     }
 
     // Scope for global/system document types
@@ -199,11 +205,11 @@ class DocumentType extends Model
     protected static function booted(): void
     {
         static::saved(function ($documentType) {
-            Cache::documentTypeCache($documentType->tenant_id)->flush();
+            Cache::forget('document_types_' . $documentType->tenant_id);
         });
 
         static::deleted(function ($documentType) {
-            Cache::documentTypeCache($documentType->tenant_id)->flush();
+            Cache::forget('document_types_' . $documentType->tenant_id);
         });
     }
 }

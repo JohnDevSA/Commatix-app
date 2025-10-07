@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('workflow_template_id');
             $table->string('name');
-            $table->unsignedBigInteger('status_id');
+            $table->unsignedBigInteger('status_id')->nullable();
             $table->text('hint')->nullable();
-            $table->integer('sla_days');
+            $table->integer('sla_days')->default(0);
             $table->unsignedBigInteger('approval_group_id')->nullable();
-            $table->boolean('requires_docs');
-            $table->json('actions');
-            $table->foreignId('status_type_id');
+            $table->boolean('requires_docs')->default(false);
+            $table->json('actions')->nullable();
+            $table->foreignId('status_type_id')->nullable();
             $table->timestamps();
         });
     }

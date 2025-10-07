@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Milestone extends Model
 {
@@ -23,7 +24,10 @@ class Milestone extends Model
         'status_type_id',
         'hint',
         'sla_days',
+        'sla_hours',
+        'sla_minutes',
         'approval_group_id',
+        'approval_group_name',
         'requires_docs',
         'requires_approval',
         'can_be_skipped',
@@ -46,6 +50,9 @@ class Milestone extends Model
             'auto_complete' => 'boolean',
             'actions' => 'array',
             'status_type_id' => 'integer',
+            'sla_days' => 'integer',
+            'sla_hours' => 'integer',
+            'sla_minutes' => 'integer',
         ];
     }
 
@@ -80,6 +87,16 @@ class Milestone extends Model
     public function optionalDocuments(): BelongsToMany
     {
         return $this->documentRequirements()->wherePivot('is_required', false);
+    }
+
+    public function milestoneResults(): HasMany
+    {
+        return $this->hasMany(MilestoneResult::class);
+    }
+
+    public function documentAttachments(): HasMany
+    {
+        return $this->hasMany(MilestoneDocumentAttachment::class);
     }
 
     // Helper methods for beautiful UI

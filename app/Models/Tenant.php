@@ -301,9 +301,6 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             Cache::forget("users_query_{$tenant->id}");
             Cache::forget("tenant_divisions_{$tenant->id}");
             Cache::forget("tenant_users_{$tenant->id}");
-
-            // Also clear the old tenantCache method for backward compatibility
-            Cache::tenantCache($tenant->id)->flush();
         });
 
         static::deleted(function ($tenant) {
@@ -313,8 +310,6 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             Cache::forget("users_query_{$tenant->id}");
             Cache::forget("tenant_divisions_{$tenant->id}");
             Cache::forget("tenant_users_{$tenant->id}");
-            // Also clear the old tenantCache method for backward compatibility
-            Cache::tenantCache($tenant->id)->flush();
         });
     }
 

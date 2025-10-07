@@ -30,7 +30,7 @@ class WorkflowTemplateResource extends Resource
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->isSuperAdmin() ?? false;
+        return auth()->user()?->canAccessGlobalResources() ?? false;
     }
 
     public static function form(Form $form): Form

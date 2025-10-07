@@ -21,6 +21,11 @@ class TenantResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->canAccessGlobalResources() ?? false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -514,12 +519,13 @@ class TenantResource extends Resource
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning'),
 
-                Tables\Actions\Action::make('switch_tenant')
-                    ->label('Switch')
-                    ->icon('heroicon-m-arrow-right-circle')
-                    ->color('primary')
-                    ->url(fn (Tenant $record): string => route('filament.app.pages.dashboard', ['tenant' => $record->id]))
-                    ->openUrlInNewTab(),
+                // Switch tenant action removed - dashboard route not configured
+                // Tables\Actions\Action::make('switch_tenant')
+                //     ->label('Switch')
+                //     ->icon('heroicon-m-arrow-right-circle')
+                //     ->color('primary')
+                //     ->url(fn (Tenant $record): string => route('filament.app.pages.dashboard', ['tenant' => $record->id]))
+                //     ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

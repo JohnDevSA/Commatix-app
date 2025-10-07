@@ -28,6 +28,28 @@ class UserResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->canManageUsers() ?? false;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if (!$user) {
+            return $query->whereRaw('1 = 0'); // Return empty query if no user
+        }
+
+        if ($user->isSuperAdmin()) {
+            return $query; // Super admins see all users
+        }
+
+        // Tenant admins and users only see users from their tenant
+        return $query->where('tenant_id', $user->tenant_id);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -350,20 +372,7 @@ class UserResource extends Resource
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning'),
 
-                Tables\Actions\Action::make('impersonate')
-                    ->label('Impersonate')
-                    ->icon('heroicon-m-user-circle')
-                    ->color('primary')
-                    ->visible(fn ($record) => auth()->user()->isSuperAdmin() && !$record->isSuperAdmin())
-                    ->requiresConfirmation()
-                    ->modalHeading('Impersonate User')
-                    ->modalDescription('Are you sure you want to impersonate this user? You will be logged in as them.')
-                    ->modalIcon('heroicon-o-exclamation-triangle')
-                    ->action(fn ($record) => \Filament\Notifications\Notification::make()
-                        ->title('Impersonation feature coming soon')
-                        ->body('This feature will be available in the next update.')
-                        ->info()
-                        ->send()),
+                \STS\FilamentImpersonate\Tables\Actions\Impersonate::make(),
 
                 Tables\Actions\Action::make('reset_password')
                     ->label('Reset Password')

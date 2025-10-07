@@ -15,8 +15,14 @@ class WorkflowTemplate extends Model
 
     protected $fillable = [
         'uuid',
+        'workflow_code',
         'name',
         'description',
+        'customization_notes',
+        'email_enabled',
+        'sms_enabled',
+        'whatsapp_enabled',
+        'voice_enabled',
         'access_scope_id',
         'tenant_id',
         'division_id',
@@ -56,10 +62,13 @@ class WorkflowTemplate extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->uuid)) {
                 $model->uuid = Str::uuid();
+            }
+            if (empty($model->workflow_code)) {
+                $model->workflow_code = 'WF-' . strtoupper(Str::random(8));
             }
         });
     }
@@ -138,7 +147,7 @@ class WorkflowTemplate extends Model
         return $this->hasMany(WorkflowTemplateUsage::class);
     }
 
-    public function workflowTemplateTags(): BelongsToMany
+    public function tags(): BelongsToMany
     {
         return $this->belongsToMany(WorkflowTemplateTag::class);
     }
@@ -147,40 +156,48 @@ class WorkflowTemplate extends Model
     {
         return $this->belongsTo(User::class, 'locked_by_user_id');
     }
-
-    // Helper methods for locking functionality
+    
+    // DEPRECATED: These methods have been moved to WorkflowLockService
+    // Use WorkflowLockService instead for better separation of concerns
+    /**
+     * @deprecated Use WorkflowLockService::lock() instead
+     */
     public function lockWorkflow(User $user, string $reason = 'Configuring milestones'): void
     {
-        $this->update([
-            'is_locked' => true,
-            'locked_by_user_id' => $user->id,
-            'locked_at' => now(),
-            'lock_reason' => $reason,
-        ]);
+        // Implementation moved to WorkflowLockService
     }
 
+    /**
+     * @deprecated Use WorkflowLockService::unlock() instead
+     */
     public function unlockWorkflow(): void
     {
-        $this->update([
-            'is_locked' => false,
-            'locked_by_user_id' => null,
-            'locked_at' => null,
-            'lock_reason' => null,
-        ]);
+        // Implementation moved to WorkflowLockService
     }
 
+    /**
+     * @deprecated Use WorkflowLockService::isLockedBy() instead
+     */
     public function isLockedBy(User $user): bool
     {
-        return $this->is_locked && $this->locked_by_user_id === $user->id;
+        // Implementation moved to WorkflowLockService
+        return false;
     }
 
+    /**
+     * @deprecated Use WorkflowLockService::canBeEditedBy() instead
+     */
     public function canBeEditedBy(User $user): bool
     {
-        return !$this->is_locked || $this->locked_by_user_id === $user->id;
+        // Implementation moved to WorkflowLockService
+        return true;
     }
 
+    /**
+     * @deprecated Use WorkflowMilestoneService::markMilestonesComplete() instead
+     */
     public function markMilestonesComplete(): void
     {
-        $this->update(['milestones_completed' => true]);
+        // Implementation moved to WorkflowMilestoneService
     }
 }
