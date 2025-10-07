@@ -9,6 +9,7 @@ This guide explains the SOLID architecture implemented in this codebase and how 
 4. [How to Add New Features](#how-to-add-new-features)
 5. [Dependency Injection](#dependency-injection)
 6. [Testing Guidelines](#testing-guidelines)
+7. [Key Features](#key-features)
 
 ## Architecture Overview
 
@@ -26,11 +27,19 @@ The codebase follows SOLID principles to ensure maintainability and scalability:
 Business logic is separated from models into service classes:
 - `WorkflowLockService` - Handles workflow locking operations
 - `TaskProgressionService` - Manages task progression logic
+- `TaskSchedulingService` - Handles auto-scheduling of tasks
+- `CreditManagementService` - Manages tenant credits for communication channels
 
 ### Repository Pattern
 Data access is abstracted through repositories:
 - `WorkflowRepository` - Handles workflow data operations
 - `TaskRepository` - Handles task data operations
+
+### Strategy Pattern
+Flexible algorithms are implemented through strategies:
+- `UserAssignmentStrategyInterface` - Different ways to assign users to tasks
+- `RoundRobinAssignmentStrategy` - Distribute tasks evenly among users
+- `SingleUserAssignmentStrategy` - Assign all tasks to one user
 
 ### Dependency Injection
 Dependencies are injected through interfaces rather than instantiated directly.
@@ -41,6 +50,7 @@ Dependencies are injected through interfaces rather than instantiated directly.
 app/
 ├── Interfaces/          # Contract definitions
 ├── Services/            # Business logic implementations
+│   └── UserAssignment/  # User assignment strategies
 ├── Repositories/        # Data access abstractions
 ├── Models/              # Data models (minimal logic)
 ├── Http/Controllers/    # HTTP request handlers
@@ -137,6 +147,21 @@ public function test_workflow_can_be_locked()
 }
 ```
 
+## Key Features
+
+### Auto Task Scheduling
+Automatically create tasks for subscribers with flexible user assignment.
+
+See [Auto Scheduling Feature Documentation](FEATURE_AUTO_SCHEDULING.md) for details.
+
+### Credit Management
+Manage tenant credits for communication channels (SMS, Email, WhatsApp, Voice).
+
+### User Assignment Strategies
+- Round Robin: Distribute tasks evenly among users
+- Single User: Assign all tasks to one user
+- Extensible for custom strategies
+
 ## Common Patterns to Follow
 
 1. **Keep Models Thin**: Models should only contain data access logic
@@ -162,6 +187,8 @@ Consider caching in repositories for frequently accessed data.
 2. Review the SOLID_PRINCIPLES.md documentation
 3. Look at the unit tests for usage examples
 4. Contact the team lead for architectural questions
+```
+
 ## Service Usage Examples
 
 ### Using Authorization Service
@@ -250,7 +277,7 @@ class Task extends Model
 ### Using Workflow Locking Service
 
 #### In Commands
-```php
+```
 use App\Contracts\Services\WorkflowLockingInterface;
 
 class LockSystemTemplatesCommand extends Command
@@ -325,7 +352,7 @@ $service = app(TaskProgressionInterface::class);
 ```
 
 ### Facade (Avoid - breaks testability)
-```php
+```
 // ❌ Don't do this - hard to test
 TaskProgression::progress($task);
 
