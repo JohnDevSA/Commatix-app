@@ -272,6 +272,43 @@ class TaskResource extends Resource
                         }
                     }),
 
+                Tables\Actions\Action::make('progress_milestone')
+                    ->label('Progress')
+                    ->icon('heroicon-o-arrow-right-circle')
+                    ->color('warning')
+                    ->visible(fn (Task $record) => $record->status === 'in_progress' && $record->canProgress())
+                    ->requiresConfirmation()
+                    ->modalHeading('Progress to Next Milestone')
+                    ->modalDescription('Are you sure you want to move this task to the next milestone?')
+                    ->action(function (Task $record) {
+                        // Using the service directly for demonstration
+                        $progressionService = app(\App\Contracts\Services\TaskProgressionInterface::class);
+
+                        try {
+                            $nextMilestone = $progressionService->progressToNextMilestone($record, auth()->user());
+
+                            if ($nextMilestone) {
+                                Notification::make()
+                                    ->title('Milestone Progressed')
+                                    ->body("Task moved to: {$nextMilestone->milestone->name}")
+                                    ->success()
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('Task Completed!')
+                                    ->body('The task has been completed successfully.')
+                                    ->success()
+                                    ->send();
+                            }
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Progress Failed')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
+
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])

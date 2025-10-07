@@ -162,3 +162,251 @@ Consider caching in repositories for frequently accessed data.
 2. Review the SOLID_PRINCIPLES.md documentation
 3. Look at the unit tests for usage examples
 4. Contact the team lead for architectural questions
+## Service Usage Examples
+
+### Using Authorization Service
+
+#### In Controllers
+```php
+use App\Contracts\Services\AuthorizationServiceInterface;
+
+class UserController extends Controller
+{
+    public function __construct(
+        private AuthorizationServiceInterface $authService
+    ) {}
+
+    public function index()
+    {
+        $user = auth()->user();
+
+        if (!$this->authService->canAccessResource($user, 'users')) {
+            abort(403);
+        }
+
+        // Proceed with logic
+    }
+}
+```
+
+#### In Filament Resources
+```php
+public static function canAccess(): bool
+{
+    $authService = app(AuthorizationServiceInterface::class);
+    return $authService->canAccessGlobalResources(auth()->user());
+}
+```
+
+### Using Task Progression Service
+
+#### In Controllers
+```php
+use App\Contracts\Services\TaskProgressionInterface;
+
+class TaskController extends Controller
+{
+    public function __construct(
+        private TaskProgressionInterface $progressionService
+    ) {}
+
+    public function progress(Task $task)
+    {
+        try {
+            $nextMilestone = $this->progressionService
+                ->progressToNextMilestone($task, auth()->user());
+
+            return response()->json([
+                'success' => true,
+                'milestone' => $nextMilestone?->milestone->name
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 422);
+        }
+    }
+}
+```
+
+#### In Models (Delegation)
+```php
+class Task extends Model
+{
+    public function startTask(?string $reason = null): bool
+    {
+        return app(TaskProgressionInterface::class)
+            ->startTask($this, $reason);
+    }
+
+    public function getCompletionPercentage(): float
+    {
+        return app(TaskProgressionInterface::class)
+            ->getCompletionPercentage($this);
+    }
+}
+```
+
+### Using Workflow Locking Service
+
+#### In Commands
+```php
+use App\Contracts\Services\WorkflowLockingInterface;
+
+class LockSystemTemplatesCommand extends Command
+{
+    public function handle(WorkflowLockingInterface $lockingService)
+    {
+        $templates = WorkflowTemplate::where('is_system_template', true)->get();
+
+        foreach ($templates as $template) {
+            $lockingService->lockSystemTemplate($template);
+            $this->info("Locked template: {$template->name}");
+        }
+    }
+}
+```
+
+#### In Resource Actions
+```php
+Tables\Actions\Action::make('lock_milestones')
+    ->action(function (WorkflowTemplate $record, array $data) {
+        $lockingService = app(WorkflowLockingInterface::class);
+        $lockingService->lockMilestones($record, $data['milestone_ids']);
+
+        Notification::make()
+            ->title('Milestones Locked')
+            ->success()
+            ->send();
+    });
+```
+
+## When to Use What
+
+### Use Model Methods When:
+- Simple attribute access (`$workflow->isPublished()`)
+- Eloquent relationships (`$task->milestones`)
+- Query scopes (`WorkflowTemplate::published()`)
+- Simple state checks (`$task->canStartEarly()`)
+
+### Use Services When:
+- Complex business logic (workflow progression)
+- Multi-model operations (creating task + milestones)
+- External integrations (notifications, exports)
+- Cross-cutting concerns (logging, caching)
+- State transitions with validation
+
+### Use Policies When:
+- Authorization decisions
+- Access control for Filament Resources
+- Gate definitions
+
+### DON'T Use Repositories When:
+- Eloquent already provides what you need
+- You're not switching data sources
+- Simple CRUD operations
+
+## Common Patterns
+
+### Constructor Injection (Preferred)
+```php
+class TaskController extends Controller
+{
+    public function __construct(
+        private TaskProgressionInterface $progressionService,
+        private AuthorizationServiceInterface $authService
+    ) {}
+}
+```
+
+### App Helper (For Quick Access)
+```php
+$service = app(TaskProgressionInterface::class);
+```
+
+### Facade (Avoid - breaks testability)
+```php
+// ❌ Don't do this - hard to test
+TaskProgression::progress($task);
+
+// ✅ Do this instead
+app(TaskProgressionInterface::class)->progressToNextMilestone($task);
+```
+
+## Testing Examples
+
+### Unit Testing Services
+```php
+class TaskProgressionServiceTest extends TestCase
+{
+    private TaskProgressionService $service;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->service = new TaskProgressionService();
+    }
+
+    public function test_can_progress_task()
+    {
+        $task = Task::factory()->create(['status' => 'in_progress']);
+        $user = User::factory()->create();
+
+        $result = $this->service->progressToNextMilestone($task, $user);
+
+        $this->assertInstanceOf(TaskMilestone::class, $result);
+    }
+}
+```
+
+### Mocking Services
+```php
+class TaskControllerTest extends TestCase
+{
+    public function test_progress_endpoint()
+    {
+        $mockService = Mockery::mock(TaskProgressionInterface::class);
+        $mockService->shouldReceive('progressToNextMilestone')
+            ->once()
+            ->andReturn(new TaskMilestone());
+
+        $this->app->instance(TaskProgressionInterface::class, $mockService);
+
+        $response = $this->postJson('/api/tasks/1/progress');
+
+        $response->assertOk();
+    }
+}
+```
+
+## Migration Path
+
+### Refactoring Existing Code
+
+#### Before (Business logic in model)
+```php
+class Task extends Model
+{
+    public function progressToNextMilestone()
+    {
+        // 50 lines of business logic
+        // Validation
+        // State changes
+        // Notifications
+        // etc.
+    }
+}
+```
+
+#### After (Delegating to service)
+```php
+class Task extends Model
+{
+    public function moveToNextMilestone(): bool
+    {
+        return app(TaskProgressionInterface::class)
+            ->progressToNextMilestone($this, auth()->user());
+    }
+}
+```
+

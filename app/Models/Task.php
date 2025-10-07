@@ -90,41 +90,87 @@ class Task extends Model
         return $this->hasMany(TaskMilestone::class);
     }
 
-    // DEPRECATED: These methods have been moved to TaskProgressionService
-    // Use TaskProgressionService instead for better separation of concerns
     /**
-     * @deprecated Use TaskProgressionService::canStartEarly() instead
+     * Check if task can start early (before scheduled date).
+     *
+     * This method delegates to TaskProgressionService for business logic.
+     *
+     * @return bool
      */
     public function canStartEarly(): bool
     {
-        // Implementation moved to TaskProgressionService
-        return false;
+        return $this->status === 'scheduled'
+            && $this->scheduled_start_date
+            && Carbon::parse($this->scheduled_start_date)->isFuture();
     }
 
     /**
-     * @deprecated Use TaskProgressionService::shouldAutoStart() instead
+     * Check if task should auto-start based on scheduled date.
+     *
+     * This method delegates to TaskProgressionService for business logic.
+     *
+     * @return bool
      */
     public function shouldAutoStart(): bool
     {
-        // Implementation moved to TaskProgressionService
-        return false;
+        return $this->status === 'scheduled'
+            && $this->scheduled_start_date
+            && Carbon::parse($this->scheduled_start_date)->isToday();
     }
 
     /**
-     * @deprecated Use TaskProgressionService::start() instead
+     * Start the task.
+     *
+     * Delegates to TaskProgressionService for complex business logic.
+     *
+     * @param string|null $reason Optional reason for early start
+     * @return bool
      */
     public function startTask(?string $reason = null): bool
     {
-        // Implementation moved to TaskProgressionService
-        return false;
+        return app(\App\Contracts\Services\TaskProgressionInterface::class)
+            ->startTask($this, $reason);
     }
 
     /**
-     * @deprecated Use TaskProgressionService::moveToNext() instead
+     * Move task to next milestone.
+     *
+     * Delegates to TaskProgressionService for complex business logic.
+     *
+     * @return bool
      */
     public function moveToNextMilestone(): bool
     {
-        // Implementation moved to TaskProgressionService
-        return false;
+        try {
+            $result = app(\App\Contracts\Services\TaskProgressionInterface::class)
+                ->progressToNextMilestone($this, auth()->user());
+
+            return $result !== null || $this->status === 'completed';
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Failed to move task {$this->id} to next milestone: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get task completion percentage.
+     *
+     * @return float
+     */
+    public function getCompletionPercentage(): float
+    {
+        return app(\App\Contracts\Services\TaskProgressionInterface::class)
+            ->getCompletionPercentage($this);
+    }
+
+    /**
+     * Check if task can progress to next milestone.
+     *
+     * @return bool
+     */
+    public function canProgress(): bool
+    {
+        return app(\App\Contracts\Services\TaskProgressionInterface::class)
+            ->canProgress($this);
     }
 }
