@@ -87,10 +87,14 @@ class MilestoneResource extends Resource
                 Tables\Columns\TextColumn::make('workflowTemplate.name')
                     ->label('Workflow Template')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(30)
+                    ->tooltip(fn ($record) => $record->workflowTemplate?->name),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(35)
+                    ->tooltip(fn ($record) => $record->name),
                 Tables\Columns\TextColumn::make('sla_days')
                     ->label('SLA Days')
                     ->numeric()
@@ -104,24 +108,26 @@ class MilestoneResource extends Resource
                 Tables\Columns\TextColumn::make('statusType.name')
                     ->label('Status Type')
                     ->badge()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\IconColumn::make('requires_docs')
                     ->label('Requires Docs')
                     ->boolean()
                     ->trueIcon('heroicon-o-document-text')
-                    ->falseIcon('heroicon-o-x-mark'),
+                    ->falseIcon('heroicon-o-x-mark')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('approval_group_id')
                     ->label('Approval Group')
                     ->numeric()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('hint')
                     ->limit(50)
                     ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
                         $state = $column->getState();
                         return strlen($state) > 50 ? $state : null;
                     })
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

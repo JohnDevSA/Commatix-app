@@ -133,13 +133,16 @@ class IndustryResource extends Resource
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('Order')
                     ->sortable()
-                    ->width(80),
+                    ->width(80)
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('display_name')
                     ->label('Industry')
                     ->searchable(['name'])
                     ->sortable()
-                    ->weight('bold'),
+                    ->weight('bold')
+                    ->limit(40)
+                    ->tooltip(fn ($record) => $record->display_name),
 
                 Tables\Columns\TextColumn::make('code')
                     ->label('Code')
@@ -149,13 +152,13 @@ class IndustryResource extends Resource
 
                 Tables\Columns\TextColumn::make('description')
                     ->limit(50)
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('typical_workflow_duration_days')
                     ->label('Avg Duration')
                     ->suffix(' days')
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\IconColumn::make('requires_fica')
                     ->label('FICA')

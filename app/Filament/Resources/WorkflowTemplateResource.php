@@ -353,7 +353,9 @@ class WorkflowTemplateResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(40)
+                    ->tooltip(fn ($record) => $record->name),
                 Tables\Columns\TextColumn::make('template_type')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -365,30 +367,35 @@ class WorkflowTemplateResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('industry_category')
                     ->searchable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('complexity_level')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'simple' => 'success',
                         'medium' => 'warning',
                         'complex' => 'danger',
-                    }),
+                    })
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('estimated_duration_days')
+                    ->label('Duration')
                     ->numeric()
                     ->suffix(' days')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('usage_count')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\IconColumn::make('is_published')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('last_used_at')
                     ->dateTime()
                     ->sortable()
                     ->since()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -134,13 +134,16 @@ class DocumentTypeResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable()
-                    ->weight('bold'),
+                    ->weight('bold')
+                    ->limit(35)
+                    ->tooltip(fn ($record) => $record->name),
 
                 Tables\Columns\TextColumn::make('description')
-                    ->limit(50)
+                    ->limit(40)
                     ->tooltip(function (DocumentType $record): ?string {
                         return $record->description;
-                    }),
+                    })
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('accessScope.label')
                     ->label('Access Scope')
@@ -170,12 +173,12 @@ class DocumentTypeResource extends Resource
                         'general' => '🌍 General',
                         default => '—',
                     })
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('tenant.name')
                     ->label('Tenant')
                     ->placeholder('Global/System')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\IconColumn::make('is_required')
                     ->label('Required')

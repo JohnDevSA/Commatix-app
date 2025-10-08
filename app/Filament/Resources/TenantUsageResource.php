@@ -71,7 +71,9 @@ class TenantUsageResource extends Resource
                 Tables\Columns\TextColumn::make('tenant.name')
                     ->label('Tenant')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(25)
+                    ->tooltip(fn ($record) => $record->tenant?->name),
                 Tables\Columns\TextColumn::make('period_start')
                     ->label('Period Start')
                     ->date()
@@ -79,7 +81,8 @@ class TenantUsageResource extends Resource
                 Tables\Columns\TextColumn::make('period_end')
                     ->label('Period End')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('emails_sent')
                     ->label('Emails')
                     ->numeric()
@@ -89,27 +92,32 @@ class TenantUsageResource extends Resource
                     ->label('SMS')
                     ->numeric()
                     ->sortable()
-                    ->summarize(Tables\Columns\Summarizers\Sum::make()),
+                    ->summarize(Tables\Columns\Summarizers\Sum::make())
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('whatsapp_sent')
                     ->label('WhatsApp')
                     ->numeric()
                     ->sortable()
-                    ->summarize(Tables\Columns\Summarizers\Sum::make()),
+                    ->summarize(Tables\Columns\Summarizers\Sum::make())
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('voice_calls')
                     ->label('Voice Calls')
                     ->numeric()
                     ->sortable()
-                    ->summarize(Tables\Columns\Summarizers\Sum::make()),
+                    ->summarize(Tables\Columns\Summarizers\Sum::make())
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('storage_used_mb')
                     ->label('Storage (MB)')
                     ->numeric()
                     ->sortable()
-                    ->summarize(Tables\Columns\Summarizers\Sum::make()),
+                    ->summarize(Tables\Columns\Summarizers\Sum::make())
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('api_calls')
                     ->label('API Calls')
                     ->numeric()
                     ->sortable()
-                    ->summarize(Tables\Columns\Summarizers\Sum::make()),
+                    ->summarize(Tables\Columns\Summarizers\Sum::make())
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

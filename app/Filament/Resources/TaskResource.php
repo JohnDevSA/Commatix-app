@@ -168,17 +168,22 @@ class TaskResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(30)
+                    ->tooltip(fn ($record) => $record->title),
                 Tables\Columns\TextColumn::make('subscriber.email')
                     ->label('Subscriber')
                     ->searchable()
                     ->sortable()
                     ->formatStateUsing(fn ($record) =>
                     "{$record->subscriber->first_name} {$record->subscriber->last_name}"
-                    ),
+                    )
+                    ->limit(25)
+                    ->tooltip(fn ($record) => "{$record->subscriber->first_name} {$record->subscriber->last_name}"),
                 Tables\Columns\TextColumn::make('workflowTemplate.name')
                     ->label('Workflow')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -198,21 +203,26 @@ class TaskResource extends Resource
                         'high' => 'warning',
                         'critical' => 'danger',
                         default => 'gray',
-                    }),
+                    })
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('assignedTo.name')
-                    ->label('Assigned To'),
+                    ->label('Assigned To')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('scheduled_start_date')
                     ->label('Start Date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('due_date')
                     ->label('Due Date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('currentMilestone.name')
                     ->label('Current Step')
                     ->badge()
-                    ->color('info'),
+                    ->color('info')
+                    ->toggleable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')

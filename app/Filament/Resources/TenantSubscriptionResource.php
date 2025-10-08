@@ -117,7 +117,9 @@ class TenantSubscriptionResource extends Resource
                 Tables\Columns\TextColumn::make('tenant.name')
                     ->label('Tenant')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(25)
+                    ->tooltip(fn ($record) => $record->tenant?->name),
                 Tables\Columns\TextColumn::make('plan_name')
                     ->label('Plan')
                     ->badge()
@@ -148,23 +150,28 @@ class TenantSubscriptionResource extends Resource
                 Tables\Columns\TextColumn::make('billing_interval')
                     ->label('Billing')
                     ->badge()
-                    ->color('info'),
+                    ->color('info')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('current_period_start')
                     ->label('Period Start')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('current_period_end')
                     ->label('Period End')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('trial_ends_at')
                     ->label('Trial Ends')
                     ->date()
                     ->placeholder('No Trial')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\IconColumn::make('cancel_at_period_end')
                     ->label('Canceling')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('stripe_subscription_id')
                     ->label('Stripe ID')
                     ->placeholder('Not Set')

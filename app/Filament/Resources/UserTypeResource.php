@@ -58,10 +58,10 @@ class UserTypeResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('description')
-                    ->limit(50)
+                    ->limit(60)
                     ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
                         $state = $column->getState();
-                        if (strlen($state) <= 50) {
+                        if (strlen($state) <= 60) {
                             return null;
                         }
                         return $state;

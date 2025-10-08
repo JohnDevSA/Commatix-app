@@ -157,7 +157,9 @@ class TenantWorkflowTemplateResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(40)
+                    ->tooltip(fn ($record) => $record->name),
 
                 Tables\Columns\TextColumn::make('template_type')
                     ->badge()
@@ -173,17 +175,20 @@ class TenantWorkflowTemplateResource extends Resource
                     ->searchable()
                     ->formatStateUsing(fn (?string $state): string =>
                     $state ? Str::title(str_replace('_', ' ', $state)) : 'N/A'
-                    ),
+                    )
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('milestones_count')
                     ->label('Milestones')
                     ->badge()
-                    ->color('success'),
+                    ->color('success')
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('estimated_duration_days')
                     ->label('Duration')
                     ->suffix(' days')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
 
                 Tables\Columns\IconColumn::make('is_published')
                     ->boolean()
