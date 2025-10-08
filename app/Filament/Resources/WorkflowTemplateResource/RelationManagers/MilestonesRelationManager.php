@@ -78,10 +78,13 @@ class MilestonesRelationManager extends RelationManager
                             ->schema([
                                 Forms\Components\Toggle::make('requires_approval')
                                     ->label('Requires Approval')
-                                    ->default(false),
+                                    ->default(false)
+                                    ->reactive()
+                                    ->afterStateUpdated(fn ($state, callable $set) => !$state ? $set('approval_group_name', null) : null),
                                 Forms\Components\Toggle::make('requires_docs')
                                     ->label('Requires Documentation')
-                                    ->default(false),
+                                    ->default(false)
+                                    ->reactive(),
                                 Forms\Components\Toggle::make('can_be_skipped')
                                     ->label('Can be Skipped')
                                     ->default(false),
@@ -89,6 +92,24 @@ class MilestonesRelationManager extends RelationManager
                                     ->label('Auto-complete when conditions met')
                                     ->default(false),
                             ]),
+
+                        Forms\Components\TextInput::make('approval_group_name')
+                            ->label('Approval Group Name')
+                            ->helperText('Enter approval group name (Approval groups feature coming soon - division-based)')
+                            ->maxLength(255)
+                            ->visible(fn (callable $get) => $get('requires_approval') === true)
+                            ->placeholder('e.g., Finance Approvers, HR Managers')
+                            ->columnSpanFull(),
+
+                        Forms\Components\Select::make('document_requirements')
+                            ->label('Required Documents')
+                            ->multiple()
+                            ->relationship('documentRequirements', 'name')
+                            ->preload()
+                            ->searchable()
+                            ->helperText('Select the documents required for this milestone')
+                            ->visible(fn (callable $get) => $get('requires_docs') === true)
+                            ->columnSpanFull(),
                     ]),
 
                 Forms\Components\Section::make('Actions & Notifications')
