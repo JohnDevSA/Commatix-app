@@ -27,22 +27,6 @@
 
 ---
 
-## 🏗️ Architecture
-
-This project follows SOLID principles for maintainable and scalable code:
-
-- **Single Responsibility Principle**: Each class has one reason to change
-- **Open/Closed Principle**: Entities are open for extension but closed for modification
-- **Liskov Substitution Principle**: Subtypes can replace their base types
-- **Interface Segregation Principle**: Clients depend only on methods they use
-- **Dependency Inversion Principle**: Depend on abstractions, not concretions
-
-For detailed information about the architecture, see:
-- [SOLID Principles Documentation](docs/SOLID_PRINCIPLES.md)
-- [Developer Guide](docs/DEVELOPER_GUIDE.md)
-
----
-
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -66,5 +50,3 @@ php artisan key:generate
 
 npm install
 npm run dev
-
-```

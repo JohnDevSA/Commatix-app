@@ -13,13 +13,7 @@ return new class extends Migration
     {
         Schema::create('tenant_top_ups', function (Blueprint $table) {
             $table->id();
-            $table->string('tenant_id');
-            $table->string('channel'); // sms, email, whatsapp, voice
-            $table->integer('credits');
-            $table->text('notes')->nullable();
             $table->timestamps();
-            
-            $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
         });
     }
 

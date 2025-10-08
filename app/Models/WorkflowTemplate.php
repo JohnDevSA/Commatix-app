@@ -156,48 +156,40 @@ class WorkflowTemplate extends Model
     {
         return $this->belongsTo(User::class, 'locked_by_user_id');
     }
-    
-    // DEPRECATED: These methods have been moved to WorkflowLockService
-    // Use WorkflowLockService instead for better separation of concerns
-    /**
-     * @deprecated Use WorkflowLockService::lock() instead
-     */
+
+    // Helper methods for locking functionality
     public function lockWorkflow(User $user, string $reason = 'Configuring milestones'): void
     {
-        // Implementation moved to WorkflowLockService
+        $this->update([
+            'is_locked' => true,
+            'locked_by_user_id' => $user->id,
+            'locked_at' => now(),
+            'lock_reason' => $reason,
+        ]);
     }
 
-    /**
-     * @deprecated Use WorkflowLockService::unlock() instead
-     */
     public function unlockWorkflow(): void
     {
-        // Implementation moved to WorkflowLockService
+        $this->update([
+            'is_locked' => false,
+            'locked_by_user_id' => null,
+            'locked_at' => null,
+            'lock_reason' => null,
+        ]);
     }
 
-    /**
-     * @deprecated Use WorkflowLockService::isLockedBy() instead
-     */
     public function isLockedBy(User $user): bool
     {
-        // Implementation moved to WorkflowLockService
-        return false;
+        return $this->is_locked && $this->locked_by_user_id === $user->id;
     }
 
-    /**
-     * @deprecated Use WorkflowLockService::canBeEditedBy() instead
-     */
     public function canBeEditedBy(User $user): bool
     {
-        // Implementation moved to WorkflowLockService
-        return true;
+        return !$this->is_locked || $this->locked_by_user_id === $user->id;
     }
 
-    /**
-     * @deprecated Use WorkflowMilestoneService::markMilestonesComplete() instead
-     */
     public function markMilestonesComplete(): void
     {
-        // Implementation moved to WorkflowMilestoneService
+        $this->update(['milestones_completed' => true]);
     }
 }
