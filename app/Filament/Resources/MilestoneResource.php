@@ -19,7 +19,7 @@ class MilestoneResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
 
-    protected static ?string $navigationGroup = 'Super Admin';
+    protected static ?string $navigationGroup = 'System Administration';
 
     protected static ?string $navigationLabel = 'Workflow Milestones';
 

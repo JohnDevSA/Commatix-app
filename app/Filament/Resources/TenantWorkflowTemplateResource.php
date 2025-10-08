@@ -48,24 +48,9 @@ class TenantWorkflowTemplateResource extends Resource
                             ->required()
                             ->rows(3),
                         Forms\Components\Select::make('industry_category')
-                            ->options([
-                                'financial_services' => 'Financial Services (FICA/KYC)',
-                                'healthcare' => 'Healthcare (Appointments)',
-                                'education' => 'Education (Enrollment)',
-                                'real_estate' => 'Real Estate (Lead Nurturing)',
-                                'retail' => 'Retail & E-commerce',
-                                'manufacturing' => 'Manufacturing',
-                                'construction' => 'Construction',
-                                'hospitality' => 'Hospitality & Tourism',
-                                'logistics' => 'Logistics & Transportation',
-                                'government' => 'Government Services',
-                                'other' => 'Other Industry',
-                            ])
+                            ->options(\App\Models\Industry::getDisplayOptions())
                             ->label('Industry')
                             ->searchable()
-                            ->formatStateUsing(fn (?string $state): string =>
-                            $state ? Str::title(str_replace('_', ' ', $state)) : 'N/A'
-                            )
                             ->required(),
                         Forms\Components\TextInput::make('estimated_duration_days')
                             ->label('Estimated Duration (Days)')

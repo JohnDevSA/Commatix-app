@@ -26,7 +26,7 @@ class TaskResource extends Resource
 
     protected static ?string $navigationLabel = 'Tasks';
 
-    protected static ?string $navigationGroup = 'Workflow Management';
+    protected static ?string $navigationGroup = 'Workflows';
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {

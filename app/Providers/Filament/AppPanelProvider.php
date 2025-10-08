@@ -31,7 +31,7 @@ class AppPanelProvider extends PanelProvider
             ->path('/')
             ->login()
             ->brandName('Commatix')
-            ->brandLogo(asset('images/commatix-logo.svg'))
+//            ->brandLogo(asset('images/commatix-logo.svg'))
             ->brandLogoHeight('2rem')
             ->favicon(asset('images/favicon.ico'))
             ->colors([
@@ -47,9 +47,10 @@ class AppPanelProvider extends PanelProvider
             ->sidebarWidth('17rem')
             ->navigationGroups([
                 'Dashboard',
-                'Multi-Tenant Management',
+                'Workflows',
+                'Tenant Management',
+                'User Management',
                 'Communication Hub',
-                'Workflow Engine',
                 'Analytics & Reports',
                 'System Administration',
             ])

@@ -18,10 +18,11 @@ class DatabaseSeeder extends Seeder
             UserTypeSeeder::class,
             AccessScopeSeeder::class,
             SuperAdminSeeder::class,
+            IndustrySeeder::class,              // Added: Must run before workflows/documents
             SouthAfricanBusinessSeeder::class,
             CommunicationProviderSeeder::class,
-            GlobalTemplateSeeder::class,
             DocumentTypeSeeder::class,
+            ComprehensiveWorkflowSeeder::class, // Added: Modern workflow templates with milestones
             DemoTenantSeeder::class,
         ]);
 
@@ -29,5 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info('📧 Super Admin Login: superadmin@commatix.io');
         $this->command->info('🔑 Password: CommatixSA2025!');
         $this->command->info('🏢 Demo tenants created for testing');
+        $this->command->info('🏭 10 SA industries seeded');
+        $this->command->info('📋 5 comprehensive workflow templates created');
     }
 }

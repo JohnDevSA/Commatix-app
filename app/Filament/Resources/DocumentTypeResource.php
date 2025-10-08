@@ -20,7 +20,11 @@ class DocumentTypeResource extends Resource
 {
     protected static ?string $model = DocumentType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
+    protected static ?string $navigationGroup = 'System Administration';
+
+    protected static ?string $navigationLabel = 'Document Types';
 
     public static function canAccess(): bool
     {

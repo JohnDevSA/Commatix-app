@@ -20,7 +20,7 @@ class WorkflowTemplateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-duplicate';
 
-    protected static ?string $navigationGroup = 'Super Admin';
+    protected static ?string $navigationGroup = 'System Administration';
 
     protected static ?string $navigationLabel = 'Global Workflows';
 
@@ -91,19 +91,7 @@ class WorkflowTemplateResource extends Resource
                                             ->schema([
                                                 Forms\Components\Select::make('industry_category')
                                                     ->label('Primary Industry')
-                                                    ->options([
-                                                        'financial_services' => '🏦 Financial Services (FICA/KYC)',
-                                                        'healthcare' => '🏥 Healthcare (Appointments)',
-                                                        'education' => '🎓 Education (Enrollment)',
-                                                        'real_estate' => '🏘️ Real Estate (Lead Nurturing)',
-                                                        'retail' => '🛍️ Retail & E-commerce',
-                                                        'manufacturing' => '🏭 Manufacturing',
-                                                        'construction' => '🏗️ Construction',
-                                                        'hospitality' => '🏨 Hospitality & Tourism',
-                                                        'logistics' => '🚚 Logistics & Transportation',
-                                                        'government' => '🏛️ Government Services',
-                                                        'other' => '📄 Other Industry',
-                                                    ])
+                                                    ->options(\App\Models\Industry::getDisplayOptions())
                                                     ->searchable()
                                                     ->required()
                                                     ->extraAttributes(['class' => 'glass-input'])
