@@ -11,6 +11,26 @@ class SubscriberList extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'tenant_id',
+        'total_subscribers',
+        'active_subscribers',
+        'is_public',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->tenant_id) && auth()->check()) {
+                $model->tenant_id = auth()->user()->tenant_id;
+            }
+        });
+    }
+
     protected function casts(): array
     {
         return [
