@@ -60,12 +60,34 @@ class MilestoneResource extends Resource
                         Forms\Components\Select::make('status_type_id')
                             ->relationship('statusType', 'name')
                             ->required(),
-                        Forms\Components\TextInput::make('approval_group_id')
-                            ->numeric()
-                            ->helperText('Optional approval group ID'),
+
+                        Forms\Components\Toggle::make('requires_approval')
+                            ->label('Requires Approval')
+                            ->helperText('Whether this milestone requires approval before completion')
+                            ->reactive()
+                            ->afterStateUpdated(fn ($state, callable $set) => !$state ? $set('approval_group_name', null) : null),
+
+                        Forms\Components\TextInput::make('approval_group_name')
+                            ->label('Approval Group Name')
+                            ->helperText('Enter approval group name (Approval groups feature coming soon - will be division-based)')
+                            ->maxLength(255)
+                            ->visible(fn (callable $get) => $get('requires_approval'))
+                            ->placeholder('e.g., Finance Approvers, HR Managers'),
+
                         Forms\Components\Toggle::make('requires_docs')
                             ->label('Requires Documentation')
-                            ->helperText('Whether this milestone requires document attachments'),
+                            ->helperText('Whether this milestone requires document attachments')
+                            ->reactive(),
+
+                        Forms\Components\Select::make('document_requirements')
+                            ->label('Required Documents')
+                            ->multiple()
+                            ->relationship('documentRequirements', 'name')
+                            ->preload()
+                            ->searchable()
+                            ->helperText('Select the documents required for this milestone')
+                            ->visible(fn (callable $get) => $get('requires_docs'))
+                            ->columnSpanFull(),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Actions')
@@ -116,10 +138,15 @@ class MilestoneResource extends Resource
                     ->trueIcon('heroicon-o-document-text')
                     ->falseIcon('heroicon-o-x-mark')
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('approval_group_id')
+                Tables\Columns\IconColumn::make('requires_approval')
+                    ->label('Requires Approval')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-mark')
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('approval_group_name')
                     ->label('Approval Group')
-                    ->numeric()
-                    ->sortable()
+                    ->placeholder('Not set')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('hint')
                     ->limit(50)
@@ -147,6 +174,8 @@ class MilestoneResource extends Resource
                     ->label('Status Type'),
                 Tables\Filters\TernaryFilter::make('requires_docs')
                     ->label('Requires Documentation'),
+                Tables\Filters\TernaryFilter::make('requires_approval')
+                    ->label('Requires Approval'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
