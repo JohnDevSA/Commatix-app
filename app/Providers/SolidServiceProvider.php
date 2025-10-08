@@ -8,21 +8,17 @@ use Illuminate\Support\ServiceProvider;
 use App\Contracts\Services\AuthorizationServiceInterface;
 use App\Contracts\Services\WorkflowLockingInterface;
 use App\Contracts\Services\TaskProgressionInterface;
-use App\Contracts\Services\WorkflowRepositoryInterface;
-use App\Contracts\Services\TaskRepositoryInterface;
 use App\Contracts\Services\TaskSchedulingInterface;
 use App\Contracts\Services\UserAssignmentStrategyInterface;
+use App\Contracts\Services\CreditManagementInterface;
 
 // Service implementations from organized directories
 use App\Services\Authorization\AuthorizationService;
 use App\Services\Workflow\WorkflowLockService;
 use App\Services\Task\TaskProgressionService;
-use App\Services\TaskSchedulingService;
+use App\Services\Task\TaskSchedulingService;
 use App\Services\UserAssignment\RoundRobinAssignmentStrategy;
-
-// Repository implementations
-use App\Repositories\WorkflowRepository;
-use App\Repositories\TaskRepository;
+use App\Services\Billing\CreditManagementService;
 
 class SolidServiceProvider extends ServiceProvider
 {
@@ -49,27 +45,22 @@ class SolidServiceProvider extends ServiceProvider
             TaskProgressionService::class
         );
 
-        // Task Scheduling Service - actively used (pre-existing)
+        // Task Scheduling Service - actively used for auto-scheduling
         $this->app->singleton(
             TaskSchedulingInterface::class,
             TaskSchedulingService::class
         );
 
-        // User Assignment Strategy - actively used
+        // User Assignment Strategy - Round Robin by default
         $this->app->bind(
             UserAssignmentStrategyInterface::class,
             RoundRobinAssignmentStrategy::class
         );
 
-        // Repository Pattern (pre-existing)
-        $this->app->bind(
-            WorkflowRepositoryInterface::class,
-            WorkflowRepository::class
-        );
-
-        $this->app->bind(
-            TaskRepositoryInterface::class,
-            TaskRepository::class
+        // Credit Management Service - manages tenant communication credits
+        $this->app->singleton(
+            CreditManagementInterface::class,
+            CreditManagementService::class
         );
     }
 
