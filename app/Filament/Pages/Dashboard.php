@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\SystemOverviewWidget;
+use App\Filament\Widgets\TenantOverviewWidget;
 use App\Filament\Widgets\TenantGrowthChart;
 use App\Filament\Widgets\RecentTenantsWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -15,10 +16,27 @@ class Dashboard extends BaseDashboard
 
     public function getWidgets(): array
     {
+        $user = auth()->user();
+
+        // Super admin sees system-wide metrics
+        if ($user->isSuperAdmin()) {
+            return [
+                SystemOverviewWidget::class,
+                TenantGrowthChart::class,
+                RecentTenantsWidget::class,
+            ];
+        }
+
+        // Tenant admin sees tenant-specific metrics
+        if ($user->isTenantAdmin()) {
+            return [
+                TenantOverviewWidget::class,
+            ];
+        }
+
+        // Regular users see tenant overview
         return [
-            SystemOverviewWidget::class,
-            TenantGrowthChart::class,
-            RecentTenantsWidget::class,
+            TenantOverviewWidget::class,
         ];
     }
 }
