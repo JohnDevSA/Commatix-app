@@ -140,7 +140,17 @@ class UserResource extends Resource
                                             ->schema([
                                                 Forms\Components\Select::make('user_type_id')
                                                     ->label('User Type / Role')
-                                                    ->relationship('userType', 'name')
+                                                    ->relationship(
+                                                        name: 'userType',
+                                                        titleAttribute: 'name',
+                                                        modifyQueryUsing: function (Builder $query) {
+                                                            // Tenant admins cannot assign Super Admin role
+                                                            if (auth()->user()?->isTenantAdmin()) {
+                                                                return $query->where('is_super_admin', false);
+                                                            }
+                                                            return $query;
+                                                        }
+                                                    )
                                                     ->required()
                                                     ->preload()
                                                     ->searchable()
@@ -153,7 +163,9 @@ class UserResource extends Resource
                                                     ->preload()
                                                     ->searchable()
                                                     ->extraAttributes(['class' => 'glass-input'])
-                                                    ->helperText('Leave empty for Super Admin users only'),
+                                                    ->helperText('Leave empty for Super Admin users only')
+                                                    ->hidden(fn () => auth()->user()?->isTenantAdmin() ?? false)
+                                                    ->default(fn () => auth()->user()?->isTenantAdmin() ? auth()->user()->tenant_id : null),
                                             ])
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
@@ -271,18 +283,20 @@ class UserResource extends Resource
                         ->badge()
                         ->color(fn (?string $state): string => match ($state) {
                             'Super Admin' => 'danger',
-                            'Tenant Admin' => 'warning',
-                            'Tenant Manager' => 'info',
-                            'Tenant User' => 'success',
-                            'Tenant Viewer' => 'gray',
+                            'Admin' => 'warning',
+                            'Manager' => 'info',
+                            'Team Lead' => 'primary',
+                            'User' => 'success',
+                            'Viewer' => 'gray',
                             default => 'gray',
                         })
                         ->icon(fn (?string $state): string => match ($state) {
                             'Super Admin' => 'heroicon-m-shield-exclamation',
-                            'Tenant Admin' => 'heroicon-m-cog-6-tooth',
-                            'Tenant Manager' => 'heroicon-m-user-group',
-                            'Tenant User' => 'heroicon-m-user',
-                            'Tenant Viewer' => 'heroicon-m-eye',
+                            'Admin' => 'heroicon-m-cog-6-tooth',
+                            'Manager' => 'heroicon-m-user-group',
+                            'Team Lead' => 'heroicon-m-users',
+                            'User' => 'heroicon-m-user',
+                            'Viewer' => 'heroicon-m-eye',
                             default => 'heroicon-m-question-mark-circle',
                         })
                         ->searchable()

@@ -73,7 +73,7 @@ class User extends Authenticatable
 
     public function isTenantAdmin(): bool
     {
-        return $this->userType?->name === 'Tenant Admin';
+        return $this->userType?->name === 'Admin';
     }
 
     public function canAccessTenant(string $tenantId): bool

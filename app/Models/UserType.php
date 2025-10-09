@@ -11,10 +11,17 @@ class UserType extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'is_super_admin',
+    ];
+
     protected function casts(): array
     {
         return [
             'id' => 'integer',
+            'is_super_admin' => 'boolean',
         ];
     }
 

@@ -14,6 +14,7 @@ use Filament\Widgets;
 use App\Filament\Widgets\SystemOverviewWidget;
 use App\Filament\Widgets\TenantGrowthChart;
 use App\Filament\Widgets\RecentTenantsWidget;
+use Stephenjude\FilamentDebugger\DebuggerPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -76,6 +77,10 @@ class AppPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->plugins([
+                DebuggerPlugin::make()
+                    ->authorize(fn () => auth()->user()?->isSuperAdmin() ?? false),
             ]);
     }
 }
