@@ -267,14 +267,4 @@ class OrganizationSettings extends Page implements HasForms
             ->success()
             ->send();
     }
-
-    protected function getFormActions(): array
-    {
-        return [
-            Forms\Components\Actions\Action::make('save')
-                ->label('Save Changes')
-                ->submit('save')
-                ->color('primary'),
-        ];
-    }
 }
