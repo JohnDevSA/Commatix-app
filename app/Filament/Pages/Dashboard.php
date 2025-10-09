@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Widgets\SystemOverviewWidget;
 use App\Filament\Widgets\TenantOverviewWidget;
+use App\Filament\Widgets\TenantActivityChart;
 use App\Filament\Widgets\TenantGrowthChart;
 use App\Filament\Widgets\RecentTenantsWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -31,12 +32,14 @@ class Dashboard extends BaseDashboard
         if ($user->isTenantAdmin()) {
             return [
                 TenantOverviewWidget::class,
+                TenantActivityChart::class,
             ];
         }
 
         // Regular users see tenant overview
         return [
             TenantOverviewWidget::class,
+            TenantActivityChart::class,
         ];
     }
 }
