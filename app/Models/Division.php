@@ -11,6 +11,22 @@ class Division extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'tenant_id',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->tenant_id) && auth()->check()) {
+                $model->tenant_id = auth()->user()->tenant_id;
+            }
+        });
+    }
+
     protected function casts(): array
     {
         return [
