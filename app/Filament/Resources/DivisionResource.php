@@ -17,7 +17,7 @@ class DivisionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static ?string $navigationGroup = 'Multi-Tenant Management';
+    protected static ?string $navigationGroup = 'Organization';
 
     protected static ?string $navigationLabel = 'Divisions';
 
