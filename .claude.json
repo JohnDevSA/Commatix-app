@@ -1,0 +1,5 @@
+{
+  "version": "1.0",
+  "projectName": "Commatix",
+  "description": "Multi-tenant workflow communication platform built with Laravel 12 and Filament 3"
+}

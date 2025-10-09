@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "browser": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@browsermcp/mcp@latest"],
+      "env": {
+        "BROWSER_MCP_PORT": "8000"
+      },
+      "description": "Browser automation for testing Commatix UI"
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/johndevsa/projects/commatix"],
+      "description": "Enhanced file system operations for Commatix codebase"
+    },
+    "git": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/home/johndevsa/projects/commatix"],
+      "description": "Git operations and history for version control"
+    }
+  }
+}

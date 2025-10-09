@@ -1,0 +1,91 @@
+{
+  "$schema": "https://claude.com/settings-schema.json",
+  "description": "Commatix project-specific Claude Code settings",
+
+  "allowedTools": {
+    "description": "Auto-approve these tools without asking",
+    "rules": [
+      "Read(**/app/**/*.php)",
+      "Read(**/database/**/*.php)",
+      "Read(**/tests/**/*.php)",
+      "Read(**/config/**/*.php)",
+      "Read(**/resources/**/*)",
+      "Read(**/*.md)",
+      "Read(**/*.json)",
+      "Read(**/*.yaml)",
+      "Read(**/.env.example)",
+      "Glob(**/*.php)",
+      "Glob(**/*.md)",
+      "Grep(*)",
+      "Bash(composer *)",
+      "Bash(php artisan *)",
+      "Bash(npm *)",
+      "Bash(pnpm *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch *)"
+    ]
+  },
+
+  "disallowedTools": {
+    "description": "Block these dangerous operations",
+    "rules": [
+      "Bash(rm -rf *)",
+      "Bash(* > .env)",
+      "Bash(git push --force *)",
+      "Bash(php artisan migrate:fresh)",
+      "Bash(php artisan db:wipe)",
+      "Edit(**/.env)"
+    ]
+  },
+
+  "ignorePatterns": {
+    "description": "Exclude these from context to improve performance",
+    "patterns": [
+      "**/vendor/**",
+      "**/node_modules/**",
+      "**/storage/framework/**",
+      "**/storage/logs/**",
+      "**/bootstrap/cache/**",
+      "**/.git/**",
+      "**/.idea/**",
+      "**/public/build/**",
+      "**/public/hot",
+      "**/*.min.js",
+      "**/*.min.css",
+      "**/composer.lock",
+      "**/package-lock.json",
+      "**/pnpm-lock.yaml"
+    ]
+  },
+
+  "autoCompact": {
+    "description": "Automatically compact conversations when they get large",
+    "enabled": true,
+    "threshold": 0.8
+  },
+
+  "permissions": {
+    "description": "Permission rules for tool usage",
+    "allowWritesToCriticalFiles": false,
+    "requireConfirmationFor": [
+      "Bash(php artisan migrate *)",
+      "Bash(php artisan db:*)",
+      "Bash(composer update *)",
+      "Bash(composer require *)",
+      "Bash(git merge *)",
+      "Bash(git rebase *)"
+    ]
+  },
+
+  "cleanupPeriodDays": 30,
+
+  "customContext": {
+    "description": "Project-specific context for Claude",
+    "techStack": "Laravel 12, Filament 3, Multi-tenant (stancl/tenancy), MySQL, Redis, Vite",
+    "codeStyle": "PSR-12, PHPStan strict, Laravel best practices",
+    "testingFramework": "PHPUnit",
+    "qualityTools": "GrumPHP, PHP_CodeSniffer, PHPStan, Laravel Pint"
+  }
+}
