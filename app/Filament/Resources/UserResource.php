@@ -166,7 +166,11 @@ class UserResource extends Resource
                                             ->schema([
                                                 Forms\Components\Select::make('division_id')
                                                     ->label('Division / Department')
-                                                    ->relationship('division', 'name')
+                                                    ->relationship(
+                                                        name: 'division',
+                                                        titleAttribute: 'name',
+                                                        modifyQueryUsing: fn (Builder $query) => $query->where('tenant_id', auth()->user()->tenant_id)
+                                                    )
                                                     ->preload()
                                                     ->searchable()
                                                     ->extraAttributes(['class' => 'glass-input'])
