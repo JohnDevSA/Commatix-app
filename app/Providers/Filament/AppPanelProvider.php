@@ -47,16 +47,15 @@ class AppPanelProvider extends PanelProvider
             ->sidebarWidth('17rem')
             ->navigationGroups([
                 'Dashboard',
-                'Workflows',
-                'Tenant Management',
-                'User Management',
+                'Multi-Tenant Management',
                 'Communication Hub',
+                'Workflow Engine',
                 'Analytics & Reports',
                 'System Administration',
             ])
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 SystemOverviewWidget::class,

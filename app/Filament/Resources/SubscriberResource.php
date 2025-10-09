@@ -26,7 +26,7 @@ class SubscriberResource extends Resource
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->isTenantAdmin() ?? false;
+        return (auth()->user()?->isTenantAdmin() || auth()->user()?->isSuperAdmin()) ?? false;
     }
 
     public static function getEloquentQuery(): Builder
