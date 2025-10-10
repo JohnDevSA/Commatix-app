@@ -59,7 +59,7 @@ class SystemOverviewWidget extends BaseWidget
                     'style' => 'animation-delay: 0.2s',
                 ]),
 
-            Stat::make('Monthly Revenue', 'R' . number_format($subscriptionRevenue, 2))
+            Stat::make('Monthly Revenue', 'R'.number_format($subscriptionRevenue, 2))
                 ->description($revenueGrowth['description'])
                 ->descriptionIcon($revenueGrowth['icon'])
                 ->color($revenueGrowth['color'])
@@ -108,7 +108,7 @@ class SystemOverviewWidget extends BaseWidget
         $growth = (($currentMonth - $lastMonth) / $lastMonth) * 100;
 
         return [
-            'description' => abs(round($growth, 1)) . '% ' . ($growth >= 0 ? 'increase' : 'decrease'),
+            'description' => abs(round($growth, 1)).'% '.($growth >= 0 ? 'increase' : 'decrease'),
             'icon' => $growth >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down',
             'color' => $growth >= 0 ? 'success' : 'danger',
         ];
@@ -134,7 +134,7 @@ class SystemOverviewWidget extends BaseWidget
         $growth = (($currentMonth - $lastMonth) / $lastMonth) * 100;
 
         return [
-            'description' => abs(round($growth, 1)) . '% ' . ($growth >= 0 ? 'increase' : 'decrease'),
+            'description' => abs(round($growth, 1)).'% '.($growth >= 0 ? 'increase' : 'decrease'),
             'icon' => $growth >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down',
             'color' => $growth >= 0 ? 'success' : 'danger',
         ];
@@ -161,7 +161,7 @@ class SystemOverviewWidget extends BaseWidget
         $growth = (($currentRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100;
 
         return [
-            'description' => abs(round($growth, 1)) . '% ' . ($growth >= 0 ? 'increase' : 'decrease'),
+            'description' => abs(round($growth, 1)).'% '.($growth >= 0 ? 'increase' : 'decrease'),
             'icon' => $growth >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down',
             'color' => $growth >= 0 ? 'success' : 'danger',
         ];
@@ -187,10 +187,10 @@ class SystemOverviewWidget extends BaseWidget
         try {
             $totalMB = DB::table('tenant_usages')->sum('storage_used_mb') ?? 0;
             if ($totalMB > 1024) {
-                return number_format($totalMB / 1024, 2) . ' GB';
+                return number_format($totalMB / 1024, 2).' GB';
             }
 
-            return number_format($totalMB, 0) . ' MB';
+            return number_format($totalMB, 0).' MB';
         } catch (\Exception $e) {
             return 'N/A';
         }

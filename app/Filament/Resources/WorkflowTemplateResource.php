@@ -415,7 +415,7 @@ class WorkflowTemplateResource extends Resource
                     ->color('gray')
                     ->action(function (WorkflowTemplate $record) {
                         $newRecord = $record->replicate();
-                        $newRecord->name = $record->name . ' (Copy)';
+                        $newRecord->name = $record->name.' (Copy)';
                         $newRecord->is_published = false;
                         $newRecord->save();
                     }),

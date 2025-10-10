@@ -56,6 +56,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Tenant Domain Suffix
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the domain suffix used for tenant subdomains.
+    | Different environments use different suffixes:
+    | - dev: .dev
+    | - staging: .stage
+    | - production: .co.za or .io
+    |
+    */
+
+    'tenant_domain_suffix' => env('TENANT_DOMAIN_SUFFIX', '.local'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

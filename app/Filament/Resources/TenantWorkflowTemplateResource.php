@@ -209,7 +209,7 @@ class TenantWorkflowTemplateResource extends Resource
                     ->form([
                         Forms\Components\TextInput::make('name')
                             ->required()
-                            ->default(fn (WorkflowTemplate $record) => $record->name . ' (Custom)')
+                            ->default(fn (WorkflowTemplate $record) => $record->name.' (Custom)')
                             ->maxLength(255),
                         Forms\Components\Textarea::make('description')
                             ->required()

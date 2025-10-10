@@ -172,6 +172,97 @@ sudo systemctl status apache2
 
 After running these commands, refresh your browser and you should see the Commatix login page.
 
+### Database Connection Issues
+
+**Problem**: "Connection refused" or "Internal Server Error" when accessing the web app.
+
+**Cause**: The `.env` file has incorrect `DB_HOST` setting for your environment.
+
+**Solution**: Use the correct DB_HOST based on your environment:
+
+```bash
+# For Docker/Web Access (Laravel container → MySQL container)
+DB_HOST=mysql
+
+# For CLI/Artisan commands from your machine
+DB_HOST=127.0.0.1 php artisan migrate
+# OR permanently in .env (breaks web):
+# DB_HOST=127.0.0.1
+```
+
+**Quick Fix**:
+```bash
+# If web app shows "Connection refused"
+sed -i 's/^DB_HOST=127.0.0.1$/DB_HOST=mysql/' .env
+
+# If artisan commands fail, prefix them:
+DB_HOST=127.0.0.1 php artisan migrate
+DB_HOST=127.0.0.1 php artisan db:seed
+```
+
+### DataGrip / Database GUI Connection
+
+Connect to MySQL from DataGrip, TablePlus, HeidiSQL, or any database client.
+
+#### Finding Your Connection Details
+
+All database credentials are stored in your `.env` file. Here's how to find them:
+
+```bash
+# View your database configuration
+cat .env | grep DB_
+```
+
+You should see:
+```env
+DB_CONNECTION=mysql
+DB_HOST=mysql          # For Docker internal use only
+DB_PORT=3306
+DB_DATABASE=commatix
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
+
+#### Connection Settings for External Tools
+
+When connecting from **outside Docker** (like DataGrip on your Windows machine), use:
+
+```
+Host:     localhost (or 127.0.0.1)
+Port:     3306 (from DB_PORT in .env)
+Database: commatix (from DB_DATABASE in .env)
+User:     sail (from DB_USERNAME in .env)
+Password: password (from DB_PASSWORD in .env)
+```
+
+#### Important Notes
+
+1. **Host Mapping**:
+   - Use `localhost` or `127.0.0.1` for external tools (Windows, DataGrip, etc.)
+   - The `DB_HOST=mysql` in `.env` is the Docker container name and only works inside the Docker network
+
+2. **Port Forwarding**:
+   - Laravel Sail automatically forwards MySQL port 3306 to your host machine
+   - Verify with: `docker ps` and look for `0.0.0.0:3306->3306/tcp`
+
+3. **Tenant Databases**:
+   - Central database: `commatix` (main database)
+   - Tenant databases: `tenant{uuid}` (created dynamically per tenant)
+   - You'll see all databases once connected
+
+#### Testing Your Connection
+
+```bash
+# Check if MySQL container is running
+docker ps --filter "name=mysql"
+
+# Test connection from command line
+docker exec commatix-mysql-1 mysql -usail -ppassword -e "SHOW DATABASES;"
+
+# Or use Laravel Sail
+./vendor/bin/sail mysql
+```
+
 ### Other Common Issues
 
 **Port already in use**
@@ -181,3 +272,48 @@ sudo lsof -i :80
 
 # Kill the process if needed
 sudo kill -9 <PID>
+```
+
+---
+
+## 🔐 Default Login Credentials
+
+After running `php artisan db:seed`, use these credentials to access the application:
+
+### Super Admin (Full System Access)
+```
+Email:    superadmin@commatix.io
+Password: CommatixSA2025!
+Access:   All tenants, system configuration, full admin panel
+```
+
+### Platform Admin
+```
+Email:    admin@commatix.io
+Password: CommatixAdmin2025!
+```
+
+### Support Lead
+```
+Email:    support@commatix.io
+Password: CommatixSupport2025!
+```
+
+### Demo Tenants
+
+**TechStartup SA (Technology)**
+```
+Email:    john@techstartup.co.za
+Password: TechDemo2025!
+```
+
+**Cape Finance (Financial Services)**
+```
+Email:    michael@capefinance.co.za
+Password: FinanceDemo2025!
+```
+
+**Durban Health (Healthcare)**
+```
+Email:    priya@durbanhealth.co.za
+Password: HealthDemo2025!

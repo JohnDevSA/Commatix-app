@@ -69,7 +69,7 @@ class Industry extends Model
     // Helper methods
     public function getDisplayNameAttribute(): string
     {
-        return $this->icon ? $this->icon . ' ' . $this->name : $this->name;
+        return $this->icon ? $this->icon.' '.$this->name : $this->name;
     }
 
     public static function getSelectOptions(): array

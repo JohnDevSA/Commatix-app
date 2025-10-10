@@ -183,7 +183,7 @@ class MilestoneResource extends Resource
                     ->color('gray')
                     ->action(function (Milestone $record) {
                         $newRecord = $record->replicate();
-                        $newRecord->name = $record->name . ' (Copy)';
+                        $newRecord->name = $record->name.' (Copy)';
                         $newRecord->save();
                     }),
             ])

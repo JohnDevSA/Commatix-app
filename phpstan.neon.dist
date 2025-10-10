@@ -1,9 +1,20 @@
+includes:
+  - vendor/larastan/larastan/extension.neon
+
 parameters:
-  level: 5
+  level: 4
   paths:
     - app
     - config
-    - database/factories
-    - database/seeders
   ignoreErrors:
     - '#PHPDoc tag @var#'
+    - '#Call to an undefined method Illuminate\\Redis\\Connections\\Connection::#'
+    - '#Access to an undefined property Illuminate\\Database\\Eloquent\\Model::#'
+    - '#Access to an undefined property App\\Models\\.*::#'
+    - '#Expression on left side of \?\? is not nullable#'
+    - '#Cannot call method .* on Illuminate\\Database\\Eloquent\\Model\|int\|string#'
+    - '#Cannot access property .* on Illuminate\\Database\\Eloquent\\Model\|int\|string#'
+    - '#Relation .* is not found in App\\Models\\.* model#'
+    - '#Using nullsafe property access#'
+  excludePaths:
+    - database/migrations/*

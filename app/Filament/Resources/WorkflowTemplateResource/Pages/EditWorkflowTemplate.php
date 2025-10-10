@@ -66,7 +66,7 @@ class EditWorkflowTemplate extends EditRecord
                 ->color('info')
                 ->action(function () {
                     $newWorkflow = $this->record->replicate();
-                    $newWorkflow->name = $this->record->name . ' (Copy)';
+                    $newWorkflow->name = $this->record->name.' (Copy)';
                     $newWorkflow->is_published = false;
                     $newWorkflow->published_at = null;
                     $newWorkflow->parent_template_id = $this->record->id;

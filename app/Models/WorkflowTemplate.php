@@ -68,7 +68,7 @@ class WorkflowTemplate extends Model
                 $model->uuid = Str::uuid();
             }
             if (empty($model->workflow_code)) {
-                $model->workflow_code = 'WF-' . strtoupper(Str::random(8));
+                $model->workflow_code = 'WF-'.strtoupper(Str::random(8));
             }
         });
     }

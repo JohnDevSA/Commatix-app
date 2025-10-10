@@ -140,7 +140,7 @@ class Task extends Model
 
             return $result !== null || $this->status === 'completed';
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Failed to move task {$this->id} to next milestone: " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error("Failed to move task {$this->id} to next milestone: ".$e->getMessage());
 
             return false;
         }

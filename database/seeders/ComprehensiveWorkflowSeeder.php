@@ -609,7 +609,7 @@ class ComprehensiveWorkflowSeeder extends Seeder
                 }
             }
 
-            $this->command->info("✅ Created workflow '{$workflow->name}' with " . count($workflowData['milestones']) . ' milestones');
+            $this->command->info("✅ Created workflow '{$workflow->name}' with ".count($workflowData['milestones']).' milestones');
         }
 
         $this->command->info('🎉 Successfully created all 5 comprehensive workflow templates with modern UX features!');

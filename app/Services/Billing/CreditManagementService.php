@@ -222,7 +222,7 @@ class CreditManagementService implements CreditManagementInterface
     private function validateChannel(string $channel): void
     {
         if (! in_array($channel, self::VALID_CHANNELS)) {
-            throw new \InvalidArgumentException("Invalid channel: {$channel}. Valid channels: " . implode(', ', self::VALID_CHANNELS));
+            throw new \InvalidArgumentException("Invalid channel: {$channel}. Valid channels: ".implode(', ', self::VALID_CHANNELS));
         }
     }
 

@@ -16,8 +16,7 @@ class TaskSchedulingController extends Controller
 {
     public function __construct(
         private TaskSchedulingInterface $schedulingService
-    ) {
-    }
+    ) {}
 
     /**
      * Schedule tasks for all subscribers in a list

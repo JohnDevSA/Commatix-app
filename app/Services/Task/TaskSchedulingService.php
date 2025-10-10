@@ -15,8 +15,7 @@ class TaskSchedulingService implements TaskSchedulingInterface
 {
     public function __construct(
         private ?UserAssignmentStrategyInterface $assignmentStrategy = null
-    ) {
-    }
+    ) {}
 
     /**
      * Schedule tasks for all subscribers in a list

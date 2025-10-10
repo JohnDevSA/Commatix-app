@@ -26,7 +26,7 @@ class TaskProgressionService implements TaskProgressionInterface
     {
         if (! $this->canProgress($task)) {
             $errors = $this->getProgressionErrors($task);
-            throw new \Exception('Cannot progress task: ' . implode(', ', $errors));
+            throw new \Exception('Cannot progress task: '.implode(', ', $errors));
         }
 
         return DB::transaction(function () use ($task, $user) {
@@ -216,7 +216,7 @@ class TaskProgressionService implements TaskProgressionInterface
                 'started_at' => now(),
             ]);
 
-            Log::info("Task {$task->id} started" . ($reason ? " (reason: {$reason})" : ''));
+            Log::info("Task {$task->id} started".($reason ? " (reason: {$reason})" : ''));
 
             return true;
         });

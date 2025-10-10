@@ -91,13 +91,13 @@ class User extends Authenticatable
     protected static function booted(): void
     {
         static::saved(function ($user) {
-            Cache::forget('user_' . $user->id);
-            Cache::forget('tenant_users_' . $user->tenant_id);
+            Cache::forget('user_'.$user->id);
+            Cache::forget('tenant_users_'.$user->tenant_id);
         });
 
         static::deleted(function ($user) {
-            Cache::forget('user_' . $user->id);
-            Cache::forget('tenant_users_' . $user->tenant_id);
+            Cache::forget('user_'.$user->id);
+            Cache::forget('tenant_users_'.$user->tenant_id);
         });
     }
 

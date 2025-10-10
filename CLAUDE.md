@@ -274,6 +274,48 @@ php artisan db:seed
 php artisan migrate:fresh --seed
 ```
 
+## 🖥️ IDE Setup (WSL + PhpStorm)
+
+### PhpStorm Configuration for WSL Projects
+
+This project runs on WSL (Windows Subsystem for Linux), but can be accessed from PhpStorm on Windows.
+
+#### Terminal Setup
+
+To use Claude Code and other CLI tools directly in PhpStorm's terminal:
+
+1. Open PhpStorm Settings: `File → Settings` (or `Ctrl+Alt+S`)
+2. Navigate to: `Tools → Terminal`
+3. Change "Shell path" to:
+   ```
+   C:\Windows\System32\wsl.exe
+   ```
+4. Apply and restart any open terminal tabs
+
+Now your PhpStorm terminal will run in WSL, giving you access to:
+- `claude` - Claude Code CLI
+- `php artisan` - Laravel commands
+- `composer` - Dependency management
+- `npm` - Node package management
+
+#### Why This Is Needed
+
+PhpStorm on Windows opens WSL projects using UNC paths (`\\wsl.localhost\...`), which Windows CMD doesn't support properly. By switching to WSL terminal, you get:
+- ✅ Native Linux environment
+- ✅ Direct access to all CLI tools
+- ✅ No path translation issues
+- ✅ Proper file watching and hot reload
+
+#### Alternative: Direct WSL Access
+
+You can also run `claude` directly from a WSL Ubuntu terminal:
+```bash
+cd ~/projects/commatix
+claude
+```
+
+This gives you a separate Claude Code instance outside PhpStorm.
+
 ## 🌍 Multi-Tenancy Patterns
 
 ### Creating Tenant-Aware Resources

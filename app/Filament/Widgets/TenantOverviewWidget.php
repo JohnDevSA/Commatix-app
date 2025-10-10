@@ -173,10 +173,10 @@ class TenantOverviewWidget extends BaseWidget
     private function formatStorage(float|int $mb): string
     {
         if ($mb > 1024) {
-            return number_format($mb / 1024, 2) . ' GB';
+            return number_format($mb / 1024, 2).' GB';
         }
 
-        return number_format($mb, 0) . ' MB';
+        return number_format($mb, 0).' MB';
     }
 
     private function getCompletionRate(int|string $tenantId): string
@@ -190,6 +190,6 @@ class TenantOverviewWidget extends BaseWidget
             ->where('status', 'completed')
             ->count();
 
-        return number_format(($completed / $total) * 100, 1) . '%';
+        return number_format(($completed / $total) * 100, 1).'%';
     }
 }

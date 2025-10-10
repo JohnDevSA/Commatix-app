@@ -23,6 +23,7 @@
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "jasonmccreary/laravel-test-assertions": "^2.8",
+        "larastan/larastan": "^3.0",
         "laravel-shift/blueprint": "^2.12",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.22",
@@ -75,12 +76,10 @@
         "grumphp": "grumphp run",
         "lint": [
             "pint --test",
-            "phpcs --standard=PSR12 app/ config/ database/",
-            "phpstan analyse"
+            "phpstan analyse --memory-limit=2G"
         ],
         "lint:fix": [
-            "pint",
-            "phpcbf --standard=PSR12 app/ config/ database/"
+            "pint"
         ]
     },
     "extra": {

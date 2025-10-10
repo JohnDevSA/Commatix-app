@@ -72,7 +72,7 @@ class ExportWorkflowCommand extends Command
         fclose($handle);
 
         Storage::disk('local')->put($filename, $csvContent);
-        $this->info('Export saved to: ' . Storage::disk('local')->path($filename));
+        $this->info('Export saved to: '.Storage::disk('local')->path($filename));
     }
 
     private function exportAsJson(array $data, int $workflowId)
@@ -81,6 +81,6 @@ class ExportWorkflowCommand extends Command
         $jsonContent = json_encode($data, JSON_PRETTY_PRINT);
 
         Storage::disk('local')->put($filename, $jsonContent);
-        $this->info('Export saved to: ' . Storage::disk('local')->path($filename));
+        $this->info('Export saved to: '.Storage::disk('local')->path($filename));
     }
 }

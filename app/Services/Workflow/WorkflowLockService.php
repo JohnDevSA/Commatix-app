@@ -95,7 +95,7 @@ class WorkflowLockService implements WorkflowLockingInterface
         // Clear cache
         $this->clearCache($workflow);
 
-        Log::info('Locked ' . count($milestoneIds) . " milestones for workflow {$workflow->id}");
+        Log::info('Locked '.count($milestoneIds)." milestones for workflow {$workflow->id}");
     }
 
     /**
@@ -112,7 +112,7 @@ class WorkflowLockService implements WorkflowLockingInterface
         // Clear cache
         $this->clearCache($workflow);
 
-        Log::info('Unlocked ' . count($milestoneIds) . " milestones for workflow {$workflow->id}");
+        Log::info('Unlocked '.count($milestoneIds)." milestones for workflow {$workflow->id}");
     }
 
     /**
@@ -206,7 +206,7 @@ class WorkflowLockService implements WorkflowLockingInterface
      */
     private function getCachedLockedMilestones(WorkflowTemplate $workflow): array
     {
-        $cacheKey = self::CACHE_PREFIX . $workflow->id;
+        $cacheKey = self::CACHE_PREFIX.$workflow->id;
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($workflow) {
             return $this->getLockedMilestones($workflow);
@@ -218,7 +218,7 @@ class WorkflowLockService implements WorkflowLockingInterface
      */
     private function clearCache(WorkflowTemplate $workflow): void
     {
-        $cacheKey = self::CACHE_PREFIX . $workflow->id;
+        $cacheKey = self::CACHE_PREFIX.$workflow->id;
         Cache::forget($cacheKey);
     }
 }

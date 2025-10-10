@@ -16,8 +16,12 @@ class DemoTenantSeeder extends Seeder
 {
     public function run(): void
     {
-        $tenantAdminType = UserType::where('name', 'Tenant Admin')->first();
-        $tenantUserType = UserType::where('name', 'Tenant User')->first();
+        // Use Admin type for tenant admins, User type for tenant users
+        $tenantAdminType = UserType::where('name', 'Admin')->first();
+        $tenantUserType = UserType::where('name', 'User')->first();
+
+        // Get domain suffix from environment (e.g., .dev, .stage, .co.za)
+        $domainSuffix = config('app.tenant_domain_suffix', '.local');
 
         // Create Demo Tenants for different SA business scenarios
         $demoTenants = [
@@ -59,7 +63,7 @@ class DemoTenantSeeder extends Seeder
                     'onboarding_completed' => true,
                     'verified_at' => now(),
                 ],
-                'domain' => 'techstartup.commatix.local',
+                'domain' => 'techstartup.commatix'.$domainSuffix,
                 'users' => [
                     [
                         'name' => 'John Smith',
@@ -117,7 +121,7 @@ class DemoTenantSeeder extends Seeder
                     'onboarding_completed' => true,
                     'verified_at' => now()->subMonths(6),
                 ],
-                'domain' => 'capefinance.commatix.local',
+                'domain' => 'capefinance.commatix'.$domainSuffix,
                 'users' => [
                     [
                         'name' => 'Michael van der Merwe',
@@ -177,7 +181,7 @@ class DemoTenantSeeder extends Seeder
                     'onboarding_completed' => true,
                     'verified_at' => now()->subMonths(3),
                 ],
-                'domain' => 'durbanhealth.commatix.local',
+                'domain' => 'durbanhealth.commatix'.$domainSuffix,
                 'users' => [
                     [
                         'name' => 'Dr. Priya Patel',
@@ -205,9 +209,9 @@ class DemoTenantSeeder extends Seeder
         $this->command->table(
             ['Company', 'Domain', 'Admin Email', 'Password', 'Industry'],
             [
-                ['TechStartup SA', 'techstartup.commatix.local', 'john@techstartup.co.za', 'TechDemo2025!', 'Tech/IT'],
-                ['Cape Finance', 'capefinance.commatix.local', 'michael@capefinance.co.za', 'FinanceDemo2025!', 'Financial Services'],
-                ['Durban Health', 'durbanhealth.commatix.local', 'priya@durbanhealth.co.za', 'HealthDemo2025!', 'Healthcare'],
+                ['TechStartup SA', 'techstartup.commatix'.$domainSuffix, 'john@techstartup.co.za', 'TechDemo2025!', 'Tech/IT'],
+                ['Cape Finance', 'capefinance.commatix'.$domainSuffix, 'michael@capefinance.co.za', 'FinanceDemo2025!', 'Financial Services'],
+                ['Durban Health', 'durbanhealth.commatix'.$domainSuffix, 'priya@durbanhealth.co.za', 'HealthDemo2025!', 'Healthcare'],
             ]
         );
     }

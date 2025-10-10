@@ -91,7 +91,7 @@ class UserTypeResource extends Resource
                 Tables\Actions\Action::make('view_users')
                     ->icon('heroicon-o-users')
                     ->color('info')
-                    ->url(fn (UserType $record): string => '/admin/users?' . http_build_query(['tableFilters' => ['user_type_id' => ['values' => [$record->id]]]]))
+                    ->url(fn (UserType $record): string => '/admin/users?'.http_build_query(['tableFilters' => ['user_type_id' => ['values' => [$record->id]]]]))
                     ->openUrlInNewTab(),
             ])
             ->bulkActions([

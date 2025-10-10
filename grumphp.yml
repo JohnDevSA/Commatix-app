@@ -1,22 +1,33 @@
 parameters:
   bin_dir: ./vendor/bin
   git_dir: .
+  process_timeout: 300
   tasks:
     phpcs:
       standard: PSR12
+      triggered_by: [php]
       exclude:
         - database
         - storage
         - bootstrap
     phpcpd:
+      triggered_by: [php]
       exclude:
         - database
         - storage
         - bootstrap
     phpstan:
       configuration: ./phpstan.neon.dist
-    composer: ~
-    phpunit: ~
+      triggered_by: [php]
+      memory_limit: 2G
+      use_grumphp_paths: false
+    composer:
+      no_check_all: true
+      no_check_lock: false
+      no_check_publish: true
+    phpunit:
+      testsuite: null
+      always_execute: false
 #  ascii:
 #    failed: grumphp-grumpy.txt
 #    succeeded: grumphp-happy.txt

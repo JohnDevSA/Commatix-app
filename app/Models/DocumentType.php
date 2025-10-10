@@ -203,11 +203,11 @@ class DocumentType extends Model
     protected static function booted(): void
     {
         static::saved(function ($documentType) {
-            Cache::forget('document_types_' . $documentType->tenant_id);
+            Cache::forget('document_types_'.$documentType->tenant_id);
         });
 
         static::deleted(function ($documentType) {
-            Cache::forget('document_types_' . $documentType->tenant_id);
+            Cache::forget('document_types_'.$documentType->tenant_id);
         });
     }
 }
