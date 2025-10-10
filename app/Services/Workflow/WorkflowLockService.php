@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Log;
  * Manages the locking and unlocking of workflow milestones.
  * This service ensures that critical milestones in system and industry templates
  * cannot be modified by tenants, maintaining compliance and standardization.
- *
- * @package App\Services\Workflow
  */
 class WorkflowLockService implements WorkflowLockingInterface
 {
@@ -38,14 +36,15 @@ class WorkflowLockService implements WorkflowLockingInterface
         // Update the locked_milestones JSON in the workflow template
         $workflow = $milestone->workflowTemplate;
 
-        if (!$workflow) {
+        if (! $workflow) {
             Log::warning("Attempted to lock milestone {$milestone->id} without associated workflow");
+
             return;
         }
 
         $lockedMilestones = $this->getLockedMilestones($workflow);
 
-        if (!in_array($milestone->id, $lockedMilestones)) {
+        if (! in_array($milestone->id, $lockedMilestones)) {
             $lockedMilestones[] = $milestone->id;
             $workflow->locked_milestones = json_encode($lockedMilestones);
             $workflow->save();
@@ -64,13 +63,14 @@ class WorkflowLockService implements WorkflowLockingInterface
     {
         $workflow = $milestone->workflowTemplate;
 
-        if (!$workflow) {
+        if (! $workflow) {
             Log::warning("Attempted to unlock milestone {$milestone->id} without associated workflow");
+
             return;
         }
 
         $lockedMilestones = $this->getLockedMilestones($workflow);
-        $lockedMilestones = array_filter($lockedMilestones, fn($id) => $id !== $milestone->id);
+        $lockedMilestones = array_filter($lockedMilestones, fn ($id) => $id !== $milestone->id);
 
         $workflow->locked_milestones = json_encode(array_values($lockedMilestones));
         $workflow->save();
@@ -95,7 +95,7 @@ class WorkflowLockService implements WorkflowLockingInterface
         // Clear cache
         $this->clearCache($workflow);
 
-        Log::info("Locked " . count($milestoneIds) . " milestones for workflow {$workflow->id}");
+        Log::info('Locked ' . count($milestoneIds) . " milestones for workflow {$workflow->id}");
     }
 
     /**
@@ -104,7 +104,7 @@ class WorkflowLockService implements WorkflowLockingInterface
     public function unlockMilestones(WorkflowTemplate $workflow, array $milestoneIds): void
     {
         $currentLocked = $this->getLockedMilestones($workflow);
-        $newLocked = array_filter($currentLocked, fn($id) => !in_array($id, $milestoneIds));
+        $newLocked = array_filter($currentLocked, fn ($id) => ! in_array($id, $milestoneIds));
 
         $workflow->locked_milestones = json_encode(array_values($newLocked));
         $workflow->save();
@@ -112,7 +112,7 @@ class WorkflowLockService implements WorkflowLockingInterface
         // Clear cache
         $this->clearCache($workflow);
 
-        Log::info("Unlocked " . count($milestoneIds) . " milestones for workflow {$workflow->id}");
+        Log::info('Unlocked ' . count($milestoneIds) . " milestones for workflow {$workflow->id}");
     }
 
     /**
@@ -122,7 +122,7 @@ class WorkflowLockService implements WorkflowLockingInterface
     {
         $workflow = $milestone->workflowTemplate;
 
-        if (!$workflow) {
+        if (! $workflow) {
             return false;
         }
 
@@ -149,7 +149,7 @@ class WorkflowLockService implements WorkflowLockingInterface
         // Check if user owns the workflow
         $workflow = $milestone->workflowTemplate;
 
-        if (!$workflow) {
+        if (! $workflow) {
             return false;
         }
 
@@ -181,8 +181,9 @@ class WorkflowLockService implements WorkflowLockingInterface
      */
     public function lockSystemTemplate(WorkflowTemplate $workflow): void
     {
-        if (!$workflow->is_system_template) {
+        if (! $workflow->is_system_template) {
             Log::warning("Attempted to lock non-system template {$workflow->id} as system template");
+
             return;
         }
 
@@ -191,6 +192,7 @@ class WorkflowLockService implements WorkflowLockingInterface
 
         if (empty($milestoneIds)) {
             Log::warning("No milestones found for system template {$workflow->id}");
+
             return;
         }
 
@@ -201,9 +203,6 @@ class WorkflowLockService implements WorkflowLockingInterface
 
     /**
      * Get cached locked milestones for a workflow.
-     *
-     * @param WorkflowTemplate $workflow
-     * @return array
      */
     private function getCachedLockedMilestones(WorkflowTemplate $workflow): array
     {
@@ -216,9 +215,6 @@ class WorkflowLockService implements WorkflowLockingInterface
 
     /**
      * Clear the cache for a workflow's locked milestones.
-     *
-     * @param WorkflowTemplate $workflow
-     * @return void
      */
     private function clearCache(WorkflowTemplate $workflow): void
     {

@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\UserType;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserTypeFactory extends Factory
 {

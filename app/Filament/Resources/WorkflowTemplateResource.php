@@ -10,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 
 class WorkflowTemplateResource extends Resource
@@ -68,9 +66,7 @@ class WorkflowTemplateResource extends Resource
                                                     ->required()
                                                     ->reactive()
                                                     ->extraAttributes(['class' => 'glass-input'])
-                                                    ->afterStateUpdated(fn ($state, callable $set) =>
-                                                    $state === 'copied' ? $set('parent_template_id', null) : null
-                                                    ),
+                                                    ->afterStateUpdated(fn ($state, callable $set) => $state === 'copied' ? $set('parent_template_id', null) : null),
 
                                                 Forms\Components\TextInput::make('template_version')
                                                     ->label('Version')
@@ -79,7 +75,7 @@ class WorkflowTemplateResource extends Resource
                                                     ->placeholder('1.0')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('Semantic versioning (e.g., 1.0, 1.1, 2.0)'),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -102,12 +98,12 @@ class WorkflowTemplateResource extends Resource
                                                     ->options([
                                                         'simple' => '🟢 Simple (1-3 steps)',
                                                         'medium' => '🟡 Medium (4-8 steps)',
-                                                        'complex' => '🔴 Complex (9+ steps)'
+                                                        'complex' => '🔴 Complex (9+ steps)',
                                                     ])
                                                     ->default('medium')
                                                     ->required()
                                                     ->extraAttributes(['class' => 'glass-input']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
 
@@ -147,7 +143,7 @@ class WorkflowTemplateResource extends Resource
                                                             ->where('template_type', '!=', 'custom')
                                                             ->pluck('name', 'id');
                                                     }),
-                                            ])
+                                            ]),
                                     ])
                                     ->visible(fn (callable $get) => $get('template_type') === 'copied')
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
@@ -169,7 +165,7 @@ class WorkflowTemplateResource extends Resource
                                                     ->default(true)
                                                     ->helperText('Include communication settings and channels')
                                                     ->extraAttributes(['class' => 'glass-card']),
-                                            ])
+                                            ]),
                                     ])
                                     ->visible(fn (callable $get) => $get('template_type') === 'copied')
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
@@ -228,7 +224,7 @@ class WorkflowTemplateResource extends Resource
                                                     ->default(false)
                                                     ->helperText('Make automated voice calls')
                                                     ->extraAttributes(['class' => 'glass-card']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -259,7 +255,7 @@ class WorkflowTemplateResource extends Resource
                                                     ->placeholder('Add tags...')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('Keywords for template discovery'),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
@@ -288,7 +284,7 @@ class WorkflowTemplateResource extends Resource
                                                     ->label('Publication Date')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('When this template was published'),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -313,7 +309,7 @@ class WorkflowTemplateResource extends Resource
                                                     ->default(true)
                                                     ->helperText('Tenants can modify this template')
                                                     ->extraAttributes(['class' => 'glass-card']),
-                                            ])
+                                            ]),
                                     ]),
 
                                 Forms\Components\Section::make('Advanced Security')
@@ -327,11 +323,11 @@ class WorkflowTemplateResource extends Resource
                                             ->extraInputAttributes(['class' => 'glass-input'])
                                             ->helperText('Milestone IDs that cannot be modified by tenants')
                                             ->columnSpanFull(),
-                                    ])
+                                    ]),
 
                             ]),
                     ])
-                    ->columnSpanFull()
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -400,13 +396,13 @@ class WorkflowTemplateResource extends Resource
                         'industry' => 'Industry',
                         'custom' => 'Custom',
                         'copied' => 'Copied',
-                        'global' => 'Global'
+                        'global' => 'Global',
                     ]),
                 Tables\Filters\SelectFilter::make('complexity_level')
                     ->options([
                         'simple' => 'Simple',
                         'medium' => 'Medium',
-                        'complex' => 'Complex'
+                        'complex' => 'Complex',
                     ]),
                 Tables\Filters\TernaryFilter::make('is_published'),
                 Tables\Filters\TernaryFilter::make('is_active'),

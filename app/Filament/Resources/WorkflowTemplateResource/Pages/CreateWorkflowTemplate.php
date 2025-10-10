@@ -3,11 +3,9 @@
 namespace App\Filament\Resources\WorkflowTemplateResource\Pages;
 
 use App\Filament\Resources\WorkflowTemplateResource;
-use App\Models\WorkflowTemplate;
 use App\Models\Milestone;
-use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateWorkflowTemplate extends CreateRecord
 {
@@ -39,7 +37,9 @@ class CreateWorkflowTemplate extends CreateRecord
     {
         $parentTemplate = $this->record->parentTemplate;
 
-        if (!$parentTemplate) return;
+        if (! $parentTemplate) {
+            return;
+        }
 
         foreach ($parentTemplate->milestones as $milestone) {
             Milestone::create([
@@ -58,7 +58,7 @@ class CreateWorkflowTemplate extends CreateRecord
 
         // Update total estimated duration
         $this->record->update([
-            'estimated_duration_days' => $parentTemplate->estimated_duration_days
+            'estimated_duration_days' => $parentTemplate->estimated_duration_days,
         ]);
     }
 }

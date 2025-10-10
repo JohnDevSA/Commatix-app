@@ -4,14 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TenantTopUpResource\Pages;
 use App\Models\TenantTopUp;
-use App\Models\Tenant;
-use App\Contracts\Services\CreditManagementInterface;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 
 class TenantTopUpResource extends Resource

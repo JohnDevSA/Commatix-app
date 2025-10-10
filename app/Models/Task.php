@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Carbon\Carbon;
 
 class Task extends Model
 {
@@ -94,8 +94,6 @@ class Task extends Model
      * Check if task can start early (before scheduled date).
      *
      * This method delegates to TaskProgressionService for business logic.
-     *
-     * @return bool
      */
     public function canStartEarly(): bool
     {
@@ -108,8 +106,6 @@ class Task extends Model
      * Check if task should auto-start based on scheduled date.
      *
      * This method delegates to TaskProgressionService for business logic.
-     *
-     * @return bool
      */
     public function shouldAutoStart(): bool
     {
@@ -123,8 +119,7 @@ class Task extends Model
      *
      * Delegates to TaskProgressionService for complex business logic.
      *
-     * @param string|null $reason Optional reason for early start
-     * @return bool
+     * @param  string|null  $reason  Optional reason for early start
      */
     public function startTask(?string $reason = null): bool
     {
@@ -136,8 +131,6 @@ class Task extends Model
      * Move task to next milestone.
      *
      * Delegates to TaskProgressionService for complex business logic.
-     *
-     * @return bool
      */
     public function moveToNextMilestone(): bool
     {
@@ -148,14 +141,13 @@ class Task extends Model
             return $result !== null || $this->status === 'completed';
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("Failed to move task {$this->id} to next milestone: " . $e->getMessage());
+
             return false;
         }
     }
 
     /**
      * Get task completion percentage.
-     *
-     * @return float
      */
     public function getCompletionPercentage(): float
     {
@@ -165,8 +157,6 @@ class Task extends Model
 
     /**
      * Check if task can progress to next milestone.
-     *
-     * @return bool
      */
     public function canProgress(): bool
     {

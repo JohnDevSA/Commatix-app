@@ -14,7 +14,7 @@ class SingleUserAssignmentStrategy implements UserAssignmentStrategyInterface
     /**
      * Create a new single user assignment strategy
      *
-     * @param User|null $user The user to assign all tasks to (optional, can be set later)
+     * @param  User|null  $user  The user to assign all tasks to (optional, can be set later)
      */
     public function __construct(?User $user = null)
     {
@@ -27,9 +27,10 @@ class SingleUserAssignmentStrategy implements UserAssignmentStrategyInterface
      * Always returns the same user for consistent assignment.
      * If no user was set in constructor, uses the first user from the collection.
      *
-     * @param Task $task The task to assign
-     * @param Collection $users Collection of users (uses first if no user pre-selected)
+     * @param  Task  $task  The task to assign
+     * @param  Collection  $users  Collection of users (uses first if no user pre-selected)
      * @return User The selected user
+     *
      * @throws \Exception If no user is selected and collection is empty
      */
     public function assignUser(Task $task, Collection $users): User
@@ -41,7 +42,7 @@ class SingleUserAssignmentStrategy implements UserAssignmentStrategyInterface
 
         // Otherwise, use the first user from the collection
         if ($users->isEmpty()) {
-            throw new \Exception("Cannot assign task: no users provided for single user assignment.");
+            throw new \Exception('Cannot assign task: no users provided for single user assignment.');
         }
 
         // Cache the selected user for future assignments
@@ -52,13 +53,11 @@ class SingleUserAssignmentStrategy implements UserAssignmentStrategyInterface
 
     /**
      * Set the user to assign all tasks to
-     *
-     * @param User $user
-     * @return self
      */
     public function setUser(User $user): self
     {
         $this->selectedUser = $user;
+
         return $this;
     }
 }

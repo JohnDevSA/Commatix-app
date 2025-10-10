@@ -2,16 +2,17 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Task;
-use App\Models\User;
 use App\Models\Subscriber;
+use App\Models\Task;
 use App\Models\TenantUsage;
+use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class TenantOverviewWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
+
     protected static ?string $pollingInterval = '30s';
 
     protected function getStats(): array
@@ -92,16 +93,16 @@ class TenantOverviewWidget extends BaseWidget
 
         if ($currentMonth == 0) {
             return [
-                'description' => "No new members this month",
+                'description' => 'No new members this month',
                 'icon' => 'heroicon-m-minus',
-                'color' => 'gray'
+                'color' => 'gray',
             ];
         }
 
         return [
             'description' => "{$currentMonth} new this month",
             'icon' => 'heroicon-m-arrow-trending-up',
-            'color' => 'success'
+            'color' => 'success',
         ];
     }
 
@@ -116,7 +117,7 @@ class TenantOverviewWidget extends BaseWidget
         return [
             'description' => "{$completedThisMonth} completed this month",
             'icon' => 'heroicon-m-check-circle',
-            'color' => 'success'
+            'color' => 'success',
         ];
     }
 
@@ -129,23 +130,23 @@ class TenantOverviewWidget extends BaseWidget
 
         if ($currentMonth == 0) {
             return [
-                'description' => "No new subscribers this month",
+                'description' => 'No new subscribers this month',
                 'icon' => 'heroicon-m-minus',
-                'color' => 'gray'
+                'color' => 'gray',
             ];
         }
 
         return [
             'description' => "{$currentMonth} new this month",
             'icon' => 'heroicon-m-arrow-trending-up',
-            'color' => 'success'
+            'color' => 'success',
         ];
     }
 
     private function getTaskChart(int|string $tenantId): array
     {
         return collect(range(6, 0))
-            ->map(fn($daysAgo) => Task::where('tenant_id', $tenantId)
+            ->map(fn ($daysAgo) => Task::where('tenant_id', $tenantId)
                 ->whereDate('created_at', now()->subDays($daysAgo))
                 ->count())
             ->toArray();
@@ -154,7 +155,7 @@ class TenantOverviewWidget extends BaseWidget
     private function getUserChart(int|string $tenantId): array
     {
         return collect(range(6, 0))
-            ->map(fn($daysAgo) => User::where('tenant_id', $tenantId)
+            ->map(fn ($daysAgo) => User::where('tenant_id', $tenantId)
                 ->whereDate('created_at', now()->subDays($daysAgo))
                 ->count())
             ->toArray();
@@ -163,7 +164,7 @@ class TenantOverviewWidget extends BaseWidget
     private function getSubscriberChart(int|string $tenantId): array
     {
         return collect(range(6, 0))
-            ->map(fn($daysAgo) => Subscriber::where('tenant_id', $tenantId)
+            ->map(fn ($daysAgo) => Subscriber::where('tenant_id', $tenantId)
                 ->whereDate('created_at', now()->subDays($daysAgo))
                 ->count())
             ->toArray();
@@ -174,6 +175,7 @@ class TenantOverviewWidget extends BaseWidget
         if ($mb > 1024) {
             return number_format($mb / 1024, 2) . ' GB';
         }
+
         return number_format($mb, 0) . ' MB';
     }
 

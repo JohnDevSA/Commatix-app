@@ -4,8 +4,8 @@ namespace App\Filament\Resources\TenantWorkflowTemplateResource\Pages;
 
 use App\Filament\Resources\TenantWorkflowTemplateResource;
 use App\Models\AccessScope;
-use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateTenantWorkflowTemplate extends CreateRecord
 {

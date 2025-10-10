@@ -6,45 +6,44 @@ use App\Contracts\Services\CreditManagementInterface;
 use App\Models\Tenant;
 use App\Models\TenantTopUp;
 use App\Models\TenantUsage;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 
 class CreditManagementService implements CreditManagementInterface
 {
     private const VALID_CHANNELS = ['sms', 'email', 'whatsapp', 'voice'];
+
     private const CACHE_TTL = 300; // 5 minutes
 
     /**
      * Check if tenant has enough credits for a channel
      *
-     * @param Tenant $tenant
-     * @param string $channel (sms, email, whatsapp, voice)
-     * @param int $amount Number of credits needed
-     * @return bool
+     * @param  string  $channel  (sms, email, whatsapp, voice)
+     * @param  int  $amount  Number of credits needed
      */
     public function canUseChannel(Tenant $tenant, string $channel, int $amount): bool
     {
         $this->validateChannel($channel);
 
         $available = $this->getAvailableCredits($tenant, $channel);
+
         return $available >= $amount;
     }
 
     /**
      * Deduct credits from tenant's account
      *
-     * @param Tenant $tenant
-     * @param string $channel (sms, email, whatsapp, voice)
-     * @param int $amount Number of credits to deduct
-     * @return bool
+     * @param  string  $channel  (sms, email, whatsapp, voice)
+     * @param  int  $amount  Number of credits to deduct
+     *
      * @throws \Exception If insufficient credits
      */
     public function deductCredits(Tenant $tenant, string $channel, int $amount): bool
     {
         $this->validateChannel($channel);
 
-        if (!$this->canUseChannel($tenant, $channel, $amount)) {
+        if (! $this->canUseChannel($tenant, $channel, $amount)) {
             throw new \Exception("Insufficient {$channel} credits. Available: {$this->getAvailableCredits($tenant, $channel)}, Required: {$amount}");
         }
 
@@ -76,11 +75,9 @@ class CreditManagementService implements CreditManagementInterface
     /**
      * Add credits to tenant's account (top-up)
      *
-     * @param Tenant $tenant
-     * @param string $channel (sms, email, whatsapp, voice)
-     * @param int $amount Number of credits to add
-     * @param string|null $reason Reason for top-up
-     * @return bool
+     * @param  string  $channel  (sms, email, whatsapp, voice)
+     * @param  int  $amount  Number of credits to add
+     * @param  string|null  $reason  Reason for top-up
      */
     public function addCredits(Tenant $tenant, string $channel, int $amount, ?string $reason = null): bool
     {
@@ -114,9 +111,7 @@ class CreditManagementService implements CreditManagementInterface
      *
      * Available = Subscription Limit + Top-ups - Current Usage
      *
-     * @param Tenant $tenant
-     * @param string $channel (sms, email, whatsapp, voice)
-     * @return int
+     * @param  string  $channel  (sms, email, whatsapp, voice)
      */
     public function getAvailableCredits(Tenant $tenant, string $channel): int
     {
@@ -147,9 +142,7 @@ class CreditManagementService implements CreditManagementInterface
     /**
      * Get credit usage for current billing period
      *
-     * @param Tenant $tenant
-     * @param string $channel (sms, email, whatsapp, voice)
-     * @return int
+     * @param  string  $channel  (sms, email, whatsapp, voice)
      */
     public function getCurrentUsage(Tenant $tenant, string $channel): int
     {
@@ -163,9 +156,6 @@ class CreditManagementService implements CreditManagementInterface
 
     /**
      * Get current billing period usage record
-     *
-     * @param Tenant $tenant
-     * @return TenantUsage
      */
     private function getCurrentPeriodUsage(Tenant $tenant): TenantUsage
     {
@@ -191,10 +181,6 @@ class CreditManagementService implements CreditManagementInterface
 
     /**
      * Get total top-ups for current period
-     *
-     * @param Tenant $tenant
-     * @param string $channel
-     * @return int
      */
     private function getCurrentPeriodTopUps(Tenant $tenant, string $channel): int
     {
@@ -209,9 +195,7 @@ class CreditManagementService implements CreditManagementInterface
     /**
      * Get channel limit from subscription
      *
-     * @param \App\Models\TenantSubscription $subscription
-     * @param string $channel
-     * @return int
+     * @param  \App\Models\TenantSubscription  $subscription
      */
     private function getChannelLimit($subscription, string $channel): int
     {
@@ -233,22 +217,17 @@ class CreditManagementService implements CreditManagementInterface
     /**
      * Validate channel name
      *
-     * @param string $channel
      * @throws \InvalidArgumentException
      */
     private function validateChannel(string $channel): void
     {
-        if (!in_array($channel, self::VALID_CHANNELS)) {
+        if (! in_array($channel, self::VALID_CHANNELS)) {
             throw new \InvalidArgumentException("Invalid channel: {$channel}. Valid channels: " . implode(', ', self::VALID_CHANNELS));
         }
     }
 
     /**
      * Get cache key for credits
-     *
-     * @param Tenant $tenant
-     * @param string $channel
-     * @return string
      */
     private function getCacheKey(Tenant $tenant, string $channel): string
     {
@@ -257,9 +236,6 @@ class CreditManagementService implements CreditManagementInterface
 
     /**
      * Clear credit cache for a tenant and channel
-     *
-     * @param Tenant $tenant
-     * @param string $channel
      */
     private function clearCreditCache(Tenant $tenant, string $channel): void
     {

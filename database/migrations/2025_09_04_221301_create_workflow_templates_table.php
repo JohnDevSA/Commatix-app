@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreignId('division_id')->nullable(); // Make nullable for global templates
 
             // Template categorization
-            $table->enum('template_type', ["system","industry","custom","copied","global"])->default('custom');
+            $table->enum('template_type', ['system', 'industry', 'custom', 'copied', 'global'])->default('custom');
             $table->foreignId('parent_template_id')->nullable();
             $table->string('industry_category')->nullable();
             $table->string('category')->nullable(); // For seeder compatibility
@@ -51,7 +51,7 @@ return new class extends Migration
 
             // Template metadata
             $table->integer('estimated_duration_days')->nullable();
-            $table->enum('complexity_level', ["simple","medium","complex"])->default('medium');
+            $table->enum('complexity_level', ['simple', 'medium', 'complex'])->default('medium');
             $table->boolean('is_customizable')->default(true);
             $table->json('locked_milestones')->nullable();
             $table->json('required_roles')->nullable();

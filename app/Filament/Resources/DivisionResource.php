@@ -71,9 +71,7 @@ class DivisionResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->icon('heroicon-o-building-office-2')
-                    ->description(fn (Division $record) =>
-                        "{$record->users()->count()} users, {$record->workflowTemplates()->count()} workflows"
-                    ),
+                    ->description(fn (Division $record) => "{$record->users()->count()} users, {$record->workflowTemplates()->count()} workflows"),
 
                 Tables\Columns\TextColumn::make('tenant.name')
                     ->label('Tenant')

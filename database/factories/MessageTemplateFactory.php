@@ -2,10 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\MessageTemplate;
 use App\Models\Tenant;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MessageTemplateFactory extends Factory
 {
@@ -23,7 +22,7 @@ class MessageTemplateFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'type' => fake()->randomElement(["email","sms","whatsapp","voice"]),
+            'type' => fake()->randomElement(['email', 'sms', 'whatsapp', 'voice']),
             'subject' => fake()->word(),
             'content' => fake()->paragraphs(3, true),
             'variables' => '{}',

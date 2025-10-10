@@ -2,12 +2,11 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\;
 use App\Models\Attachment;
+use App\Models\DocumentType;
 use App\Models\TaskMilestone;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AttachmentFactory extends Factory
 {
@@ -25,7 +24,7 @@ class AttachmentFactory extends Factory
     {
         return [
             'task_milestone_id' => TaskMilestone::factory(),
-            'document_type_id' => ::factory(),
+            'document_type_id' => DocumentType::factory(),
             'required' => fake()->boolean(),
             'file_url' => fake()->word(),
             'uploaded_by' => fake()->randomNumber(),

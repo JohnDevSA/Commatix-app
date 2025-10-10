@@ -2,16 +2,16 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Models\Milestone;
 use App\Models\WorkflowTemplate;
 use App\Services\WorkflowExportService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class MilestoneExportTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     /** @test */
     public function it_can_export_milestone_with_sla_time_fields()
     {
@@ -26,7 +26,7 @@ class MilestoneExportTest extends TestCase
             'status_type_id' => 1,
             'user_id' => 1,
         ]);
-        
+
         // Create a milestone with SLA time fields
         $milestone = Milestone::create([
             'workflow_template_id' => $workflow->id,
@@ -41,13 +41,13 @@ class MilestoneExportTest extends TestCase
             'requires_docs' => false,
             'actions' => '{}',
         ]);
-        
+
         // Create export service
-        $exportService = new WorkflowExportService();
-        
+        $exportService = new WorkflowExportService;
+
         // Export the workflow
         $exportData = $exportService->exportWorkflow($workflow);
-        
+
         // Verify the export contains the expected data
         $this->assertNotEmpty($exportData);
         $this->assertEquals($workflow->id, $exportData[0]['WORKFLOW_ID']);

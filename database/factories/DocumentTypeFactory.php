@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\;
+use App\Models\AccessScope;
 use App\Models\DocumentType;
 use App\Models\Tenant;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DocumentTypeFactory extends Factory
 {
@@ -25,7 +24,7 @@ class DocumentTypeFactory extends Factory
         return [
             'name' => fake()->name(),
             'description' => fake()->text(),
-            'access_scope_id' => ::factory(),
+            'access_scope_id' => AccessScope::factory(),
             'tenant_id' => Tenant::factory(),
         ];
     }

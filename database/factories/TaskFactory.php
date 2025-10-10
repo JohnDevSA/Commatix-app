@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\;
+use App\Models\Division;
 use App\Models\StatusType;
 use App\Models\Task;
+use App\Models\Tenant;
 use App\Models\WorkflowTemplate;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TaskFactory extends Factory
 {
@@ -27,8 +27,8 @@ class TaskFactory extends Factory
             'reference_number' => fake()->word(),
             'workflow_template_id' => WorkflowTemplate::factory(),
             'status_id' => fake()->randomNumber(),
-            'tenant_id' => ::factory(),
-            'division_id' => ::factory(),
+            'tenant_id' => Tenant::factory(),
+            'division_id' => Division::factory(),
             'created_by' => fake()->randomNumber(),
             'assigned_to' => fake()->randomNumber(),
             'status_type_id' => StatusType::factory(),

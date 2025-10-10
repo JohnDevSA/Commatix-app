@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\;
+use App\Models\Division;
 use App\Models\DocumentType;
 use App\Models\DocumentTypeDivision;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DocumentTypeDivisionFactory extends Factory
 {
@@ -24,7 +23,7 @@ class DocumentTypeDivisionFactory extends Factory
     {
         return [
             'document_type_id' => DocumentType::factory(),
-            'division_id' => ::factory(),
+            'division_id' => Division::factory(),
         ];
     }
 }

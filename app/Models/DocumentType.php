@@ -97,7 +97,7 @@ class DocumentType extends Model
     public static function getAvailableDocuments($user = null)
     {
         $user = $user ?: auth()->user();
-        if (!$user) {
+        if (! $user) {
             return static::query()->whereRaw('1 = 0'); // Empty query
         }
 
@@ -133,7 +133,6 @@ class DocumentType extends Model
         return $query->distinct();
     }
 
-
     /**
      * Get documents available for a specific division
      */
@@ -165,8 +164,6 @@ class DocumentType extends Model
         return static::getAvailableDocuments($user);
     }
 
-
-
     /**
      * Get document types as options for form selects in workflows
      */
@@ -196,6 +193,7 @@ class DocumentType extends Model
             } elseif ($doc->accessScope && $doc->accessScope->name === 'global') {
                 return 'Global System';
             }
+
             return 'Other';
         })->map(function ($group) {
             return $group->pluck('name', 'id')->toArray();

@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Tenant;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TenantFactory extends Factory
 {
@@ -27,9 +26,9 @@ class TenantFactory extends Factory
             'company_registration_number' => fake()->word(),
             'vat_number' => fake()->word(),
             'tax_reference_number' => fake()->word(),
-            'bee_level' => fake()->randomElement(["1","2","3","4","5","6","7","8","non-compliant"]),
+            'bee_level' => fake()->randomElement(['1', '2', '3', '4', '5', '6', '7', '8', 'non-compliant']),
             'industry_classification' => fake()->word(),
-            'company_type' => fake()->randomElement(["pty_ltd","public","close_corp","partnership","sole_prop","npo","trust"]),
+            'company_type' => fake()->randomElement(['pty_ltd', 'public', 'close_corp', 'partnership', 'sole_prop', 'npo', 'trust']),
             'primary_contact_person' => fake()->word(),
             'primary_email' => fake()->word(),
             'primary_phone' => fake()->word(),
@@ -39,15 +38,15 @@ class TenantFactory extends Factory
             'physical_address_line1' => fake()->word(),
             'physical_address_line2' => fake()->word(),
             'physical_city' => fake()->word(),
-            'physical_province' => fake()->randomElement(["gauteng","western_cape","kwazulu_natal","eastern_cape","northern_cape","free_state","limpopo","mpumalanga","north_west"]),
+            'physical_province' => fake()->randomElement(['gauteng', 'western_cape', 'kwazulu_natal', 'eastern_cape', 'northern_cape', 'free_state', 'limpopo', 'mpumalanga', 'north_west']),
             'physical_postal_code' => fake()->word(),
             'postal_address_line1' => fake()->word(),
             'postal_address_line2' => fake()->word(),
             'postal_city' => fake()->word(),
             'postal_province' => fake()->word(),
             'postal_code' => fake()->postcode(),
-            'subscription_tier' => fake()->randomElement(["starter","business","enterprise","custom"]),
-            'billing_cycle' => fake()->randomElement(["monthly","annually"]),
+            'subscription_tier' => fake()->randomElement(['starter', 'business', 'enterprise', 'custom']),
+            'billing_cycle' => fake()->randomElement(['monthly', 'annually']),
             'subscription_start_date' => fake()->date(),
             'subscription_end_date' => fake()->date(),
             'max_users' => fake()->numberBetween(-10000, 10000),
@@ -70,7 +69,7 @@ class TenantFactory extends Factory
             'business_hours_start' => fake()->time(),
             'business_hours_end' => fake()->time(),
             'business_days' => '{}',
-            'status' => fake()->randomElement(["trial","active","inactive","suspended","cancelled"]),
+            'status' => fake()->randomElement(['trial', 'active', 'inactive', 'suspended', 'cancelled']),
             'is_verified' => fake()->boolean(),
             'verification_documents' => '{}',
             'onboarding_completed' => fake()->boolean(),

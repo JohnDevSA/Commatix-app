@@ -4,15 +4,15 @@ parameters:
   tasks:
     phpcs:
       standard: PSR12
-      ignore_patterns:
-        - "*/database/*"
-        - "*/storage/*"
-        - "*/bootstrap/*"
+      exclude:
+        - database
+        - storage
+        - bootstrap
     phpcpd:
-      ignore_patterns:
-        - "*/database/*"
-        - "*/storage/*"
-        - "*/bootstrap/*"
+      exclude:
+        - database
+        - storage
+        - bootstrap
     phpstan:
       configuration: ./phpstan.neon.dist
     composer: ~

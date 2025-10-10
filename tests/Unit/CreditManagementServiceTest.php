@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use App\Contracts\Services\CreditManagementInterface;
-use App\Models\Tenant;
 use App\Models\Subscription;
+use App\Models\Tenant;
 use App\Models\TenantCommunicationUsage;
 use App\Models\TenantTopUp;
 use App\Services\Billing\CreditManagementService;
@@ -17,12 +17,13 @@ class CreditManagementServiceTest extends TestCase
     use RefreshDatabase;
 
     private CreditManagementService $service;
+
     private Tenant $tenant;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new CreditManagementService();
+        $this->service = new CreditManagementService;
         $this->tenant = Tenant::factory()->create();
     }
 

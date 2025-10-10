@@ -41,7 +41,7 @@ return new class extends Migration
                 'can_be_skipped',
                 'auto_complete',
                 'completion_criteria',
-                'notes'
+                'notes',
             ]);
         });
     }

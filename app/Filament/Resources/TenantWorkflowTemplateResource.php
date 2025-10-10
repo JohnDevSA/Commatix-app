@@ -25,7 +25,6 @@ class TenantWorkflowTemplateResource extends Resource
 
     protected static ?string $navigationGroup = 'Workflows';
 
-
     protected static ?string $slug = 'tenant-workflow-templates';
 
     protected static ?string $recordTitleAttribute = 'name';
@@ -67,6 +66,7 @@ class TenantWorkflowTemplateResource extends Resource
                         Forms\Components\Hidden::make('access_scope_id')
                             ->default(function () {
                                 $scope = \App\Models\AccessScope::where('name', 'tenant_custom')->first();
+
                                 return $scope ? $scope->id : 1; // Fallback to ID 1 if not found
                             }),
                         Forms\Components\Hidden::make('template_type')
@@ -122,7 +122,7 @@ class TenantWorkflowTemplateResource extends Resource
                     ->where('is_public', true);
 
                 // Show user's own custom templates
-                $query->orWhere(function ($subQuery) use ($tenant, $user) {
+                $query->orWhere(function ($subQuery) use ($user) {
                     $subQuery->where('template_type', 'custom')
                         ->where('created_by', $user->id);
                 });
@@ -158,9 +158,7 @@ class TenantWorkflowTemplateResource extends Resource
                 Tables\Columns\TextColumn::make('industry_category')
                     ->label('Industry')
                     ->searchable()
-                    ->formatStateUsing(fn (?string $state): string =>
-                    $state ? Str::title(str_replace('_', ' ', $state)) : 'N/A'
-                    )
+                    ->formatStateUsing(fn (?string $state): string => $state ? Str::title(str_replace('_', ' ', $state)) : 'N/A')
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('milestones_count')
@@ -207,9 +205,7 @@ class TenantWorkflowTemplateResource extends Resource
                     ->label('Use Template')
                     ->icon('heroicon-o-document-plus')
                     ->color('success')
-                    ->visible(fn (WorkflowTemplate $record) =>
-                        $record->template_type !== 'custom' || $record->created_by !== auth()->id()
-                    )
+                    ->visible(fn (WorkflowTemplate $record) => $record->template_type !== 'custom' || $record->created_by !== auth()->id())
                     ->form([
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -238,13 +234,12 @@ class TenantWorkflowTemplateResource extends Resource
                             'complexity_level' => 'simple',
                             'estimated_duration_days' => $record->estimated_duration_days ?? 0,
                             // Set access_scope_id for tenant custom workflows
-                            'access_scope_id' => \App\Models\AccessScope::where('name', 'tenant_custom')->first()?->id
+                            'access_scope_id' => \App\Models\AccessScope::where('name', 'tenant_custom')->first()?->id,
                         ]);
 
                         if (tenant()) {
                             $newWorkflow->tenant_id = tenant()->id;
                         }
-
 
                         $newWorkflow->save();
 
@@ -268,9 +263,7 @@ class TenantWorkflowTemplateResource extends Resource
 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                    ->visible(fn (WorkflowTemplate $record) =>
-                        $record->created_by === auth()->id()
-                    ),
+                    ->visible(fn (WorkflowTemplate $record) => $record->created_by === auth()->id()),
             ]);
     }
 
@@ -280,5 +273,4 @@ class TenantWorkflowTemplateResource extends Resource
             MilestonesRelationManager::class,
         ];
     }
-
 }

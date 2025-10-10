@@ -23,7 +23,7 @@ class ViewTask extends ViewRecord
                     \Filament\Forms\Components\Textarea::make('reason')
                         ->label('Reason for early start')
                         ->required()
-                        ->placeholder('Please explain why this task needs to start early...')
+                        ->placeholder('Please explain why this task needs to start early...'),
                 ])
                 ->action(function (array $data) {
                     $this->record->startTask($data['reason']);

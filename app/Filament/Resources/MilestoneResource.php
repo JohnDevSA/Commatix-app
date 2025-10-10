@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MilestoneResource\Pages;
-use App\Filament\Resources\MilestoneResource\RelationManagers;
 use App\Models\Milestone;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MilestoneResource extends Resource
 {
@@ -65,7 +62,7 @@ class MilestoneResource extends Resource
                             ->label('Requires Approval')
                             ->helperText('Whether this milestone requires approval before completion')
                             ->reactive()
-                            ->afterStateUpdated(fn ($state, callable $set) => !$state ? $set('approval_group_name', null) : null),
+                            ->afterStateUpdated(fn ($state, callable $set) => ! $state ? $set('approval_group_name', null) : null),
 
                         Forms\Components\TextInput::make('approval_group_name')
                             ->label('Approval Group Name')
@@ -152,6 +149,7 @@ class MilestoneResource extends Resource
                     ->limit(50)
                     ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
                         $state = $column->getState();
+
                         return strlen($state) > 50 ? $state : null;
                     })
                     ->toggleable(isToggledHiddenByDefault: true),

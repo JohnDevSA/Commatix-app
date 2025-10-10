@@ -3,11 +3,11 @@
 namespace Tests\Unit;
 
 use App\Contracts\Services\TaskSchedulingInterface;
-use App\Models\SubscriberList;
 use App\Models\Subscriber;
+use App\Models\SubscriberList;
+use App\Models\Task;
 use App\Models\Tenant;
 use App\Models\User;
-use App\Models\Task;
 use App\Services\Task\TaskSchedulingService;
 use App\Services\UserAssignment\RoundRobinAssignmentStrategy;
 use App\Services\UserAssignment\SingleUserAssignmentStrategy;
@@ -19,13 +19,15 @@ class TaskSchedulingServiceTest extends TestCase
     use RefreshDatabase;
 
     private TaskSchedulingService $service;
+
     private Tenant $tenant;
+
     private User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new TaskSchedulingService();
+        $this->service = new TaskSchedulingService;
 
         // Create test tenant and user
         $this->tenant = Tenant::factory()->create();
@@ -81,7 +83,7 @@ class TaskSchedulingServiceTest extends TestCase
             'priority' => 'high',
         ];
 
-        $this->service->setAssignmentStrategy(new RoundRobinAssignmentStrategy());
+        $this->service->setAssignmentStrategy(new RoundRobinAssignmentStrategy);
 
         // Act
         $tasks = $this->service->scheduleTasksForSubscribers($subscriberList, $taskData, $users);
@@ -92,7 +94,7 @@ class TaskSchedulingServiceTest extends TestCase
         // Verify round-robin distribution (2 tasks per user)
         $assignmentCounts = $tasks->groupBy('assigned_to')->map->count();
         $this->assertEquals(3, $assignmentCounts->count());
-        $this->assertTrue($assignmentCounts->every(fn($count) => $count === 2));
+        $this->assertTrue($assignmentCounts->every(fn ($count) => $count === 2));
     }
 
     public function test_assigns_all_tasks_to_single_user()
@@ -117,7 +119,7 @@ class TaskSchedulingServiceTest extends TestCase
 
         // Assert
         $this->assertCount(4, $tasks);
-        $this->assertTrue($tasks->every(fn($task) => $task->assigned_to === $targetUser->id));
+        $this->assertTrue($tasks->every(fn ($task) => $task->assigned_to === $targetUser->id));
     }
 
     public function test_throws_exception_when_subscriber_list_is_empty()
@@ -128,7 +130,7 @@ class TaskSchedulingServiceTest extends TestCase
 
         // Act & Assert
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("has no subscribers");
+        $this->expectExceptionMessage('has no subscribers');
 
         $this->service->scheduleTasksForSubscribers($subscriberList, $taskData);
     }

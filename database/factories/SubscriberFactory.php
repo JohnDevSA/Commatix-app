@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\;
 use App\Models\Subscriber;
+use App\Models\SubscriberList;
 use App\Models\Tenant;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SubscriberFactory extends Factory
 {
@@ -29,10 +28,10 @@ class SubscriberFactory extends Factory
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'tenant_id' => Tenant::factory(),
-            'subscriber_list_id' => ::factory(),
-            'status' => fake()->randomElement(["active","inactive","unsubscribed","bounced"]),
+            'subscriber_list_id' => SubscriberList::factory(),
+            'status' => fake()->randomElement(['active', 'inactive', 'unsubscribed', 'bounced']),
             'opt_out_date' => fake()->dateTime(),
-            'source' => fake()->randomElement(["manual","import","api","web_form"]),
+            'source' => fake()->randomElement(['manual', 'import', 'api', 'web_form']),
             'tags' => '{}',
             'custom_fields' => '{}',
             'created_at' => fake()->dateTime(),

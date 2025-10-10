@@ -2,14 +2,14 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Models\WorkflowTemplate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class WorkflowTemplateTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     /** @test */
     public function it_can_create_workflow_template_with_customization_notes()
     {
@@ -41,10 +41,10 @@ class WorkflowTemplateTest extends TestCase
             'user_id' => 1,
             'created_by' => 1,
         ]);
-        
+
         $this->assertDatabaseHas('workflow_templates', [
             'name' => 'Customer debt collection',
-            'customization_notes' => 'Test customization notes'
+            'customization_notes' => 'Test customization notes',
         ]);
     }
 }

@@ -2,12 +2,11 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Division;
 use App\Models\StatusType;
 use App\Models\User;
 use App\Models\WorkflowTemplate;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WorkflowTemplateFactory extends Factory
 {
@@ -30,7 +29,7 @@ class WorkflowTemplateFactory extends Factory
             'description' => fake()->text(),
             'status_id' => fake()->randomNumber(),
             'access_scope_id' => fake()->randomNumber(),
-            'template_type' => fake()->randomElement(["system","industry","custom","copied"]),
+            'template_type' => fake()->randomElement(['system', 'industry', 'custom', 'copied']),
             'parent_template_id' => fake()->randomNumber(),
             'industry_category' => fake()->word(),
             'template_version' => fake()->word(),
@@ -42,7 +41,7 @@ class WorkflowTemplateFactory extends Factory
             'last_used_at' => fake()->dateTime(),
             'tags' => '{}',
             'estimated_duration_days' => fake()->numberBetween(1, 365),
-            'complexity_level' => fake()->randomElement(["simple","medium","complex"]),
+            'complexity_level' => fake()->randomElement(['simple', 'medium', 'complex']),
             'is_customizable' => fake()->boolean(),
             'locked_milestones' => '{}',
             'required_roles' => '{}',

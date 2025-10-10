@@ -2,10 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\IndustryTemplate;
 use App\Models\WorkflowTemplate;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class IndustryTemplateFactory extends Factory
 {
@@ -23,7 +22,7 @@ class IndustryTemplateFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'industry' => fake()->randomElement(["finance","healthcare","retail","manufacturing","education","government","nonprofit","technology"]),
+            'industry' => fake()->randomElement(['finance', 'healthcare', 'retail', 'manufacturing', 'education', 'government', 'nonprofit', 'technology']),
             'description' => fake()->text(),
             'workflow_template_id' => WorkflowTemplate::factory(),
             'compliance_requirements' => '{}',

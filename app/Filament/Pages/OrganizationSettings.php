@@ -66,7 +66,7 @@ class OrganizationSettings extends Page implements HasForms
                                                     ->label('Trading Name (if different)')
                                                     ->maxLength(255)
                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -96,7 +96,7 @@ class OrganizationSettings extends Page implements HasForms
                                                     ->placeholder('9876543210')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('SARS tax reference'),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
@@ -128,7 +128,7 @@ class OrganizationSettings extends Page implements HasForms
                                                     ->maxLength(20)
                                                     ->placeholder('+27 11 123 4567')
                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -154,7 +154,7 @@ class OrganizationSettings extends Page implements HasForms
                                                     ->tel()
                                                     ->maxLength(20)
                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
 
@@ -200,7 +200,7 @@ class OrganizationSettings extends Page implements HasForms
                                                                     ->maxLength(10)
                                                                     ->placeholder('1234')
                                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                                            ])
+                                                            ]),
                                                     ])
                                                     ->extraAttributes(['class' => 'border-l-4 border-commatix-500 pl-4']),
 
@@ -240,10 +240,10 @@ class OrganizationSettings extends Page implements HasForms
                                                                     ->maxLength(10)
                                                                     ->placeholder('1234')
                                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                                            ])
+                                                            ]),
                                                     ])
                                                     ->extraAttributes(['class' => 'border-l-4 border-sa-gold-500 pl-4']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.2s']),
                             ]),

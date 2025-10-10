@@ -4,8 +4,8 @@ namespace App\Filament\Resources\WorkflowTemplateResource\Pages;
 
 use App\Filament\Resources\WorkflowTemplateResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
 
 class EditWorkflowTemplate extends EditRecord
 {
@@ -20,7 +20,7 @@ class EditWorkflowTemplate extends EditRecord
                 ->label('Publish Workflow')
                 ->icon('heroicon-o-check-circle')
                 ->color('success')
-                ->visible(fn () => !$this->record->is_published)
+                ->visible(fn () => ! $this->record->is_published)
                 ->requiresConfirmation()
                 ->modalHeading('Publish Workflow Template')
                 ->modalDescription('Are you sure you want to publish this workflow? It will become available to users.')
@@ -84,7 +84,7 @@ class EditWorkflowTemplate extends EditRecord
                 }),
 
             Actions\DeleteAction::make()
-                ->visible(fn () => !$this->record->is_published),
+                ->visible(fn () => ! $this->record->is_published),
         ];
     }
 
@@ -97,6 +97,7 @@ class EditWorkflowTemplate extends EditRecord
                 ->body('Workflow must have at least one milestone before publishing.')
                 ->danger()
                 ->send();
+
             return false;
         }
 
@@ -113,6 +114,7 @@ class EditWorkflowTemplate extends EditRecord
                 ->body('All milestones must have duration, description, and type before publishing.')
                 ->danger()
                 ->send();
+
             return false;
         }
 

@@ -185,7 +185,7 @@ class WorkflowTemplate extends Model
 
     public function canBeEditedBy(User $user): bool
     {
-        return !$this->is_locked || $this->locked_by_user_id === $user->id;
+        return ! $this->is_locked || $this->locked_by_user_id === $user->id;
     }
 
     public function markMilestonesComplete(): void

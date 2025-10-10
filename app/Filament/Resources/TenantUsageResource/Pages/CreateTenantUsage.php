@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\TenantUsageResource\Pages;
 
 use App\Filament\Resources\TenantUsageResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTenantUsage extends CreateRecord

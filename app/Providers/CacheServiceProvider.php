@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Cache;
-use App\Models\User;
-use App\Models\Tenant;
 use App\Models\DocumentType;
-use App\Models\WorkflowTemplate;
+use App\Models\Tenant;
+use App\Models\User;
 use App\Models\UserType;
+use App\Models\WorkflowTemplate;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\ServiceProvider;
 
 class CacheServiceProvider extends ServiceProvider
 {
@@ -34,7 +34,7 @@ class CacheServiceProvider extends ServiceProvider
 
     protected function cacheTenantData(): void
     {
-        if (!app()->runningInConsole()) {
+        if (! app()->runningInConsole()) {
             $tenantId = tenant('id');
             if ($tenantId) {
                 Cache::remember("tenant_data_{$tenantId}", 3600, function () use ($tenantId) {
@@ -46,14 +46,16 @@ class CacheServiceProvider extends ServiceProvider
 
     protected function cacheUserTypes(): void
     {
-        Cache::remember('user_types_all', 14400, function () {
-            return UserType::all();
-        });
+        if (! app()->runningInConsole()) {
+            Cache::remember('user_types_all', 14400, function () {
+                return UserType::all();
+            });
+        }
     }
 
     protected function cacheWorkflowTemplates(): void
     {
-        if (!app()->runningInConsole()) {
+        if (! app()->runningInConsole()) {
             Cache::remember('workflow_templates_published', 7200, function () {
                 return WorkflowTemplate::where('is_published', true)
                     ->with(['milestones', 'tags'])
@@ -64,7 +66,7 @@ class CacheServiceProvider extends ServiceProvider
 
     protected function cacheDocumentTypes(): void
     {
-        if (!app()->runningInConsole()) {
+        if (! app()->runningInConsole()) {
             $tenantId = tenant('id');
             if ($tenantId) {
                 Cache::remember("document_types_{$tenantId}", 3600, function () use ($tenantId) {

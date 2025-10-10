@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources;
 
+use App\Contracts\Services\TaskSchedulingInterface;
 use App\Filament\Resources\SubscriberListResource\Pages;
 use App\Models\SubscriberList;
-use App\Models\WorkflowTemplate;
 use App\Models\User;
-use App\Contracts\Services\TaskSchedulingInterface;
+use App\Models\WorkflowTemplate;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 
 class SubscriberListResource extends Resource
@@ -177,7 +177,7 @@ class SubscriberListResource extends Resource
                         ];
 
                         $users = null;
-                        if (!empty($data['user_ids'])) {
+                        if (! empty($data['user_ids'])) {
                             $users = User::whereIn('id', $data['user_ids'])->get();
                         }
 
@@ -193,7 +193,6 @@ class SubscriberListResource extends Resource
                                 ->title('Tasks Scheduled Successfully')
                                 ->body("Created {$tasks->count()} tasks for {$record->name}")
                                 ->send();
-
                         } catch (\Exception $e) {
                             Notification::make()
                                 ->danger()

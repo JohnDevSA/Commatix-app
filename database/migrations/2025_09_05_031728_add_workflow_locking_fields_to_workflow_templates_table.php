@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamp('locked_at')->nullable()->after('locked_by_user_id');
             $table->string('lock_reason')->nullable()->after('locked_at');
             $table->boolean('milestones_completed')->default(false)->after('lock_reason');
-            
+
             $table->foreign('locked_by_user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
@@ -31,10 +31,10 @@ return new class extends Migration
             $table->dropForeign(['locked_by_user_id']);
             $table->dropColumn([
                 'is_locked',
-                'locked_by_user_id', 
+                'locked_by_user_id',
                 'locked_at',
                 'lock_reason',
-                'milestones_completed'
+                'milestones_completed',
             ]);
         });
     }

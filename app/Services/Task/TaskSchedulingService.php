@@ -24,10 +24,11 @@ class TaskSchedulingService implements TaskSchedulingInterface
      * Creates individual tasks for each subscriber in the list,
      * optionally assigning them to users using the configured strategy.
      *
-     * @param SubscriberList $subscriberList The subscriber list to create tasks for
-     * @param array $taskData Task template data (title, description, priority, workflow_template_id, etc.)
-     * @param Collection|null $users Optional collection of users for round-robin assignment
+     * @param  SubscriberList  $subscriberList  The subscriber list to create tasks for
+     * @param  array  $taskData  Task template data (title, description, priority, workflow_template_id, etc.)
+     * @param  Collection|null  $users  Optional collection of users for round-robin assignment
      * @return Collection Collection of created Task models
+     *
      * @throws \Exception If task creation fails
      */
     public function scheduleTasksForSubscribers(
@@ -89,15 +90,16 @@ class TaskSchedulingService implements TaskSchedulingInterface
      * Uses the configured user assignment strategy to select a user.
      * If no strategy is configured, returns the first user.
      *
-     * @param Task $task The task to assign
-     * @param Collection $users Collection of users to choose from
+     * @param  Task  $task  The task to assign
+     * @param  Collection  $users  Collection of users to choose from
      * @return User The user assigned to the task
+     *
      * @throws \Exception If no users are available
      */
     public function assignTaskToUser(Task $task, Collection $users): User
     {
         if ($users->isEmpty()) {
-            throw new \Exception("No users available for task assignment.");
+            throw new \Exception('No users available for task assignment.');
         }
 
         // Use assignment strategy if available, otherwise pick first user
@@ -111,13 +113,11 @@ class TaskSchedulingService implements TaskSchedulingInterface
 
     /**
      * Set the user assignment strategy
-     *
-     * @param UserAssignmentStrategyInterface $strategy
-     * @return self
      */
     public function setAssignmentStrategy(UserAssignmentStrategyInterface $strategy): self
     {
         $this->assignmentStrategy = $strategy;
+
         return $this;
     }
 }

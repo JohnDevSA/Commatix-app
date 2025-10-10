@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\WorkflowTemplateResource\RelationManagers;
 
-use App\Models\Milestone;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
 
 class MilestonesRelationManager extends RelationManager
 {
@@ -80,7 +79,7 @@ class MilestonesRelationManager extends RelationManager
                                     ->label('Requires Approval')
                                     ->default(false)
                                     ->reactive()
-                                    ->afterStateUpdated(fn ($state, callable $set) => !$state ? $set('approval_group_name', null) : null),
+                                    ->afterStateUpdated(fn ($state, callable $set) => ! $state ? $set('approval_group_name', null) : null),
                                 Forms\Components\Toggle::make('requires_docs')
                                     ->label('Requires Documentation')
                                     ->default(false)
@@ -194,6 +193,7 @@ class MilestonesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['workflow_template_id'] = $this->getOwnerRecord()->id;
+
                         return $data;
                     })
                     ->after(function () {

@@ -54,7 +54,7 @@ return new class extends Migration
                 'approved_by',
                 'approved_at',
                 'active_tasks_count',
-                'deleted_at'
+                'deleted_at',
             ]);
         });
     }

@@ -13,28 +13,28 @@ class AccessScopeSeeder extends Seeder
             [
                 'name' => 'global',
                 'label' => 'Global System',
-                'description' => 'Available across all tenants - managed by super admin'
+                'description' => 'Available across all tenants - managed by super admin',
             ],
             [
                 'name' => 'tenant_custom',
                 'label' => 'Tenant Custom',
-                'description' => 'Custom content created by tenant users'
+                'description' => 'Custom content created by tenant users',
             ],
             [
                 'name' => 'tenant_shared',
                 'label' => 'Tenant Shared',
-                'description' => 'Shared within tenant organization'
+                'description' => 'Shared within tenant organization',
             ],
             [
                 'name' => 'private',
                 'label' => 'Private',
-                'description' => 'Private to individual user'
+                'description' => 'Private to individual user',
             ],
             [
                 'name' => 'industry_template',
                 'label' => 'Industry Template',
-                'description' => 'Industry-specific templates available to relevant tenants'
-            ]
+                'description' => 'Industry-specific templates available to relevant tenants',
+            ],
         ];
 
         foreach ($scopes as $scope) {

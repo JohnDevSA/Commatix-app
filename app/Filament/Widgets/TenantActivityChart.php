@@ -2,8 +2,8 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Task;
 use App\Models\Subscriber;
+use App\Models\Task;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Carbon;
 
@@ -13,7 +13,7 @@ class TenantActivityChart extends ChartWidget
 
     protected static ?int $sort = 2;
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     protected function getData(): array
     {

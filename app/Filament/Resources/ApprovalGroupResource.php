@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ApprovalGroupResource\Pages;
 use App\Models\ApprovalGroup;
-use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -63,8 +62,7 @@ class ApprovalGroupResource extends Resource
                                     ->relationship(
                                         name: 'division',
                                         titleAttribute: 'name',
-                                        modifyQueryUsing: fn (Builder $query) =>
-                                            $query->where('tenant_id', auth()->user()->tenant_id)
+                                        modifyQueryUsing: fn (Builder $query) => $query->where('tenant_id', auth()->user()->tenant_id)
                                     )
                                     ->searchable()
                                     ->preload()
@@ -84,7 +82,7 @@ class ApprovalGroupResource extends Resource
                                     ->extraInputAttributes(['class' => 'glass-input'])
                                     ->columnSpanFull()
                                     ->rows(3),
-                            ])
+                            ]),
                     ])
                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 

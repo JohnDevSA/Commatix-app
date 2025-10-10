@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\;
 use App\Models\Campaign;
 use App\Models\CampaignMessage;
+use App\Models\Subscriber;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CampaignMessageFactory extends Factory
 {
@@ -24,8 +23,8 @@ class CampaignMessageFactory extends Factory
     {
         return [
             'campaign_id' => Campaign::factory(),
-            'subscriber_id' => ::factory(),
-            'status' => fake()->randomElement(["pending","sent","delivered","failed","bounced","opened","clicked","unsubscribed"]),
+            'subscriber_id' => Subscriber::factory(),
+            'status' => fake()->randomElement(['pending', 'sent', 'delivered', 'failed', 'bounced', 'opened', 'clicked', 'unsubscribed']),
             'sent_at' => fake()->dateTime(),
             'delivered_at' => fake()->dateTime(),
             'opened_at' => fake()->dateTime(),

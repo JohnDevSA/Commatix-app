@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\;
+use App\Models\Tenant;
+use App\Models\User;
 use App\Models\WorkflowTemplate;
 use App\Models\WorkflowTemplateUsage;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WorkflowTemplateUsageFactory extends Factory
 {
@@ -24,9 +24,9 @@ class WorkflowTemplateUsageFactory extends Factory
     {
         return [
             'workflow_template_id' => WorkflowTemplate::factory(),
-            'tenant_id' => ::factory(),
-            'user_id' => ::factory(),
-            'action' => fake()->randomElement(["copied","used","modified","published"]),
+            'tenant_id' => Tenant::factory(),
+            'user_id' => User::factory(),
+            'action' => fake()->randomElement(['copied', 'used', 'modified', 'published']),
             'metadata' => '{}',
             'created_at' => fake()->dateTime(),
         ];

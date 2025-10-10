@@ -15,8 +15,9 @@ class DocumentTypeSeeder extends Seeder
         $industryScope = AccessScope::where('name', 'industry_template')->first();
         $globalScope = AccessScope::where('name', 'global')->first();
 
-        if (!$industryScope || !$globalScope) {
+        if (! $industryScope || ! $globalScope) {
             $this->command->error('Access scopes not found. Please run AccessScopeSeeder first.');
+
             return;
         }
 

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 class SystemOverviewWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
+
     protected static ?string $pollingInterval = '30s';
 
     protected function getStats(): array
@@ -100,7 +101,7 @@ class SystemOverviewWidget extends BaseWidget
             return [
                 'description' => "{$currentMonth} new this month",
                 'icon' => 'heroicon-m-arrow-trending-up',
-                'color' => 'success'
+                'color' => 'success',
             ];
         }
 
@@ -109,7 +110,7 @@ class SystemOverviewWidget extends BaseWidget
         return [
             'description' => abs(round($growth, 1)) . '% ' . ($growth >= 0 ? 'increase' : 'decrease'),
             'icon' => $growth >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down',
-            'color' => $growth >= 0 ? 'success' : 'danger'
+            'color' => $growth >= 0 ? 'success' : 'danger',
         ];
     }
 
@@ -126,7 +127,7 @@ class SystemOverviewWidget extends BaseWidget
             return [
                 'description' => "{$currentMonth} new this month",
                 'icon' => 'heroicon-m-arrow-trending-up',
-                'color' => 'success'
+                'color' => 'success',
             ];
         }
 
@@ -135,7 +136,7 @@ class SystemOverviewWidget extends BaseWidget
         return [
             'description' => abs(round($growth, 1)) . '% ' . ($growth >= 0 ? 'increase' : 'decrease'),
             'icon' => $growth >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down',
-            'color' => $growth >= 0 ? 'success' : 'danger'
+            'color' => $growth >= 0 ? 'success' : 'danger',
         ];
     }
 
@@ -153,7 +154,7 @@ class SystemOverviewWidget extends BaseWidget
             return [
                 'description' => 'No previous data',
                 'icon' => 'heroicon-m-minus',
-                'color' => 'gray'
+                'color' => 'gray',
             ];
         }
 
@@ -162,21 +163,21 @@ class SystemOverviewWidget extends BaseWidget
         return [
             'description' => abs(round($growth, 1)) . '% ' . ($growth >= 0 ? 'increase' : 'decrease'),
             'icon' => $growth >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down',
-            'color' => $growth >= 0 ? 'success' : 'danger'
+            'color' => $growth >= 0 ? 'success' : 'danger',
         ];
     }
 
     private function getTenantChart(): array
     {
         return collect(range(6, 0))
-            ->map(fn($daysAgo) => Tenant::whereDate('created_at', now()->subDays($daysAgo))->count())
+            ->map(fn ($daysAgo) => Tenant::whereDate('created_at', now()->subDays($daysAgo))->count())
             ->toArray();
     }
 
     private function getUserChart(): array
     {
         return collect(range(6, 0))
-            ->map(fn($daysAgo) => User::whereDate('created_at', now()->subDays($daysAgo))->count())
+            ->map(fn ($daysAgo) => User::whereDate('created_at', now()->subDays($daysAgo))->count())
             ->toArray();
     }
 
@@ -188,6 +189,7 @@ class SystemOverviewWidget extends BaseWidget
             if ($totalMB > 1024) {
                 return number_format($totalMB / 1024, 2) . ' GB';
             }
+
             return number_format($totalMB, 0) . ' MB';
         } catch (\Exception $e) {
             return 'N/A';

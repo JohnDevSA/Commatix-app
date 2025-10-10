@@ -6,17 +6,17 @@ use App\Filament\Resources\TaskResource\Pages\CreateTask;
 use App\Filament\Resources\TaskResource\Pages\EditTask;
 use App\Filament\Resources\TaskResource\Pages\ListTasks;
 use App\Filament\Resources\TaskResource\Pages\ViewTask;
-use App\Models\Task;
-use App\Models\WorkflowTemplate;
 use App\Models\Subscriber;
+use App\Models\Task;
 use App\Models\User;
+use App\Models\WorkflowTemplate;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
-use Carbon\Carbon;
 
 class TaskResource extends Resource
 {
@@ -33,7 +33,7 @@ class TaskResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             return $query->whereRaw('1 = 0');
         }
 
@@ -77,9 +77,7 @@ class TaskResource extends Resource
                             ->searchable(['email', 'first_name', 'last_name'])
                             ->preload()
                             ->required()
-                            ->getOptionLabelFromRecordUsing(fn (Subscriber $record): string =>
-                            "{$record->first_name} {$record->last_name} ({$record->email})"
-                            )
+                            ->getOptionLabelFromRecordUsing(fn (Subscriber $record): string => "{$record->first_name} {$record->last_name} ({$record->email})")
                             ->createOptionForm([
                                 Forms\Components\Hidden::make('tenant_id')
                                     ->default(fn () => tenant() ? tenant()->id : null),
@@ -103,6 +101,7 @@ class TaskResource extends Resource
                                 }
 
                                 $subscriber = Subscriber::create($data);
+
                                 return $subscriber->id;
                             }),
                     ])
@@ -175,9 +174,7 @@ class TaskResource extends Resource
                     ->label('Subscriber')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(fn ($record) =>
-                    "{$record->subscriber->first_name} {$record->subscriber->last_name}"
-                    )
+                    ->formatStateUsing(fn ($record) => "{$record->subscriber->first_name} {$record->subscriber->last_name}")
                     ->limit(25)
                     ->tooltip(fn ($record) => "{$record->subscriber->first_name} {$record->subscriber->last_name}"),
                 Tables\Columns\TextColumn::make('workflowTemplate.name')

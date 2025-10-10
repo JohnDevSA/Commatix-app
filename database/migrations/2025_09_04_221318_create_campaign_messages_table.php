@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('campaign_id');
             $table->foreignId('subscriber_id');
-            $table->enum('status', ["pending","sent","delivered","failed","bounced","opened","clicked","unsubscribed"])->default('pending');
+            $table->enum('status', ['pending', 'sent', 'delivered', 'failed', 'bounced', 'opened', 'clicked', 'unsubscribed'])->default('pending');
             $table->timestamp('sent_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
             $table->timestamp('opened_at')->nullable();

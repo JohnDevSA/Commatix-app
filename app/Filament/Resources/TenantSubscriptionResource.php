@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TenantSubscriptionResource\Pages;
-use App\Filament\Resources\TenantSubscriptionResource\RelationManagers;
 use App\Models\TenantSubscription;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,7 +10,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TenantSubscriptionResource extends Resource
 {
@@ -44,7 +42,7 @@ class TenantSubscriptionResource extends Resource
                             ->options([
                                 'trial' => 'Trial',
                                 'basic' => 'Basic',
-                                'professional' => 'Professional', 
+                                'professional' => 'Professional',
                                 'enterprise' => 'Enterprise',
                             ])
                             ->required(),

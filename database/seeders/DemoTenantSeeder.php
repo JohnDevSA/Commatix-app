@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Division;
+use App\Models\Subscriber;
+use App\Models\SubscriberList;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserType;
-use App\Models\Division;
-use App\Models\SubscriberList;
-use App\Models\Subscriber;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;

@@ -7,5 +7,3 @@ parameters:
     - database/seeders
   ignoreErrors:
     - '#PHPDoc tag @var#'
-  checkMissingIterableValueType: false
-  noUnnecessaryCollectionCall: false

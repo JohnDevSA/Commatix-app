@@ -2,23 +2,21 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-
-// Interfaces from consolidated location
 use App\Contracts\Services\AuthorizationServiceInterface;
-use App\Contracts\Services\WorkflowLockingInterface;
+// Interfaces from consolidated location
+use App\Contracts\Services\CreditManagementInterface;
 use App\Contracts\Services\TaskProgressionInterface;
 use App\Contracts\Services\TaskSchedulingInterface;
 use App\Contracts\Services\UserAssignmentStrategyInterface;
-use App\Contracts\Services\CreditManagementInterface;
-
-// Service implementations from organized directories
+use App\Contracts\Services\WorkflowLockingInterface;
 use App\Services\Authorization\AuthorizationService;
-use App\Services\Workflow\WorkflowLockService;
+// Service implementations from organized directories
+use App\Services\Billing\CreditManagementService;
 use App\Services\Task\TaskProgressionService;
 use App\Services\Task\TaskSchedulingService;
 use App\Services\UserAssignment\RoundRobinAssignmentStrategy;
-use App\Services\Billing\CreditManagementService;
+use App\Services\Workflow\WorkflowLockService;
+use Illuminate\Support\ServiceProvider;
 
 class SolidServiceProvider extends ServiceProvider
 {

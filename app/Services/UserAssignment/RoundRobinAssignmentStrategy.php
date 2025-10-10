@@ -16,15 +16,16 @@ class RoundRobinAssignmentStrategy implements UserAssignmentStrategyInterface
      * Distributes tasks evenly among the provided users by tracking
      * the last assigned user index and rotating through the collection.
      *
-     * @param Task $task The task to assign
-     * @param Collection $users Collection of users to distribute among
+     * @param  Task  $task  The task to assign
+     * @param  Collection  $users  Collection of users to distribute among
      * @return User The selected user
+     *
      * @throws \Exception If no users are provided
      */
     public function assignUser(Task $task, Collection $users): User
     {
         if ($users->isEmpty()) {
-            throw new \Exception("Cannot assign task: no users provided for round-robin assignment.");
+            throw new \Exception('Cannot assign task: no users provided for round-robin assignment.');
         }
 
         // Generate cache key based on tenant and workflow template
@@ -47,9 +48,6 @@ class RoundRobinAssignmentStrategy implements UserAssignmentStrategyInterface
 
     /**
      * Generate cache key for round-robin state
-     *
-     * @param Task $task
-     * @return string
      */
     private function getCacheKey(Task $task): string
     {

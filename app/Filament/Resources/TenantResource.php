@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TenantResource\Pages;
-use App\Filament\Resources\TenantResource\RelationManagers;
 use App\Models\Tenant;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,7 +12,6 @@ use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TenantResource extends Resource
 {
@@ -67,7 +65,7 @@ class TenantResource extends Resource
                                                     ->placeholder('COMP001')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('This code will be used for tenant identification'),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -97,7 +95,7 @@ class TenantResource extends Resource
                                                     ->placeholder('9876543210')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('SARS tax reference'),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
@@ -131,7 +129,7 @@ class TenantResource extends Resource
                                                     ->maxLength(20)
                                                     ->placeholder('+27 11 123 4567')
                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -160,7 +158,7 @@ class TenantResource extends Resource
                                                     ->maxLength(20)
                                                     ->placeholder('+27 11 765 4321')
                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
 
@@ -206,7 +204,7 @@ class TenantResource extends Resource
                                                                     ->maxLength(10)
                                                                     ->placeholder('1234')
                                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                                            ])
+                                                            ]),
                                                     ])
                                                     ->extraAttributes(['class' => 'border-l-4 border-commatix-500 pl-4']),
 
@@ -246,10 +244,10 @@ class TenantResource extends Resource
                                                                     ->maxLength(10)
                                                                     ->placeholder('1234')
                                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                                            ])
+                                                            ]),
                                                     ])
                                                     ->extraAttributes(['class' => 'border-l-4 border-sa-gold-500 pl-4']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.2s']),
                             ]),
@@ -292,7 +290,7 @@ class TenantResource extends Resource
                                                     ])
                                                     ->default('ZAR')
                                                     ->extraAttributes(['class' => 'glass-input']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -317,7 +315,7 @@ class TenantResource extends Resource
                                                     ->placeholder('5000')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('Optional spending cap for usage-based billing'),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
@@ -351,7 +349,7 @@ class TenantResource extends Resource
                                                     ->placeholder('5')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('Current step in onboarding process (1-10)'),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -370,7 +368,7 @@ class TenantResource extends Resource
                                                     ->label('Onboarding Completed')
                                                     ->helperText('Full setup and configuration completed')
                                                     ->extraAttributes(['class' => 'glass-card']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('industry_templates', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('industry', ["finance","healthcare","retail","manufacturing","education","government","nonprofit","technology"]);
+            $table->enum('industry', ['finance', 'healthcare', 'retail', 'manufacturing', 'education', 'government', 'nonprofit', 'technology']);
             $table->text('description');
             $table->foreignId('workflow_template_id');
             $table->json('compliance_requirements')->nullable();

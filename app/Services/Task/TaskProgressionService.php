@@ -6,7 +6,6 @@ use App\Contracts\Services\TaskProgressionInterface;
 use App\Models\Task;
 use App\Models\TaskMilestone;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -17,8 +16,6 @@ use Illuminate\Support\Facades\Log;
  * Manages the progression of tasks through their workflow milestones.
  * Implements complex business logic for task state transitions,
  * milestone completion validation, and progression requirements.
- *
- * @package App\Services\Task
  */
 class TaskProgressionService implements TaskProgressionInterface
 {
@@ -27,7 +24,7 @@ class TaskProgressionService implements TaskProgressionInterface
      */
     public function progressToNextMilestone(Task $task, ?User $user = null): ?TaskMilestone
     {
-        if (!$this->canProgress($task)) {
+        if (! $this->canProgress($task)) {
             $errors = $this->getProgressionErrors($task);
             throw new \Exception('Cannot progress task: ' . implode(', ', $errors));
         }
@@ -51,7 +48,7 @@ class TaskProgressionService implements TaskProgressionInterface
             // Get next milestone
             $nextMilestone = $this->getNextMilestone($task);
 
-            if (!$nextMilestone) {
+            if (! $nextMilestone) {
                 // Task is complete
                 $task->update([
                     'status' => 'completed',
@@ -87,7 +84,7 @@ class TaskProgressionService implements TaskProgressionInterface
      */
     public function completeMilestone(Task $task, User $user, array $data = []): bool
     {
-        if (!$task->current_milestone_id) {
+        if (! $task->current_milestone_id) {
             return false;
         }
 
@@ -95,12 +92,12 @@ class TaskProgressionService implements TaskProgressionInterface
             ->where('milestone_id', $task->current_milestone_id)
             ->first();
 
-        if (!$taskMilestone) {
+        if (! $taskMilestone) {
             return false;
         }
 
         // Check if required documents are present
-        if (!$this->hasRequiredDocuments($task)) {
+        if (! $this->hasRequiredDocuments($task)) {
             return false;
         }
 
@@ -191,7 +188,7 @@ class TaskProgressionService implements TaskProgressionInterface
      */
     public function startTask(Task $task, ?string $reason = null): bool
     {
-        if (!$this->canStartTask($task)) {
+        if (! $this->canStartTask($task)) {
             return false;
         }
 
@@ -201,8 +198,9 @@ class TaskProgressionService implements TaskProgressionInterface
                 ->orderBy('sequence_order', 'asc')
                 ->first();
 
-            if (!$firstMilestone) {
+            if (! $firstMilestone) {
                 Log::warning("Cannot start task {$task->id}: No milestones found");
+
                 return false;
             }
 
@@ -218,7 +216,7 @@ class TaskProgressionService implements TaskProgressionInterface
                 'started_at' => now(),
             ]);
 
-            Log::info("Task {$task->id} started" . ($reason ? " (reason: {$reason})" : ""));
+            Log::info("Task {$task->id} started" . ($reason ? " (reason: {$reason})" : ''));
 
             return true;
         });
@@ -284,13 +282,13 @@ class TaskProgressionService implements TaskProgressionInterface
      */
     public function hasRequiredDocuments(Task $task): bool
     {
-        if (!$task->current_milestone_id) {
+        if (! $task->current_milestone_id) {
             return true;
         }
 
         $currentMilestone = $task->currentMilestone;
 
-        if (!$currentMilestone || !$currentMilestone->requires_docs) {
+        if (! $currentMilestone || ! $currentMilestone->requires_docs) {
             return true;
         }
 
@@ -299,7 +297,7 @@ class TaskProgressionService implements TaskProgressionInterface
             ->where('milestone_id', $task->current_milestone_id)
             ->first();
 
-        if (!$taskMilestone) {
+        if (! $taskMilestone) {
             return false;
         }
 
@@ -323,21 +321,21 @@ class TaskProgressionService implements TaskProgressionInterface
         $errors = [];
 
         // Check if task is in a valid state
-        if (!in_array($task->status, ['draft', 'scheduled', 'in_progress'])) {
+        if (! in_array($task->status, ['draft', 'scheduled', 'in_progress'])) {
             $errors[] = "Task is in {$task->status} state and cannot progress";
         }
 
         // Check if there's a next milestone
         $nextMilestone = $this->getNextMilestone($task);
-        if (!$nextMilestone && $task->current_milestone_id) {
+        if (! $nextMilestone && $task->current_milestone_id) {
             // This means we're at the last milestone, which is fine
             // Check if current milestone is ready to complete
-            if (!$this->hasRequiredDocuments($task)) {
+            if (! $this->hasRequiredDocuments($task)) {
                 $errors[] = 'Required documents are missing for current milestone';
             }
         }
 
-        if (!$nextMilestone && !$task->current_milestone_id) {
+        if (! $nextMilestone && ! $task->current_milestone_id) {
             $errors[] = 'No milestones found for this task';
         }
 

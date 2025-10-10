@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Milestone;
 use App\Models\StatusType;
 use App\Models\TaskMilestone;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TaskMilestoneFactory extends Factory
 {

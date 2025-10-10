@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('tenant_id'); // Changed from foreignId to string
-            $table->enum('channel', ["email","sms","whatsapp","voice"])->default('email');
+            $table->enum('channel', ['email', 'sms', 'whatsapp', 'voice'])->default('email');
             $table->string('subject')->nullable();
             $table->text('content');
             $table->json('variables')->nullable();

@@ -33,8 +33,8 @@ class Subscriber extends Model
         static::creating(function ($model) {
             if (empty($model->tenant_id) && tenant()) {
                 $model->tenant_id = tenant()->id;
-            }else {
-                echo "Tenant ID is empty";
+            } else {
+                echo 'Tenant ID is empty';
             }
         });
     }

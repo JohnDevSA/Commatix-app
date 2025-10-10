@@ -4,8 +4,8 @@ namespace App\Filament\Resources\TenantWorkflowTemplateResource\Pages;
 
 use App\Filament\Resources\TenantWorkflowTemplateResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
 
 class EditTenantWorkflowTemplate extends EditRecord
 {
@@ -20,7 +20,7 @@ class EditTenantWorkflowTemplate extends EditRecord
                 ->label('Publish Workflow')
                 ->icon('heroicon-o-check-circle')
                 ->color('success')
-                ->visible(fn () => !$this->record->is_published && $this->canPublish())
+                ->visible(fn () => ! $this->record->is_published && $this->canPublish())
                 ->requiresConfirmation()
                 ->action(function () {
                     $this->record->update([
@@ -36,7 +36,7 @@ class EditTenantWorkflowTemplate extends EditRecord
                 }),
 
             Actions\DeleteAction::make()
-                ->visible(fn () => !$this->record->is_published),
+                ->visible(fn () => ! $this->record->is_published),
         ];
     }
 

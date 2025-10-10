@@ -13,8 +13,6 @@ use Illuminate\Database\Eloquent\Model;
  * Centralizes all authorization logic for the application.
  * This service implements the Single Responsibility Principle by handling
  * only authorization concerns, separated from the User model.
- *
- * @package App\Services\Authorization
  */
 class AuthorizationService implements AuthorizationServiceInterface
 {
@@ -47,7 +45,7 @@ class AuthorizationService implements AuthorizationServiceInterface
     {
         $permission = self::RESOURCE_PERMISSIONS[$resource] ?? null;
 
-        if (!$permission) {
+        if (! $permission) {
             return false;
         }
 
@@ -133,7 +131,7 @@ class AuthorizationService implements AuthorizationServiceInterface
     public function canImpersonate(User $impersonator, User $target): bool
     {
         // Only super admins can impersonate
-        if (!$impersonator->isSuperAdmin()) {
+        if (! $impersonator->isSuperAdmin()) {
             return false;
         }
 
@@ -147,10 +145,6 @@ class AuthorizationService implements AuthorizationServiceInterface
 
     /**
      * Check if user can view a model.
-     *
-     * @param User $user
-     * @param Model $model
-     * @return bool
      */
     private function canView(User $user, Model $model): bool
     {
@@ -164,10 +158,6 @@ class AuthorizationService implements AuthorizationServiceInterface
 
     /**
      * Check if user can create a model.
-     *
-     * @param User $user
-     * @param Model $model
-     * @return bool
      */
     private function canCreate(User $user, Model $model): bool
     {
@@ -183,10 +173,6 @@ class AuthorizationService implements AuthorizationServiceInterface
 
     /**
      * Check if user can update a model.
-     *
-     * @param User $user
-     * @param Model $model
-     * @return bool
      */
     private function canUpdate(User $user, Model $model): bool
     {
@@ -202,10 +188,6 @@ class AuthorizationService implements AuthorizationServiceInterface
 
     /**
      * Check if user can delete a model.
-     *
-     * @param User $user
-     * @param Model $model
-     * @return bool
      */
     private function canDelete(User $user, Model $model): bool
     {

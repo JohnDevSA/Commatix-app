@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\;
 use App\Models\Tenant;
 use App\Models\TenantAuditLog;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TenantAuditLogFactory extends Factory
 {
@@ -24,7 +23,7 @@ class TenantAuditLogFactory extends Factory
     {
         return [
             'tenant_id' => Tenant::factory(),
-            'user_id' => ::factory(),
+            'user_id' => User::factory(),
             'action' => fake()->word(),
             'resource_type' => fake()->word(),
             'resource_id' => fake()->word(),

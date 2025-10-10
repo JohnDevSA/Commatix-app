@@ -4,10 +4,10 @@ namespace Database\Factories;
 
 use App\Models\Division;
 use App\Models\Tenant;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\UserType;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {

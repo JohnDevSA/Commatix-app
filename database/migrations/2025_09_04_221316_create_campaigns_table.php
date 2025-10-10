@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('tenant_id'); // Changed from foreignId to string
             $table->foreignId('message_template_id');
             $table->foreignId('subscriber_list_id');
-            $table->enum('status', ["draft","scheduled","sending","completed","failed","paused"])->default('draft');
+            $table->enum('status', ['draft', 'scheduled', 'sending', 'completed', 'failed', 'paused'])->default('draft');
             $table->timestamp('scheduled_at')->nullable();
             $table->timestamp('started_at')->nullable();
             $table->timestamp('completed_at')->nullable();

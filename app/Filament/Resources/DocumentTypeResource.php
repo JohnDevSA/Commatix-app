@@ -3,18 +3,15 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DocumentTypeResource\Pages;
-use App\Filament\Resources\DocumentTypeResource\RelationManagers;
 use App\Models\AccessScope;
 use App\Models\DocumentType;
 use App\Models\Industry;
-use Illuminate\Support\Facades\Cache;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DocumentTypeResource extends Resource
 {
@@ -70,17 +67,18 @@ class DocumentTypeResource extends Resource
                             })
                             ->helperText('Determines who can access this document type'),
 
-
                         Forms\Components\Select::make('industry_category')
                             ->label('Target Industry')
                             ->options(Industry::getDisplayOptions())
                             ->searchable()
                             ->visible(function (callable $get) {
                                 $accessScope = AccessScope::find($get('access_scope_id'));
+
                                 return $accessScope && $accessScope->name === 'industry_template';
                             })
                             ->required(function (callable $get) {
                                 $accessScope = AccessScope::find($get('access_scope_id'));
+
                                 return $accessScope && $accessScope->name === 'industry_template';
                             })
                             ->helperText('Which industry should have access to this document type'),
@@ -91,15 +89,18 @@ class DocumentTypeResource extends Resource
                             ->searchable()
                             ->visible(function (callable $get) {
                                 $accessScope = AccessScope::find($get('access_scope_id'));
+
                                 return $accessScope && in_array($accessScope->name, ['tenant_custom', 'tenant_shared', 'private']);
                             })
                             ->required(function (callable $get) {
                                 $accessScope = AccessScope::find($get('access_scope_id'));
+
                                 return $accessScope && in_array($accessScope->name, ['tenant_custom', 'tenant_shared', 'private']);
                             })
                             ->default(function () {
                                 $user = auth()->user();
-                                return $user && !$user->isSuperAdmin() ? $user->tenant_id : null;
+
+                                return $user && ! $user->isSuperAdmin() ? $user->tenant_id : null;
                             })
                             ->helperText('Which tenant owns this document type'),
                     ])

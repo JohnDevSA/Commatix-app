@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\;
 use App\Models\Milestone;
 use App\Models\MilestoneActivity;
+use App\Models\MilestoneActivityType;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MilestoneActivityFactory extends Factory
 {
@@ -24,9 +24,9 @@ class MilestoneActivityFactory extends Factory
     {
         return [
             'milestone_id' => Milestone::factory(),
-            'milestone_activity_type_id' => ::factory(),
+            'milestone_activity_type_id' => MilestoneActivityType::factory(),
             'message' => fake()->text(),
-            'user_id' => ::factory(),
+            'user_id' => User::factory(),
             'metadata' => '{}',
         ];
     }

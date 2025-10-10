@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\WorkflowTemplate;
-use App\Models\Milestone;
-use App\Models\DocumentType;
 use App\Models\AccessScope;
-use App\Models\StatusType;
+use App\Models\DocumentType;
 use App\Models\Industry;
+use App\Models\Milestone;
+use App\Models\StatusType;
+use App\Models\WorkflowTemplate;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 class ComprehensiveWorkflowSeeder extends Seeder
@@ -50,24 +50,24 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Identity Document' => [
                                 'required' => true,
                                 'instructions' => 'Upload clear, high-resolution copy of valid SA ID or passport. Document must be in color and all text clearly readable.',
-                                'validation_rules' => 'file_type:pdf,jpg,png|max_size:5MB|min_resolution:300dpi'
+                                'validation_rules' => 'file_type:pdf,jpg,png|max_size:5MB|min_resolution:300dpi',
                             ],
                             'Proof of Address' => [
                                 'required' => true,
                                 'instructions' => 'Municipal bill, bank statement, or lease agreement not older than 3 months. Address must match ID document.',
-                                'validation_rules' => 'file_type:pdf,jpg,png|max_size:5MB|date_not_older_than:90_days'
+                                'validation_rules' => 'file_type:pdf,jpg,png|max_size:5MB|date_not_older_than:90_days',
                             ],
                             'Proof of Income' => [
                                 'required' => true,
                                 'instructions' => 'Latest salary slip, bank statement showing salary deposits, or employment letter with salary details.',
-                                'validation_rules' => 'file_type:pdf,jpg,png|max_size:10MB'
+                                'validation_rules' => 'file_type:pdf,jpg,png|max_size:10MB',
                             ],
                             'Tax Clearance Certificate' => [
                                 'required' => false,
                                 'instructions' => 'SARS tax clearance certificate if available. Not mandatory but speeds up approval process.',
-                                'validation_rules' => 'file_type:pdf|max_size:5MB'
+                                'validation_rules' => 'file_type:pdf|max_size:5MB',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '🔍 AI-Powered Document Verification',
@@ -82,9 +82,9 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Verification Report' => [
                                 'required' => true,
                                 'instructions' => 'System-generated verification report with AI confidence scores and manual review notes.',
-                                'validation_rules' => 'auto_generated:true'
+                                'validation_rules' => 'auto_generated:true',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '⚖️ Risk Assessment & Compliance',
@@ -99,9 +99,9 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Risk Assessment Report' => [
                                 'required' => true,
                                 'instructions' => 'Detailed risk evaluation including credit score, transaction patterns, and regulatory flags.',
-                                'validation_rules' => 'auto_generated:true|requires_approval:true'
+                                'validation_rules' => 'auto_generated:true|requires_approval:true',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '🏦 Digital Account Setup',
@@ -115,14 +115,14 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Account Opening Form' => [
                                 'required' => true,
                                 'instructions' => 'Digital account opening form with e-signature capability. All fields must be completed.',
-                                'validation_rules' => 'digital_signature:required|all_fields_completed:true'
+                                'validation_rules' => 'digital_signature:required|all_fields_completed:true',
                             ],
                             'Terms and Conditions' => [
                                 'required' => true,
                                 'instructions' => 'Digital acceptance of terms and conditions with timestamp and IP address logging.',
-                                'validation_rules' => 'digital_signature:required|timestamp:logged'
+                                'validation_rules' => 'digital_signature:required|timestamp:logged',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '🎉 Welcome & Activation',
@@ -133,9 +133,9 @@ class ComprehensiveWorkflowSeeder extends Seeder
                         'priority' => 'low',
                         'auto_complete' => true,
                         'completion_criteria' => 'Welcome package sent, account activated, and client successfully logged into portal',
-                        'documents' => []
+                        'documents' => [],
                     ],
-                ]
+                ],
             ],
             [
                 'name' => 'Healthcare Patient Registration',
@@ -160,19 +160,19 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Identity Document' => [
                                 'required' => true,
                                 'instructions' => 'Valid SA ID, passport, or birth certificate for minors. Must be current and legible.',
-                                'validation_rules' => 'file_type:pdf,jpg,png|max_size:5MB'
+                                'validation_rules' => 'file_type:pdf,jpg,png|max_size:5MB',
                             ],
                             'Medical Aid Card' => [
                                 'required' => false,
                                 'instructions' => 'Current medical aid membership card or certificate if applicable.',
-                                'validation_rules' => 'file_type:pdf,jpg,png|max_size:3MB'
+                                'validation_rules' => 'file_type:pdf,jpg,png|max_size:3MB',
                             ],
                             'Emergency Contact Information' => [
                                 'required' => true,
                                 'instructions' => 'Complete emergency contact details including relationship and alternative contact methods.',
-                                'validation_rules' => 'form_completed:true|contact_verified:true'
+                                'validation_rules' => 'form_completed:true|contact_verified:true',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '📋 Medical History Collection',
@@ -187,19 +187,19 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Medical History Form' => [
                                 'required' => true,
                                 'instructions' => 'Complete medical background including allergies, chronic conditions, and family history.',
-                                'validation_rules' => 'digital_form:required|medical_review:pending'
+                                'validation_rules' => 'digital_form:required|medical_review:pending',
                             ],
                             'Current Medication List' => [
                                 'required' => true,
                                 'instructions' => 'List all current prescriptions, dosages, and over-the-counter medications.',
-                                'validation_rules' => 'medication_list:validated|drug_interactions:checked'
+                                'validation_rules' => 'medication_list:validated|drug_interactions:checked',
                             ],
                             'Previous Medical Records' => [
                                 'required' => false,
                                 'instructions' => 'Medical records from previous healthcare providers if available and relevant.',
-                                'validation_rules' => 'file_type:pdf|max_size:20MB|medical_format:accepted'
+                                'validation_rules' => 'file_type:pdf|max_size:20MB|medical_format:accepted',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '✅ Registration Approval',
@@ -210,9 +210,9 @@ class ComprehensiveWorkflowSeeder extends Seeder
                         'priority' => 'medium',
                         'requires_approval' => true,
                         'completion_criteria' => 'Registration approved by medical staff and patient record created in system',
-                        'documents' => []
+                        'documents' => [],
                     ],
-                ]
+                ],
             ],
             [
                 'name' => 'Employee Onboarding & HR Setup',
@@ -237,29 +237,29 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Employment Contract' => [
                                 'required' => true,
                                 'instructions' => 'Digitally signed original employment contract with all terms and conditions.',
-                                'validation_rules' => 'digital_signature:required|legal_review:approved'
+                                'validation_rules' => 'digital_signature:required|legal_review:approved',
                             ],
                             'Identity Document' => [
                                 'required' => true,
                                 'instructions' => 'Valid SA ID, passport with work permit, or asylum seeker permit.',
-                                'validation_rules' => 'work_authorization:verified|document_authentic:true'
+                                'validation_rules' => 'work_authorization:verified|document_authentic:true',
                             ],
                             'Tax Number Certificate' => [
                                 'required' => true,
                                 'instructions' => 'SARS tax number certificate or individual tax number registration.',
-                                'validation_rules' => 'sars_verified:true|tax_compliance:checked'
+                                'validation_rules' => 'sars_verified:true|tax_compliance:checked',
                             ],
                             'Banking Details' => [
                                 'required' => true,
                                 'instructions' => 'Bank account details for salary payments with proof of banking relationship.',
-                                'validation_rules' => 'bank_verified:true|account_active:true'
+                                'validation_rules' => 'bank_verified:true|account_active:true',
                             ],
                             'Qualification Certificates' => [
                                 'required' => true,
                                 'instructions' => 'Academic and professional certificates relevant to the position.',
-                                'validation_rules' => 'qualifications_verified:true|accreditation_checked:true'
+                                'validation_rules' => 'qualifications_verified:true|accreditation_checked:true',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '💻 Digital System Access Setup',
@@ -273,9 +273,9 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'IT Security Policy' => [
                                 'required' => true,
                                 'instructions' => 'Digital acknowledgment of IT security policies and cybersecurity training completion.',
-                                'validation_rules' => 'digital_signature:required|training_completed:true'
+                                'validation_rules' => 'digital_signature:required|training_completed:true',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '🎓 Interactive Induction Training',
@@ -289,14 +289,14 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Training Completion Certificate' => [
                                 'required' => true,
                                 'instructions' => 'Digital certificate of completed training modules with assessment scores.',
-                                'validation_rules' => 'assessment_passed:true|completion_rate:100%'
+                                'validation_rules' => 'assessment_passed:true|completion_rate:100%',
                             ],
                             'Safety Training Certificate' => [
                                 'required' => true,
                                 'instructions' => 'Workplace safety compliance training with emergency procedure knowledge.',
-                                'validation_rules' => 'safety_test_passed:true|emergency_procedures:demonstrated'
+                                'validation_rules' => 'safety_test_passed:true|emergency_procedures:demonstrated',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '📅 Probation Review Setup',
@@ -306,7 +306,7 @@ class ComprehensiveWorkflowSeeder extends Seeder
                         'milestone_type' => 'task',
                         'priority' => 'low',
                         'completion_criteria' => 'Probation schedule created, performance metrics configured, and manager notified',
-                        'documents' => []
+                        'documents' => [],
                     ],
                     [
                         'name' => '🌟 Welcome & Integration Complete',
@@ -317,9 +317,9 @@ class ComprehensiveWorkflowSeeder extends Seeder
                         'priority' => 'low',
                         'auto_complete' => true,
                         'completion_criteria' => 'Welcome package delivered, team introductions completed, and buddy assigned',
-                        'documents' => []
+                        'documents' => [],
                     ],
-                ]
+                ],
             ],
             [
                 'name' => 'Real Estate Lead to Sale',
@@ -343,9 +343,9 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Pre-qualification Form' => [
                                 'required' => true,
                                 'instructions' => 'Digital financial pre-qualification with automated affordability calculation.',
-                                'validation_rules' => 'financial_capacity:calculated|credit_pre_check:completed'
+                                'validation_rules' => 'financial_capacity:calculated|credit_pre_check:completed',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '🏠 Virtual & Physical Property Tours',
@@ -359,9 +359,9 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Property Viewing Report' => [
                                 'required' => true,
                                 'instructions' => 'Digital documentation of all properties viewed with client feedback and ratings.',
-                                'validation_rules' => 'viewing_logged:true|client_feedback:recorded'
+                                'validation_rules' => 'viewing_logged:true|client_feedback:recorded',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '📋 Digital Offer to Purchase',
@@ -376,14 +376,14 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Offer to Purchase' => [
                                 'required' => true,
                                 'instructions' => 'Legally binding digital purchase offer with electronic signatures and terms.',
-                                'validation_rules' => 'legal_review:approved|digital_signature:required|terms_complete:true'
+                                'validation_rules' => 'legal_review:approved|digital_signature:required|terms_complete:true',
                             ],
                             'Proof of Deposit' => [
                                 'required' => true,
                                 'instructions' => 'Bank-verified proof of deposit payment with transaction reference.',
-                                'validation_rules' => 'bank_verified:true|amount_confirmed:true'
+                                'validation_rules' => 'bank_verified:true|amount_confirmed:true',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '🏦 Automated Bond Application',
@@ -398,24 +398,24 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Bond Application Form' => [
                                 'required' => true,
                                 'instructions' => 'Complete digital loan application with automated data validation.',
-                                'validation_rules' => 'application_complete:true|data_validated:true'
+                                'validation_rules' => 'application_complete:true|data_validated:true',
                             ],
                             'Proof of Income' => [
                                 'required' => true,
                                 'instructions' => 'Salary certificates, bank statements, and employment verification.',
-                                'validation_rules' => 'income_verified:true|employment_confirmed:true'
+                                'validation_rules' => 'income_verified:true|employment_confirmed:true',
                             ],
                             'Bank Statements' => [
                                 'required' => true,
                                 'instructions' => '3 months recent bank statements with transaction analysis.',
-                                'validation_rules' => 'statements_recent:90_days|transaction_analysis:completed'
+                                'validation_rules' => 'statements_recent:90_days|transaction_analysis:completed',
                             ],
                             'Credit Report' => [
                                 'required' => true,
                                 'instructions' => 'Official credit bureau report with real-time scoring.',
-                                'validation_rules' => 'credit_bureau:official|score_current:true'
+                                'validation_rules' => 'credit_bureau:official|score_current:true',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '🔑 Digital Transfer Process',
@@ -429,16 +429,16 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Transfer Documents' => [
                                 'required' => true,
                                 'instructions' => 'Digital transfer documentation with blockchain verification.',
-                                'validation_rules' => 'blockchain_verified:true|legal_compliance:confirmed'
+                                'validation_rules' => 'blockchain_verified:true|legal_compliance:confirmed',
                             ],
                             'Property Insurance' => [
                                 'required' => true,
                                 'instructions' => 'Valid property insurance certificate with adequate coverage.',
-                                'validation_rules' => 'insurance_active:true|coverage_adequate:true'
+                                'validation_rules' => 'insurance_active:true|coverage_adequate:true',
                             ],
-                        ]
+                        ],
                     ],
-                ]
+                ],
             ],
             [
                 'name' => 'Manufacturing Quality Control Process',
@@ -463,14 +463,14 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Material Certificate' => [
                                 'required' => true,
                                 'instructions' => 'Supplier-provided material certificates with blockchain verification.',
-                                'validation_rules' => 'supplier_verified:true|material_authentic:true'
+                                'validation_rules' => 'supplier_verified:true|material_authentic:true',
                             ],
                             'Quality Inspection Report' => [
                                 'required' => true,
                                 'instructions' => 'Automated inspection results with IoT sensor data and visual analysis.',
-                                'validation_rules' => 'iot_verified:true|quality_threshold:met'
+                                'validation_rules' => 'iot_verified:true|quality_threshold:met',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '⚙️ Real-time Production Control',
@@ -484,14 +484,14 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Production Log Sheet' => [
                                 'required' => true,
                                 'instructions' => 'Real-time production records with IoT sensor data and operator inputs.',
-                                'validation_rules' => 'realtime_logged:true|sensor_data:complete'
+                                'validation_rules' => 'realtime_logged:true|sensor_data:complete',
                             ],
                             'Process Control Chart' => [
                                 'required' => true,
                                 'instructions' => 'Statistical process control data with trend analysis and alerts.',
-                                'validation_rules' => 'spc_compliant:true|trend_analysis:completed'
+                                'validation_rules' => 'spc_compliant:true|trend_analysis:completed',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '🔬 Automated Final Testing',
@@ -506,14 +506,14 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Test Results Report' => [
                                 'required' => true,
                                 'instructions' => 'Comprehensive automated test results with AI quality predictions.',
-                                'validation_rules' => 'all_tests_passed:true|ai_quality_score:acceptable'
+                                'validation_rules' => 'all_tests_passed:true|ai_quality_score:acceptable',
                             ],
                             'Quality Certificate' => [
                                 'required' => true,
                                 'instructions' => 'Digital quality certification with blockchain verification.',
-                                'validation_rules' => 'blockchain_certified:true|quality_standards:met'
+                                'validation_rules' => 'blockchain_certified:true|quality_standards:met',
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'name' => '📋 Smart Packaging & Shipping',
@@ -528,16 +528,16 @@ class ComprehensiveWorkflowSeeder extends Seeder
                             'Packaging Specification' => [
                                 'required' => true,
                                 'instructions' => 'Smart packaging requirements with IoT tracking integration.',
-                                'validation_rules' => 'packaging_optimized:true|tracking_enabled:true'
+                                'validation_rules' => 'packaging_optimized:true|tracking_enabled:true',
                             ],
                             'Shipping Manifest' => [
                                 'required' => true,
                                 'instructions' => 'AI-optimized shipping documentation with route and delivery predictions.',
-                                'validation_rules' => 'route_optimized:true|delivery_predicted:true'
+                                'validation_rules' => 'route_optimized:true|delivery_predicted:true',
                             ],
-                        ]
+                        ],
                     ],
-                ]
+                ],
             ],
         ];
 
@@ -590,7 +590,7 @@ class ComprehensiveWorkflowSeeder extends Seeder
                 ]);
 
                 // Attach document requirements
-                if (!empty($milestoneData['documents'])) {
+                if (! empty($milestoneData['documents'])) {
                     $sequenceOrder = 1;
                     foreach ($milestoneData['documents'] as $documentName => $requirements) {
                         $documentType = DocumentType::where('name', $documentName)->first();
@@ -609,7 +609,7 @@ class ComprehensiveWorkflowSeeder extends Seeder
                 }
             }
 
-            $this->command->info("✅ Created workflow '{$workflow->name}' with " . count($workflowData['milestones']) . " milestones");
+            $this->command->info("✅ Created workflow '{$workflow->name}' with " . count($workflowData['milestones']) . ' milestones');
         }
 
         $this->command->info('🎉 Successfully created all 5 comprehensive workflow templates with modern UX features!');

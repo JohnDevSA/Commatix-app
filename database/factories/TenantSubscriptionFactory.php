@@ -2,10 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Tenant;
 use App\Models\TenantSubscription;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TenantSubscriptionFactory extends Factory
 {
@@ -24,10 +23,10 @@ class TenantSubscriptionFactory extends Factory
         return [
             'tenant_id' => Tenant::factory(),
             'plan_name' => fake()->word(),
-            'billing_interval' => fake()->randomElement(["monthly","annually"]),
+            'billing_interval' => fake()->randomElement(['monthly', 'annually']),
             'amount' => fake()->randomFloat(0, 0, 9999999999.),
             'currency' => fake()->word(),
-            'status' => fake()->randomElement(["active","cancelled","past_due","unpaid","trialing"]),
+            'status' => fake()->randomElement(['active', 'cancelled', 'past_due', 'unpaid', 'trialing']),
             'current_period_start' => fake()->dateTime(),
             'current_period_end' => fake()->dateTime(),
             'trial_ends_at' => fake()->dateTime(),

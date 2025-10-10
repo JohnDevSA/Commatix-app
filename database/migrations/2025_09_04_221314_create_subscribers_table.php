@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('last_name')->nullable();
             $table->string('tenant_id'); // Changed from foreignId to string
             $table->foreignId('subscriber_list_id');
-            $table->enum('status', ["active","inactive","unsubscribed","bounced"])->default('active');
+            $table->enum('status', ['active', 'inactive', 'unsubscribed', 'bounced'])->default('active');
             $table->timestamp('opt_out_date')->nullable();
-            $table->enum('source', ["manual","import","api","web_form"])->nullable();
+            $table->enum('source', ['manual', 'import', 'api', 'web_form'])->nullable();
             $table->json('tags')->nullable();
             $table->json('custom_fields')->nullable();
             $table->timestamps();

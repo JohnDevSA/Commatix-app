@@ -2,12 +2,11 @@
 
 namespace App\Filament\Resources\TenantTopUpResource\Pages;
 
-use App\Filament\Resources\TenantTopUpResource;
 use App\Contracts\Services\CreditManagementInterface;
+use App\Filament\Resources\TenantTopUpResource;
 use App\Models\Tenant;
-use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateTenantTopUp extends CreateRecord
 {
@@ -17,6 +16,7 @@ class CreateTenantTopUp extends CreateRecord
     {
         // Add the user who created the top-up
         $data['added_by'] = auth()->id();
+
         return $data;
     }
 

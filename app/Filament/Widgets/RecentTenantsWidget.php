@@ -2,16 +2,18 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Tenant;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use App\Models\Tenant;
 
 class RecentTenantsWidget extends BaseWidget
 {
     protected static ?string $heading = 'Recent Tenant Activity';
+
     protected static ?int $sort = 3;
-    protected int | string | array $columnSpan = 'full';
+
+    protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {

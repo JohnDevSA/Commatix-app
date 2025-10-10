@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Contracts\Services\TaskSchedulingInterface;
-use App\Contracts\Services\UserAssignmentStrategyInterface;
+use App\Http\Controllers\Controller;
 use App\Models\SubscriberList;
 use App\Models\User;
 use App\Services\UserAssignment\SingleUserAssignmentStrategy;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -22,9 +21,6 @@ class TaskSchedulingController extends Controller
 
     /**
      * Schedule tasks for all subscribers in a list
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function scheduleTasksForSubscribers(Request $request): JsonResponse
     {
@@ -46,7 +42,7 @@ class TaskSchedulingController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -94,23 +90,19 @@ class TaskSchedulingController extends Controller
                         'name' => $subscriberList->name,
                     ],
                     'task_ids' => $tasks->pluck('id'),
-                ]
+                ],
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to schedule tasks',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
 
     /**
      * Get scheduled tasks for a subscriber list
-     *
-     * @param int $subscriberListId
-     * @return JsonResponse
      */
     public function getScheduledTasks(int $subscriberListId): JsonResponse
     {
@@ -142,23 +134,19 @@ class TaskSchedulingController extends Controller
                             'due_date' => $task->due_date,
                         ];
                     }),
-                ]
+                ],
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve tasks',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
 
     /**
      * Get task scheduling statistics
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function getStatistics(Request $request): JsonResponse
     {
@@ -181,14 +169,13 @@ class TaskSchedulingController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $stats
+                'data' => $stats,
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve statistics',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

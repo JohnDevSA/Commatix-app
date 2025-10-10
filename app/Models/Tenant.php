@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
-use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
+use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 
 class Tenant extends BaseTenant implements TenantWithDatabase
 {
-    use HasFactory, HasDatabase, HasDomains;
+    use HasDatabase;
+    use HasDomains;
+    use HasFactory;
 
     // Override the table if needed
     protected $table = 'tenants';
@@ -230,7 +232,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     public function hasValidSubscription(): bool
     {
-        if (!$this->subscription_end_date) {
+        if (! $this->subscription_end_date) {
             return $this->status === 'trial';
         }
 
@@ -250,11 +252,12 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     public function canSendMessage(string $channel): bool
     {
-        if (!$this->isActive() || !$this->hasValidSubscription()) {
+        if (! $this->isActive() || ! $this->hasValidSubscription()) {
             return false;
         }
 
         $allowedChannels = $this->allowed_channels ?? [];
+
         return in_array($channel, $allowedChannels);
     }
 
@@ -272,7 +275,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     // SA business validation helpers
     public function getFormattedCompanyNumber(): ?string
     {
-        if (!$this->company_registration_number) {
+        if (! $this->company_registration_number) {
             return null;
         }
 
@@ -282,7 +285,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     public function getFormattedVatNumber(): ?string
     {
-        if (!$this->vat_number) {
+        if (! $this->vat_number) {
             return null;
         }
 

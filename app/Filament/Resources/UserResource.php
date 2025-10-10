@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,7 +12,6 @@ use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
 {
@@ -22,7 +20,6 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationGroup = 'User Management';
-
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -38,7 +35,7 @@ class UserResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             return $query->whereRaw('1 = 0'); // Return empty query if no user
         }
 
@@ -91,7 +88,7 @@ class UserResource extends Resource
                                                     ->maxLength(255)
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('Leave empty to keep current password when editing'),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -124,7 +121,7 @@ class UserResource extends Resource
                                                     ])
                                                     ->default('en')
                                                     ->extraAttributes(['class' => 'glass-input']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
@@ -148,6 +145,7 @@ class UserResource extends Resource
                                                             if (auth()->user()?->isTenantAdmin()) {
                                                                 return $query->where('is_super_admin', false);
                                                             }
+
                                                             return $query;
                                                         }
                                                     )
@@ -166,7 +164,7 @@ class UserResource extends Resource
                                                     ->helperText('Leave empty for Super Admin users only')
                                                     ->hidden(fn () => auth()->user()?->isTenantAdmin() ?? false)
                                                     ->default(fn () => auth()->user()?->isTenantAdmin() ? auth()->user()->tenant_id : null),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -192,7 +190,7 @@ class UserResource extends Resource
                                                     ->label('Email Verified At')
                                                     ->extraAttributes(['class' => 'glass-input'])
                                                     ->helperText('Set to mark email as verified manually'),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
@@ -216,7 +214,7 @@ class UserResource extends Resource
                                                     ->default(true)
                                                     ->helperText('Deactivate to prevent user login')
                                                     ->extraAttributes(['class' => 'glass-card']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
@@ -243,7 +241,7 @@ class UserResource extends Resource
                                                     ->default(false)
                                                     ->helperText('Receive product updates and tips')
                                                     ->extraAttributes(['class' => 'glass-card']),
-                                            ])
+                                            ]),
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
@@ -252,7 +250,6 @@ class UserResource extends Resource
                     ->extraAttributes(['class' => 'animate-slide-up']),
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
@@ -441,7 +438,6 @@ class UserResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->striped();
     }
-
 
     public static function getRelations(): array
     {

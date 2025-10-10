@@ -2,15 +2,16 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 use App\Models\Tenant;
 use App\Models\UserType;
 use App\Models\WorkflowTemplate;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class WarmupCache extends Command
 {
     protected $signature = 'cache:warmup';
+
     protected $description = 'Warm up application caches for better performance';
 
     public function handle(): int
@@ -36,7 +37,7 @@ class WarmupCache extends Command
         // Warm up tenant-specific caches
         $this->info('Caching tenant data...');
         $tenants = Tenant::all();
-        
+
         $progressBar = $this->output->createProgressBar($tenants->count());
         $progressBar->start();
 
@@ -55,11 +56,12 @@ class WarmupCache extends Command
 
             $progressBar->advance();
         }
-        
+
         $progressBar->finish();
         $this->newLine();
 
         $this->info('Cache warmup completed successfully!');
+
         return 0;
     }
 }

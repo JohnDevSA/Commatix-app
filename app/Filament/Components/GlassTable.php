@@ -18,8 +18,8 @@ class GlassTable extends Table
             'table' => $this,
         ])->with([
             'extraAttributes' => [
-                'class' => 'glass-card rounded-xl overflow-hidden'
-            ]
+                'class' => 'glass-card rounded-xl overflow-hidden',
+            ],
         ]);
     }
 }
