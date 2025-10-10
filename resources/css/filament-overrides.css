@@ -1,1 +1,8 @@
 /* Temporarily empty - testing if this fixes the styling issues */
+
+/* Debugger Navigation Items - Help Cursor */
+nav a[href*="/telescope"]:hover,
+nav a[href*="/pulse"]:hover,
+nav a[href="#"]:hover {
+    cursor: help !important;
+}

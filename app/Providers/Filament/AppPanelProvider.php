@@ -20,6 +20,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Stephenjude\FilamentDebugger\DebuggerPlugin;
+use Filament\Navigation\NavigationItem;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -79,7 +80,38 @@ class AppPanelProvider extends PanelProvider
             ])
             ->plugins([
                 DebuggerPlugin::make()
-                    ->authorize(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                    ->authorize(fn () => app()->environment('local') || auth()->user()?->hasRole('super_admin'))
+                    ->telescopeNavigation(condition: false) // Disable default navigation items
+                    ->pulseNavigation(condition: false)
+                    ->horizonNavigation(condition: false),
+            ])
+            ->navigationItems([
+                NavigationItem::make('Telescope')
+                    ->url('/telescope', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-magnifying-glass-circle')
+                    ->group('Debugger')
+                    ->sort(1)
+                    ->badge('Available', 'success')
+                    ->badgeTooltip('Opens Laravel Telescope debugger in new tab - Track requests, queries, jobs, and exceptions')
+                    ->visible(fn () => app()->environment('local') || auth()->user()?->hasRole('super_admin')),
+
+                NavigationItem::make('Pulse')
+                    ->url('/pulse', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-chart-bar')
+                    ->group('Debugger')
+                    ->sort(2)
+                    ->badge('Available', 'success')
+                    ->badgeTooltip('Opens Laravel Pulse dashboard in new tab - Real-time performance monitoring')
+                    ->visible(fn () => app()->environment('local') || auth()->user()?->hasRole('super_admin')),
+
+                NavigationItem::make('Horizon')
+                    ->url('#')
+                    ->icon('heroicon-o-queue-list')
+                    ->group('Debugger')
+                    ->sort(3)
+                    ->badge('Q1 2025', 'warning')
+                    ->badgeTooltip('Laravel Horizon - Coming Q1 2025 (Dependency conflict with PHP 8.4)')
+                    ->visible(fn () => app()->environment('local') || auth()->user()?->hasRole('super_admin')),
             ]);
     }
 }
