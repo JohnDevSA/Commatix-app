@@ -20,8 +20,11 @@
 - **SMS Integration**: [Vonage Client](https://github.com/Vonage/vonage-php-sdk-core)
 - **Scaffolding & Developer Tools**:
     - Laravel Blueprint
+    - Laravel Telescope (debugging)
+    - Laravel Pulse (performance monitoring)
     - Laravel Pint (code formatting)
-    - Laravel Pail (debugging)
+    - Laravel Pail (log streaming)
+    - Larastan (static analysis)
     - PHPUnit (testing)
     - Faker (test data)
 
@@ -93,6 +96,8 @@ Commatix supports two development environments: **Docker (recommended)** or **Lo
 8. **Access the application**
    - Main app: http://localhost
    - Admin panel: http://localhost/admin
+   - Telescope (debugging): http://localhost/telescope
+   - Pulse (performance): http://localhost/pulse
    - Mailpit (if installed): http://localhost:8025
 
 ### Useful Sail Commands
@@ -317,3 +322,149 @@ Password: FinanceDemo2025!
 ```
 Email:    priya@durbanhealth.co.za
 Password: HealthDemo2025!
+```
+
+---
+
+## 🐛 Developer & Debugging Tools
+
+Commatix includes powerful debugging and monitoring tools to help developers track application behavior, performance, and errors.
+
+### Available Tools
+
+#### ✅ Laravel Telescope
+**Status:** Fully Configured & Available
+
+Laravel Telescope provides elegant debugging for Laravel applications, tracking:
+- HTTP requests and responses
+- Database queries and performance
+- Jobs and queue monitoring  
+- Cache operations
+- Mail previews
+- Exception tracking
+- Log entries
+
+**Access:** http://localhost/telescope
+
+**Authorization:**
+- Automatically enabled in `local` environment
+- Super Admin users in production environments
+
+**Features:**
+- Request/response debugging with timing
+- SQL query profiler with explain plans
+- Job queue monitoring
+- Real-time exception tracking
+- Email preview (never send test emails again!)
+
+#### ✅ Laravel Pulse
+**Status:** Fully Configured & Available
+
+Laravel Pulse offers real-time application performance monitoring:
+- Server resource usage (CPU, memory, disk)
+- Slow database queries
+- Slow HTTP requests
+- Failed jobs and exceptions
+- Cache hit/miss rates
+- User activity tracking
+
+**Access:** http://localhost/pulse
+
+**Authorization:**
+- Automatically enabled in `local` environment
+- Super Admin users in production environments
+
+**Features:**
+- Live performance metrics dashboard
+- Historical trends and patterns
+- Slow query identification
+- Exception monitoring
+- Job throughput tracking
+
+#### ⏳ Laravel Horizon
+**Status:** Planned - Currently Unavailable
+
+**Why not available?**
+Laravel Horizon has a dependency conflict with the current Vonage SMS client (v4.x) when running on PHP 8.4. The conflict is in the `lcobucci/jwt` library used by both packages.
+
+**Timeline:** We're actively monitoring package updates and will integrate Horizon once the dependency conflict is resolved. Expected in Q1 2025.
+
+**Alternative:** Use **Laravel Telescope** to monitor queue jobs in the meantime. It provides comprehensive job tracking, though without Horizon's advanced queue management UI.
+
+**What Horizon will provide (when available):**
+- Advanced queue dashboard
+- Job retry management
+- Queue metrics and statistics
+- Failed job management
+- Real-time job throughput
+
+### Using the Debugger Tools
+
+**During Development:**
+```bash
+# Access Telescope dashboard
+open http://localhost/telescope
+
+# Access Pulse dashboard
+open http://localhost/pulse
+
+# View recent exceptions
+# Telescope → Exceptions tab
+
+# Find slow queries
+# Pulse → Slow Queries card
+
+# Check queue jobs
+# Telescope → Jobs tab
+```
+
+**Clearing Debug Data:**
+```bash
+# Clear Telescope entries
+docker compose exec laravel.test php artisan telescope:clear
+
+# Telescope retains data for 24 hours by default
+# Configure retention in config/telescope.php
+
+# Pulse data retention is configured in config/pulse.php
+# Default: 7 days
+```
+
+**Production Considerations:**
+- Telescope and Pulse are enabled but restricted to Super Admin users only
+- Consider disabling Telescope in production (`TELESCOPE_ENABLED=false` in `.env`)
+- Pulse is lightweight and safe for production use
+- Both tools use database storage for collected metrics
+
+### Troubleshooting Debugger Tools
+
+**Issue:** Cannot access /telescope or /pulse
+
+**Solution:**
+1. Ensure you're logged in as Super Admin or in local environment
+2. Clear config cache: `docker compose exec laravel.test php artisan config:clear`
+3. Check authorization gates in:
+   - `app/Providers/TelescopeServiceProvider.php`
+   - `app/Providers/AppServiceProvider.php`
+
+**Issue:** Telescope not recording data
+
+**Solution:**
+1. Check `TELESCOPE_ENABLED=true` in `.env`
+2. Verify migrations ran: `docker compose exec laravel.test php artisan migrate:status | grep telescope`
+3. Clear config: `docker compose exec laravel.test php artisan config:clear`
+
+---
+
+## 📚 Additional Documentation
+
+- [CLAUDE.md](./CLAUDE.md) - AI assistant context and development guidelines
+- [Laravel Documentation](https://laravel.com/docs)
+- [Filament Documentation](https://filamentphp.com/docs)
+- [stancl/tenancy Documentation](https://tenancyforlaravel.com/docs)
+
+---
+
+## 📄 License
+
+MIT License. See [LICENSE](./LICENSE) for details.

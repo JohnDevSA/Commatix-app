@@ -14,6 +14,8 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     public function register(): void
     {
+        parent::register();
+
         // Telescope::night();
 
         $this->hideSensitiveRequestDetails();
@@ -56,9 +58,13 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewTelescope', function ($user) {
-            return in_array($user->email, [
-                //
-            ]);
+            // Allow in local environment
+            if (app()->environment('local')) {
+                return true;
+            }
+
+            // Allow Super Admins
+            return $user->hasRole('super_admin');
         });
     }
 }
