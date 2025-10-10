@@ -21,6 +21,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Stephenjude\FilamentDebugger\DebuggerPlugin;
 use Filament\Navigation\NavigationItem;
+use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -84,6 +85,16 @@ class AppPanelProvider extends PanelProvider
                     ->telescopeNavigation(condition: false) // Disable default navigation items
                     ->pulseNavigation(condition: false)
                     ->horizonNavigation(condition: false),
+
+                EnvironmentIndicatorPlugin::make()
+                    ->visible(fn () => app()->environment('local') || app()->environment('staging'))
+                    ->showBadge(true)
+                    ->color(fn () => match (app()->environment()) {
+                        'local' => Color::Green,
+                        'staging' => Color::Amber,
+                        'production' => Color::Red,
+                        default => Color::Gray,
+                    }),
             ])
             ->navigationItems([
                 NavigationItem::make('Telescope')
