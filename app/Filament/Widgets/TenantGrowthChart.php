@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 
 class TenantGrowthChart extends ChartWidget
 {
-    protected static ?string $heading = 'Tenant Growth';
+    protected ?string $heading = 'Tenant Growth';
 
     protected static ?int $sort = 2;
 

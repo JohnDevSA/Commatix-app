@@ -10,6 +10,8 @@ class ListTasks extends ListRecords
 {
     protected static string $resource = TaskResource::class;
 
+    protected string $view = 'filament.resources.task-resource.pages.list-tasks';
+
     protected function getHeaderActions(): array
     {
         return [

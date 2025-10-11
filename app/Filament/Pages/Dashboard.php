@@ -7,13 +7,14 @@ use App\Filament\Widgets\SystemOverviewWidget;
 use App\Filament\Widgets\TenantActivityChart;
 use App\Filament\Widgets\TenantGrowthChart;
 use App\Filament\Widgets\TenantOverviewWidget;
+use BackedEnum;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
 {
-    protected static ?string $navigationIcon = 'heroicon-o-home';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-home';
 
-    protected static string $view = 'filament.pages.dashboard';
+    protected string $view = 'filament.pages.dashboard';
 
     public function getWidgets(): array
     {

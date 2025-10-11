@@ -3,26 +3,28 @@
 namespace App\Filament\Pages;
 
 use App\Models\Tenant;
-use Filament\Forms;
+use BackedEnum;
+use Filament\Schemas\Components;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use UnitEnum;
 
 class OrganizationSettings extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office';
 
-    protected static ?string $navigationGroup = 'Organization';
+    protected static string | UnitEnum | null $navigationGroup = 'Organization';
 
     protected static ?string $navigationLabel = 'Organization Settings';
 
     protected static ?int $navigationSort = 1;
 
-    protected static string $view = 'filament.pages.organization-settings';
+    protected string $view = 'filament.pages.organization-settings';
 
     public ?array $data = [];
 
@@ -41,28 +43,28 @@ class OrganizationSettings extends Page implements HasForms
         $this->form->fill($tenant->toArray());
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Tabs::make('Organization Information')
+                Components\Tabs::make('Organization Information')
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('Company Details')
+                        Components\Tabs\Tab::make('Company Details')
                             ->icon('heroicon-m-building-office')
                             ->schema([
-                                Forms\Components\Section::make('Company Information')
+                                Components\Section::make('Company Information')
                                     ->description('Essential business registration and legal information')
                                     ->icon('heroicon-m-identification')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)
+                                        Components\Grid::make(2)
                                             ->schema([
-                                                Forms\Components\TextInput::make('name')
+                                                FormComponents\TextInput::make('name')
                                                     ->label('Registered Company Name')
                                                     ->required()
                                                     ->maxLength(255)
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('trading_name')
+                                                FormComponents\TextInput::make('trading_name')
                                                     ->label('Trading Name (if different)')
                                                     ->maxLength(255)
                                                     ->extraInputAttributes(['class' => 'glass-input']),
@@ -70,27 +72,27 @@ class OrganizationSettings extends Page implements HasForms
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
-                                Forms\Components\Section::make('SA Business Registration')
+                                Components\Section::make('SA Business Registration')
                                     ->description('South African business compliance and registration details')
                                     ->icon('heroicon-m-document-check')
                                     ->schema([
-                                        Forms\Components\Grid::make(3)
+                                        Components\Grid::make(3)
                                             ->schema([
-                                                Forms\Components\TextInput::make('company_registration_number')
+                                                FormComponents\TextInput::make('company_registration_number')
                                                     ->label('CK Number')
                                                     ->maxLength(20)
                                                     ->placeholder('2019/123456/07')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('Company registration number'),
 
-                                                Forms\Components\TextInput::make('vat_number')
+                                                FormComponents\TextInput::make('vat_number')
                                                     ->label('VAT Number')
                                                     ->maxLength(15)
                                                     ->placeholder('4123456789')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('10-digit VAT number'),
 
-                                                Forms\Components\TextInput::make('tax_reference_number')
+                                                FormComponents\TextInput::make('tax_reference_number')
                                                     ->label('Tax Reference Number')
                                                     ->maxLength(20)
                                                     ->placeholder('9876543210')
@@ -101,28 +103,28 @@ class OrganizationSettings extends Page implements HasForms
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
 
-                        Forms\Components\Tabs\Tab::make('Contact & Address')
+                        Components\Tabs\Tab::make('Contact & Address')
                             ->icon('heroicon-m-map-pin')
                             ->schema([
-                                Forms\Components\Section::make('Primary Contact Information')
+                                Components\Section::make('Primary Contact Information')
                                     ->description('Main business contact details')
                                     ->icon('heroicon-m-user')
                                     ->schema([
-                                        Forms\Components\Grid::make(3)
+                                        Components\Grid::make(3)
                                             ->schema([
-                                                Forms\Components\TextInput::make('primary_contact_person')
+                                                FormComponents\TextInput::make('primary_contact_person')
                                                     ->label('Contact Person')
                                                     ->maxLength(255)
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('primary_email')
+                                                FormComponents\TextInput::make('primary_email')
                                                     ->label('Primary Email')
                                                     ->email()
                                                     ->required()
                                                     ->maxLength(255)
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('primary_phone')
+                                                FormComponents\TextInput::make('primary_phone')
                                                     ->label('Primary Phone')
                                                     ->tel()
                                                     ->maxLength(20)
@@ -132,24 +134,24 @@ class OrganizationSettings extends Page implements HasForms
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
-                                Forms\Components\Section::make('Billing Contact Information')
+                                Components\Section::make('Billing Contact Information')
                                     ->description('Billing and financial contact details')
                                     ->icon('heroicon-m-credit-card')
                                     ->schema([
-                                        Forms\Components\Grid::make(3)
+                                        Components\Grid::make(3)
                                             ->schema([
-                                                Forms\Components\TextInput::make('billing_contact_person')
+                                                FormComponents\TextInput::make('billing_contact_person')
                                                     ->label('Billing Contact')
                                                     ->maxLength(255)
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('billing_email')
+                                                FormComponents\TextInput::make('billing_email')
                                                     ->label('Billing Email')
                                                     ->email()
                                                     ->maxLength(255)
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('billing_phone')
+                                                FormComponents\TextInput::make('billing_phone')
                                                     ->label('Billing Phone')
                                                     ->tel()
                                                     ->maxLength(20)
@@ -158,29 +160,29 @@ class OrganizationSettings extends Page implements HasForms
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
 
-                                Forms\Components\Section::make('Address Information')
+                                Components\Section::make('Address Information')
                                     ->description('Physical and postal address details')
                                     ->icon('heroicon-m-map')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)
+                                        Components\Grid::make(2)
                                             ->schema([
-                                                Forms\Components\Fieldset::make('Physical Address')
+                                                Components\Fieldset::make('Physical Address')
                                                     ->schema([
-                                                        Forms\Components\TextInput::make('physical_address_line1')
+                                                        FormComponents\TextInput::make('physical_address_line1')
                                                             ->label('Address Line 1')
                                                             ->maxLength(255)
                                                             ->extraInputAttributes(['class' => 'glass-input']),
-                                                        Forms\Components\TextInput::make('physical_address_line2')
+                                                        FormComponents\TextInput::make('physical_address_line2')
                                                             ->label('Address Line 2')
                                                             ->maxLength(255)
                                                             ->extraInputAttributes(['class' => 'glass-input']),
-                                                        Forms\Components\Grid::make(3)
+                                                        Components\Grid::make(3)
                                                             ->schema([
-                                                                Forms\Components\TextInput::make('physical_city')
+                                                                FormComponents\TextInput::make('physical_city')
                                                                     ->label('City')
                                                                     ->maxLength(100)
                                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                                                Forms\Components\Select::make('physical_province')
+                                                                FormComponents\Select::make('physical_province')
                                                                     ->label('Province')
                                                                     ->options([
                                                                         'EC' => 'Eastern Cape',
@@ -195,7 +197,7 @@ class OrganizationSettings extends Page implements HasForms
                                                                     ])
                                                                     ->searchable()
                                                                     ->extraAttributes(['class' => 'glass-input']),
-                                                                Forms\Components\TextInput::make('physical_postal_code')
+                                                                FormComponents\TextInput::make('physical_postal_code')
                                                                     ->label('Postal Code')
                                                                     ->maxLength(10)
                                                                     ->placeholder('1234')
@@ -204,23 +206,23 @@ class OrganizationSettings extends Page implements HasForms
                                                     ])
                                                     ->extraAttributes(['class' => 'border-l-4 border-commatix-500 pl-4']),
 
-                                                Forms\Components\Fieldset::make('Postal Address')
+                                                Components\Fieldset::make('Postal Address')
                                                     ->schema([
-                                                        Forms\Components\TextInput::make('postal_address_line1')
+                                                        FormComponents\TextInput::make('postal_address_line1')
                                                             ->label('Address Line 1')
                                                             ->maxLength(255)
                                                             ->extraInputAttributes(['class' => 'glass-input']),
-                                                        Forms\Components\TextInput::make('postal_address_line2')
+                                                        FormComponents\TextInput::make('postal_address_line2')
                                                             ->label('Address Line 2')
                                                             ->maxLength(255)
                                                             ->extraInputAttributes(['class' => 'glass-input']),
-                                                        Forms\Components\Grid::make(3)
+                                                        Components\Grid::make(3)
                                                             ->schema([
-                                                                Forms\Components\TextInput::make('postal_city')
+                                                                FormComponents\TextInput::make('postal_city')
                                                                     ->label('City')
                                                                     ->maxLength(100)
                                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                                                Forms\Components\Select::make('postal_province')
+                                                                FormComponents\Select::make('postal_province')
                                                                     ->label('Province')
                                                                     ->options([
                                                                         'EC' => 'Eastern Cape',
@@ -235,7 +237,7 @@ class OrganizationSettings extends Page implements HasForms
                                                                     ])
                                                                     ->searchable()
                                                                     ->extraAttributes(['class' => 'glass-input']),
-                                                                Forms\Components\TextInput::make('postal_code')
+                                                                FormComponents\TextInput::make('postal_code')
                                                                     ->label('Postal Code')
                                                                     ->maxLength(10)
                                                                     ->placeholder('1234')

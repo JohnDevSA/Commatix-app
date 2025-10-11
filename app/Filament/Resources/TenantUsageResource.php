@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\TenantUsageResource\Pages;
 use App\Models\TenantUsage;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -15,9 +19,9 @@ class TenantUsageResource extends Resource
 {
     protected static ?string $model = TenantUsage::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static ?string $navigationGroup = 'Tenant Management';
+    protected static string | UnitEnum | null $navigationGroup = 'Tenant Management';
 
     protected static ?string $navigationLabel = 'Usage Monitoring';
 
@@ -26,36 +30,36 @@ class TenantUsageResource extends Resource
         return auth()->user()?->canAccessGlobalResources() ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Select::make('tenant_id')
+                FormComponents\Select::make('tenant_id')
                     ->relationship('tenant', 'name')
                     ->required(),
-                Forms\Components\DateTimePicker::make('period_start'),
-                Forms\Components\DateTimePicker::make('period_end'),
-                Forms\Components\TextInput::make('emails_sent')
+                FormComponents\DateTimePicker::make('period_start'),
+                FormComponents\DateTimePicker::make('period_end'),
+                FormComponents\TextInput::make('emails_sent')
                     ->required()
                     ->numeric()
                     ->default(0),
-                Forms\Components\TextInput::make('sms_sent')
+                FormComponents\TextInput::make('sms_sent')
                     ->required()
                     ->numeric()
                     ->default(0),
-                Forms\Components\TextInput::make('whatsapp_sent')
+                FormComponents\TextInput::make('whatsapp_sent')
                     ->required()
                     ->numeric()
                     ->default(0),
-                Forms\Components\TextInput::make('voice_calls')
+                FormComponents\TextInput::make('voice_calls')
                     ->required()
                     ->numeric()
                     ->default(0),
-                Forms\Components\TextInput::make('storage_used_mb')
+                FormComponents\TextInput::make('storage_used_mb')
                     ->required()
                     ->numeric()
                     ->default(0.00),
-                Forms\Components\TextInput::make('api_calls')
+                FormComponents\TextInput::make('api_calls')
                     ->required()
                     ->numeric()
                     ->default(0),
@@ -133,9 +137,9 @@ class TenantUsageResource extends Resource
                     ->preload(),
                 Tables\Filters\Filter::make('period')
                     ->form([
-                        Forms\Components\DatePicker::make('period_from')
+                        FormComponents\DatePicker::make('period_from')
                             ->label('Period From'),
-                        Forms\Components\DatePicker::make('period_to')
+                        FormComponents\DatePicker::make('period_to')
                             ->label('Period To'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -151,12 +155,12 @@ class TenantUsageResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('period_start', 'desc');

@@ -10,6 +10,8 @@ class ListDivisions extends ListRecords
 {
     protected static string $resource = DivisionResource::class;
 
+    protected string $view = 'filament.resources.division-resource.pages.list-divisions';
+
     protected function getHeaderActions(): array
     {
         return [

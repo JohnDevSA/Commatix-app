@@ -1,12 +1,16 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\MilestoneResource\Pages;
 use App\Models\Milestone;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Actions;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -14,9 +18,9 @@ class MilestoneResource extends Resource
 {
     protected static ?string $model = Milestone::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-flag';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-flag';
 
-    protected static ?string $navigationGroup = 'System Administration';
+    protected static string | UnitEnum | null $navigationGroup = 'System Administration';
 
     protected static ?string $navigationLabel = 'Workflow Milestones';
 
@@ -27,56 +31,56 @@ class MilestoneResource extends Resource
         return auth()->user()?->canAccessGlobalResources() ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Milestone Information')
+                Components\Section::make('Milestone Information')
                     ->schema([
-                        Forms\Components\Select::make('workflow_template_id')
+                        FormComponents\Select::make('workflow_template_id')
                             ->relationship('workflowTemplate', 'name')
                             ->searchable()
                             ->required()
                             ->columnSpan(2),
-                        Forms\Components\TextInput::make('name')
+                        FormComponents\TextInput::make('name')
                             ->required()
                             ->maxLength(255)
                             ->columnSpan(2),
-                        Forms\Components\Textarea::make('hint')
+                        FormComponents\Textarea::make('hint')
                             ->rows(3)
                             ->columnSpanFull(),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Configuration')
+                Components\Section::make('Configuration')
                     ->schema([
-                        Forms\Components\TextInput::make('sla_days')
+                        FormComponents\TextInput::make('sla_days')
                             ->required()
                             ->numeric()
                             ->suffix('days')
                             ->helperText('Service Level Agreement in days'),
-                        Forms\Components\Select::make('status_type_id')
+                        FormComponents\Select::make('status_type_id')
                             ->relationship('statusType', 'name')
                             ->required(),
 
-                        Forms\Components\Toggle::make('requires_approval')
+                        FormComponents\Toggle::make('requires_approval')
                             ->label('Requires Approval')
                             ->helperText('Whether this milestone requires approval before completion')
                             ->reactive()
                             ->afterStateUpdated(fn ($state, callable $set) => ! $state ? $set('approval_group_name', null) : null),
 
-                        Forms\Components\TextInput::make('approval_group_name')
+                        FormComponents\TextInput::make('approval_group_name')
                             ->label('Approval Group Name')
                             ->helperText('Enter approval group name (Approval groups feature coming soon - will be division-based)')
                             ->maxLength(255)
                             ->visible(fn (callable $get) => $get('requires_approval'))
                             ->placeholder('e.g., Finance Approvers, HR Managers'),
 
-                        Forms\Components\Toggle::make('requires_docs')
+                        FormComponents\Toggle::make('requires_docs')
                             ->label('Requires Documentation')
                             ->helperText('Whether this milestone requires document attachments')
                             ->reactive(),
 
-                        Forms\Components\Select::make('document_requirements')
+                        FormComponents\Select::make('document_requirements')
                             ->label('Required Documents')
                             ->multiple()
                             ->relationship('documentRequirements', 'name')
@@ -87,9 +91,9 @@ class MilestoneResource extends Resource
                             ->columnSpanFull(),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Actions')
+                Components\Section::make('Actions')
                     ->schema([
-                        Forms\Components\Textarea::make('actions')
+                        FormComponents\Textarea::make('actions')
                             ->label('Actions (JSON)')
                             ->required()
                             ->rows(5)
@@ -176,9 +180,9 @@ class MilestoneResource extends Resource
                     ->label('Requires Approval'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('duplicate')
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
+                Actions\Action::make('duplicate')
                     ->icon('heroicon-m-document-duplicate')
                     ->color('gray')
                     ->action(function (Milestone $record) {
@@ -188,8 +192,8 @@ class MilestoneResource extends Resource
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('workflowTemplate.name');

@@ -1,16 +1,20 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Contracts\Services\TaskSchedulingInterface;
 use App\Filament\Resources\SubscriberListResource\Pages;
 use App\Models\SubscriberList;
 use App\Models\User;
 use App\Models\WorkflowTemplate;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Actions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,9 +23,9 @@ class SubscriberListResource extends Resource
 {
     protected static ?string $model = SubscriberList::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-queue-list';
 
-    protected static ?string $navigationGroup = 'CRM';
+    protected static string | UnitEnum | null $navigationGroup = 'CRM';
 
     protected static ?string $navigationLabel = 'Subscriber Lists';
 
@@ -37,23 +41,23 @@ class SubscriberListResource extends Resource
         return parent::getEloquentQuery()->where('tenant_id', auth()->user()->tenant_id);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('List Information')
+                Components\Section::make('List Information')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        FormComponents\TextInput::make('name')
                             ->required()
                             ->maxLength(255)
                             ->helperText('Name of the subscriber list'),
 
-                        Forms\Components\Textarea::make('description')
+                        FormComponents\Textarea::make('description')
                             ->rows(3)
                             ->columnSpanFull()
                             ->helperText('Brief description of this list'),
 
-                        Forms\Components\Toggle::make('is_public')
+                        FormComponents\Toggle::make('is_public')
                             ->label('Public List')
                             ->helperText('Make this list available for public signup forms')
                             ->default(false),
@@ -111,24 +115,24 @@ class SubscriberListResource extends Resource
                     ->falseLabel('Private only'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make(),
 
-                Tables\Actions\Action::make('scheduleTasksAction')
+                Actions\Action::make('scheduleTasksAction')
                     ->label('Schedule Tasks')
                     ->icon('heroicon-o-calendar')
                     ->color('success')
                     ->form([
-                        Forms\Components\TextInput::make('title')
+                        FormComponents\TextInput::make('title')
                             ->required()
                             ->maxLength(255)
                             ->placeholder('e.g., Follow-up Call'),
 
-                        Forms\Components\Textarea::make('description')
+                        FormComponents\Textarea::make('description')
                             ->rows(3)
                             ->placeholder('Task description'),
 
-                        Forms\Components\Select::make('priority')
+                        FormComponents\Select::make('priority')
                             ->options([
                                 'low' => 'Low',
                                 'medium' => 'Medium',
@@ -138,7 +142,7 @@ class SubscriberListResource extends Resource
                             ->default('medium')
                             ->required(),
 
-                        Forms\Components\Select::make('workflow_template_id')
+                        FormComponents\Select::make('workflow_template_id')
                             ->label('Workflow Template (Optional)')
                             ->options(function () {
                                 return WorkflowTemplate::where('tenant_id', auth()->user()->tenant_id)
@@ -146,14 +150,14 @@ class SubscriberListResource extends Resource
                             })
                             ->searchable(),
 
-                        Forms\Components\DateTimePicker::make('scheduled_start_date')
+                        FormComponents\DateTimePicker::make('scheduled_start_date')
                             ->label('Start Date')
                             ->default(now()),
 
-                        Forms\Components\DateTimePicker::make('due_date')
+                        FormComponents\DateTimePicker::make('due_date')
                             ->label('Due Date'),
 
-                        Forms\Components\Select::make('user_ids')
+                        FormComponents\Select::make('user_ids')
                             ->label('Assign to Users (Optional)')
                             ->multiple()
                             ->options(function () {
@@ -203,8 +207,8 @@ class SubscriberListResource extends Resource
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\DivisionResource\Pages;
 use App\Models\Division;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -15,9 +19,9 @@ class DivisionResource extends Resource
 {
     protected static ?string $model = Division::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static ?string $navigationGroup = 'Organization';
+    protected static string | UnitEnum | null $navigationGroup = 'Organization';
 
     protected static ?string $navigationLabel = 'Divisions';
 
@@ -41,19 +45,19 @@ class DivisionResource extends Resource
         return $query;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Division Information')
+                Components\Section::make('Division Information')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        FormComponents\TextInput::make('name')
                             ->required()
                             ->maxLength(255)
                             ->helperText('Name of the division or department')
                             ->placeholder('e.g., Sales, Marketing, Operations'),
 
-                        Forms\Components\Select::make('tenant_id')
+                        FormComponents\Select::make('tenant_id')
                             ->relationship('tenant', 'name')
                             ->required()
                             ->visible(fn () => auth()->user()?->isSuperAdmin())
@@ -107,14 +111,14 @@ class DivisionResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make()
                     ->requiresConfirmation(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->requiresConfirmation(),
                 ]),
             ]);

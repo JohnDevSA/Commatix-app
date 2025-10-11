@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\ApprovalGroupResource\Pages;
 use App\Models\ApprovalGroup;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -15,9 +19,9 @@ class ApprovalGroupResource extends Resource
 {
     protected static ?string $model = ApprovalGroup::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationGroup = 'User Management';
+    protected static string | UnitEnum | null $navigationGroup = 'User Management';
 
     protected static ?string $navigationLabel = 'Approval Groups';
 
@@ -39,17 +43,17 @@ class ApprovalGroupResource extends Resource
         return $query; // Super admins see all
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Approval Group Information')
+                Components\Section::make('Approval Group Information')
                     ->description('Create groups of users who can approve tasks and workflows')
                     ->icon('heroicon-m-user-group')
                     ->schema([
-                        Forms\Components\Grid::make(2)
+                        Components\Grid::make(2)
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                FormComponents\TextInput::make('name')
                                     ->label('Group Name')
                                     ->required()
                                     ->maxLength(255)
@@ -57,7 +61,7 @@ class ApprovalGroupResource extends Resource
                                     ->extraInputAttributes(['class' => 'glass-input'])
                                     ->columnSpanFull(),
 
-                                Forms\Components\Select::make('division_id')
+                                FormComponents\Select::make('division_id')
                                     ->label('Division')
                                     ->relationship(
                                         name: 'division',
@@ -69,13 +73,13 @@ class ApprovalGroupResource extends Resource
                                     ->extraAttributes(['class' => 'glass-input'])
                                     ->helperText('Optional: Restrict this group to a specific division'),
 
-                                Forms\Components\Toggle::make('is_active')
+                                FormComponents\Toggle::make('is_active')
                                     ->label('Active')
                                     ->default(true)
                                     ->helperText('Inactive groups cannot be used for approvals')
                                     ->extraAttributes(['class' => 'glass-card']),
 
-                                Forms\Components\Textarea::make('description')
+                                FormComponents\Textarea::make('description')
                                     ->label('Description')
                                     ->maxLength(65535)
                                     ->placeholder('Describe the purpose and responsibilities of this approval group')
@@ -86,11 +90,11 @@ class ApprovalGroupResource extends Resource
                     ])
                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
-                Forms\Components\Section::make('Group Members')
+                Components\Section::make('Group Members')
                     ->description('Select users who belong to this approval group')
                     ->icon('heroicon-m-users')
                     ->schema([
-                        Forms\Components\Select::make('users')
+                        FormComponents\Select::make('users')
                             ->label('Members')
                             ->multiple()
                             ->relationship(
@@ -115,7 +119,7 @@ class ApprovalGroupResource extends Resource
                     ])
                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
 
-                Forms\Components\Select::make('tenant_id')
+                FormComponents\Select::make('tenant_id')
                     ->relationship('tenant', 'name')
                     ->required()
                     ->visible(fn () => auth()->user()?->isSuperAdmin())
@@ -189,25 +193,25 @@ class ApprovalGroupResource extends Resource
                     ->toggle(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
+                Actions\ViewAction::make()
                     ->label('View')
                     ->icon('heroicon-m-eye')
                     ->color('info'),
 
-                Tables\Actions\EditAction::make()
+                Actions\EditAction::make()
                     ->label('Edit')
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning'),
 
-                Tables\Actions\DeleteAction::make()
+                Actions\DeleteAction::make()
                     ->requiresConfirmation(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->requiresConfirmation(),
 
-                    Tables\Actions\BulkAction::make('activate')
+                    Actions\BulkAction::make('activate')
                         ->label('Activate Groups')
                         ->icon('heroicon-m-check-circle')
                         ->color('success')
@@ -218,7 +222,7 @@ class ApprovalGroupResource extends Resource
                             ->success()
                             ->send()),
 
-                    Tables\Actions\BulkAction::make('deactivate')
+                    Actions\BulkAction::make('deactivate')
                         ->label('Deactivate Groups')
                         ->icon('heroicon-m-x-circle')
                         ->color('danger')

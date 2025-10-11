@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\TenantWorkflowTemplateResource\RelationManagers;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -21,41 +23,41 @@ class MilestonesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Milestone Details')
+                Components\Section::make('Milestone Details')
                     ->schema([
-                        Forms\Components\Grid::make(2)
+                        Components\Grid::make(2)
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                FormComponents\TextInput::make('name')
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true),
-                                Forms\Components\TextInput::make('sequence_order')
+                                FormComponents\TextInput::make('sequence_order')
                                     ->numeric()
                                     ->required()
                                     ->default(fn () => $this->getOwnerRecord()->milestones()->max('sequence_order') + 1)
                                     ->minValue(1),
-                                Forms\Components\Textarea::make('description')
+                                FormComponents\Textarea::make('description')
                                     ->required()
                                     ->rows(3)
                                     ->columnSpanFull(),
                             ]),
                     ]),
 
-                Forms\Components\Section::make('Duration & Requirements')
+                Components\Section::make('Duration & Requirements')
                     ->schema([
-                        Forms\Components\Grid::make(3)
+                        Components\Grid::make(3)
                             ->schema([
-                                Forms\Components\TextInput::make('estimated_duration_days')
+                                FormComponents\TextInput::make('estimated_duration_days')
                                     ->label('Duration (Days)')
                                     ->numeric()
                                     ->required()
                                     ->minValue(1)
                                     ->live(onBlur: true),
-                                Forms\Components\Select::make('milestone_type')
+                                FormComponents\Select::make('milestone_type')
                                     ->options([
                                         'task' => 'Task Milestone',
                                         'approval' => 'Approval Gate',
@@ -64,7 +66,7 @@ class MilestonesRelationManager extends RelationManager
                                         'notification' => 'Notification',
                                     ])
                                     ->required(),
-                                Forms\Components\Select::make('priority')
+                                FormComponents\Select::make('priority')
                                     ->options([
                                         'low' => 'Low',
                                         'medium' => 'Medium',
@@ -73,26 +75,26 @@ class MilestonesRelationManager extends RelationManager
                                     ])
                                     ->default('medium'),
                             ]),
-                        Forms\Components\Grid::make(2)
+                        Components\Grid::make(2)
                             ->schema([
-                                Forms\Components\Toggle::make('requires_approval')
+                                FormComponents\Toggle::make('requires_approval')
                                     ->label('Requires Approval')
                                     ->default(false)
                                     ->reactive()
                                     ->afterStateUpdated(fn ($state, callable $set) => ! $state ? $set('approval_group_name', null) : null),
-                                Forms\Components\Toggle::make('requires_docs')
+                                FormComponents\Toggle::make('requires_docs')
                                     ->label('Requires Documentation')
                                     ->default(false)
                                     ->reactive(),
-                                Forms\Components\Toggle::make('can_be_skipped')
+                                FormComponents\Toggle::make('can_be_skipped')
                                     ->label('Can be Skipped')
                                     ->default(false),
-                                Forms\Components\Toggle::make('auto_complete')
+                                FormComponents\Toggle::make('auto_complete')
                                     ->label('Auto-complete when conditions met')
                                     ->default(false),
                             ]),
 
-                        Forms\Components\TextInput::make('approval_group_name')
+                        FormComponents\TextInput::make('approval_group_name')
                             ->label('Approval Group Name')
                             ->helperText('Enter approval group name (Approval groups feature coming soon - division-based)')
                             ->maxLength(255)
@@ -100,7 +102,7 @@ class MilestonesRelationManager extends RelationManager
                             ->placeholder('e.g., Finance Approvers, HR Managers')
                             ->columnSpanFull(),
 
-                        Forms\Components\Select::make('document_requirements')
+                        FormComponents\Select::make('document_requirements')
                             ->label('Required Documents')
                             ->multiple()
                             ->relationship('documentRequirements', 'name')
@@ -111,16 +113,16 @@ class MilestonesRelationManager extends RelationManager
                             ->columnSpanFull(),
                     ]),
 
-                Forms\Components\Section::make('Actions & Notifications')
+                Components\Section::make('Actions & Notifications')
                     ->schema([
-                        Forms\Components\Textarea::make('completion_criteria')
+                        FormComponents\Textarea::make('completion_criteria')
                             ->label('Completion Criteria')
                             ->helperText('What needs to be done to complete this milestone?')
                             ->rows(2),
-                        Forms\Components\TagsInput::make('actions')
+                        FormComponents\TagsInput::make('actions')
                             ->label('Associated Actions')
                             ->helperText('Actions to be triggered when milestone is reached'),
-                        Forms\Components\Textarea::make('notes')
+                        FormComponents\Textarea::make('notes')
                             ->label('Internal Notes')
                             ->rows(2),
                     ]),
@@ -190,7 +192,7 @@ class MilestonesRelationManager extends RelationManager
                     ]),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['workflow_template_id'] = $this->getOwnerRecord()->id;
 
@@ -201,18 +203,18 @@ class MilestonesRelationManager extends RelationManager
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
+                Actions\EditAction::make()
                     ->after(function () {
                         $this->updateWorkflowDuration();
                     }),
-                Tables\Actions\DeleteAction::make()
+                Actions\DeleteAction::make()
                     ->after(function () {
                         $this->updateWorkflowDuration();
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->after(function () {
                             $this->updateWorkflowDuration();
                         }),

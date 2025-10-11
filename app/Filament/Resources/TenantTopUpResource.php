@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\TenantTopUpResource\Pages;
 use App\Models\TenantTopUp;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -15,9 +19,9 @@ class TenantTopUpResource extends Resource
 {
     protected static ?string $model = TenantTopUp::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-currency-dollar';
 
-    protected static ?string $navigationGroup = 'Tenant Management';
+    protected static string | UnitEnum | null $navigationGroup = 'Tenant Management';
 
     protected static ?string $navigationLabel = 'Credit Top-Ups';
 
@@ -28,13 +32,13 @@ class TenantTopUpResource extends Resource
         return auth()->user()?->isSuperAdmin() ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Top-Up Details')
+                Components\Section::make('Top-Up Details')
                     ->schema([
-                        Forms\Components\Select::make('tenant_id')
+                        FormComponents\Select::make('tenant_id')
                             ->label('Tenant')
                             ->relationship('tenant', 'name')
                             ->searchable()
@@ -42,7 +46,7 @@ class TenantTopUpResource extends Resource
                             ->required()
                             ->helperText('Select the tenant to add credits to'),
 
-                        Forms\Components\Select::make('channel')
+                        FormComponents\Select::make('channel')
                             ->options([
                                 'sms' => 'SMS',
                                 'email' => 'Email',
@@ -52,14 +56,14 @@ class TenantTopUpResource extends Resource
                             ->required()
                             ->helperText('Communication channel to top up'),
 
-                        Forms\Components\TextInput::make('amount')
+                        FormComponents\TextInput::make('amount')
                             ->numeric()
                             ->required()
                             ->minValue(1)
                             ->suffix('credits')
                             ->helperText('Number of credits to add'),
 
-                        Forms\Components\Textarea::make('reason')
+                        FormComponents\Textarea::make('reason')
                             ->required()
                             ->rows(3)
                             ->placeholder('e.g., Monthly top-up, Marketing campaign, Customer request')
@@ -129,8 +133,8 @@ class TenantTopUpResource extends Resource
 
                 Tables\Filters\Filter::make('created_at')
                     ->form([
-                        Forms\Components\DatePicker::make('from'),
-                        Forms\Components\DatePicker::make('until'),
+                        FormComponents\DatePicker::make('from'),
+                        FormComponents\DatePicker::make('until'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -145,7 +149,7 @@ class TenantTopUpResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Actions\ViewAction::make(),
             ]);
     }
 

@@ -1,12 +1,16 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\SubscriberResource\Pages;
 use App\Models\Subscriber;
 use App\Models\SubscriberList;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -16,9 +20,9 @@ class SubscriberResource extends Resource
 {
     protected static ?string $model = Subscriber::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'CRM';
+    protected static string | UnitEnum | null $navigationGroup = 'CRM';
 
     protected static ?string $navigationLabel = 'Subscribers';
 
@@ -34,34 +38,34 @@ class SubscriberResource extends Resource
         return parent::getEloquentQuery()->where('tenant_id', auth()->user()->tenant_id);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Personal Information')
+                Components\Section::make('Personal Information')
                     ->schema([
-                        Forms\Components\TextInput::make('first_name')
+                        FormComponents\TextInput::make('first_name')
                             ->required()
                             ->maxLength(255),
 
-                        Forms\Components\TextInput::make('last_name')
+                        FormComponents\TextInput::make('last_name')
                             ->required()
                             ->maxLength(255),
 
-                        Forms\Components\TextInput::make('email')
+                        FormComponents\TextInput::make('email')
                             ->email()
                             ->required()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true),
 
-                        Forms\Components\TextInput::make('phone')
+                        FormComponents\TextInput::make('phone')
                             ->tel()
                             ->maxLength(255),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Subscription Details')
+                Components\Section::make('Subscription Details')
                     ->schema([
-                        Forms\Components\Select::make('subscriber_list_id')
+                        FormComponents\Select::make('subscriber_list_id')
                             ->label('Subscriber List')
                             ->options(function () {
                                 return SubscriberList::where('tenant_id', auth()->user()->tenant_id)
@@ -71,7 +75,7 @@ class SubscriberResource extends Resource
                             ->required()
                             ->helperText('Assign subscriber to a list'),
 
-                        Forms\Components\Select::make('status')
+                        FormComponents\Select::make('status')
                             ->options([
                                 'active' => 'Active',
                                 'inactive' => 'Inactive',
@@ -81,23 +85,23 @@ class SubscriberResource extends Resource
                             ->default('active')
                             ->required(),
 
-                        Forms\Components\DateTimePicker::make('opt_in_date')
+                        FormComponents\DateTimePicker::make('opt_in_date')
                             ->label('Opt-in Date')
                             ->default(now()),
 
-                        Forms\Components\DateTimePicker::make('opt_out_date')
+                        FormComponents\DateTimePicker::make('opt_out_date')
                             ->label('Opt-out Date'),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Additional Information')
+                Components\Section::make('Additional Information')
                     ->schema([
-                        Forms\Components\TagsInput::make('tags')
+                        FormComponents\TagsInput::make('tags')
                             ->helperText('Add tags to categorize this subscriber'),
 
-                        Forms\Components\KeyValue::make('custom_fields')
+                        FormComponents\KeyValue::make('custom_fields')
                             ->helperText('Add custom fields for additional data'),
 
-                        Forms\Components\Textarea::make('notes')
+                        FormComponents\Textarea::make('notes')
                             ->rows(3)
                             ->columnSpanFull(),
                     ]),
@@ -183,8 +187,8 @@ class SubscriberResource extends Resource
 
                 Tables\Filters\Filter::make('opt_in_date')
                     ->form([
-                        Forms\Components\DatePicker::make('from'),
-                        Forms\Components\DatePicker::make('until'),
+                        FormComponents\DatePicker::make('from'),
+                        FormComponents\DatePicker::make('until'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -199,19 +203,19 @@ class SubscriberResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
 
-                    Tables\Actions\BulkAction::make('changeStatus')
+                    Actions\BulkAction::make('changeStatus')
                         ->label('Change Status')
                         ->icon('heroicon-o-arrow-path')
                         ->form([
-                            Forms\Components\Select::make('status')
+                            FormComponents\Select::make('status')
                                 ->options([
                                     'active' => 'Active',
                                     'inactive' => 'Inactive',
@@ -225,11 +229,11 @@ class SubscriberResource extends Resource
                         })
                         ->deselectRecordsAfterCompletion(),
 
-                    Tables\Actions\BulkAction::make('moveToList')
+                    Actions\BulkAction::make('moveToList')
                         ->label('Move to List')
                         ->icon('heroicon-o-arrow-right-circle')
                         ->form([
-                            Forms\Components\Select::make('subscriber_list_id')
+                            FormComponents\Select::make('subscriber_list_id')
                                 ->label('Target List')
                                 ->options(function () {
                                     return SubscriberList::where('tenant_id', auth()->user()->tenant_id)

@@ -2,8 +2,8 @@
   "mcpServers": {
     "browser": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@browsermcp/mcp@latest"],
+      "command": "pnpm",
+      "args": ["dlx", "@browsermcp/mcp@latest"],
       "env": {
         "BROWSER_MCP_PORT": "8000"
       },
@@ -11,14 +11,14 @@
     },
     "filesystem": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/johndevsa/projects/commatix"],
+      "command": "pnpm",
+      "args": ["dlx", "@modelcontextprotocol/server-filesystem", "/home/johndevsa/projects/commatix"],
       "description": "Enhanced file system operations for Commatix codebase"
     },
     "git": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/home/johndevsa/projects/commatix"],
+      "command": "pnpm",
+      "args": ["dlx", "@modelcontextprotocol/server-git", "--repository", "/home/johndevsa/projects/commatix"],
       "description": "Git operations and history for version control"
     }
   }

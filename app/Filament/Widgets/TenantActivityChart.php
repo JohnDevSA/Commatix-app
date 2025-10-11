@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 
 class TenantActivityChart extends ChartWidget
 {
-    protected static ?string $heading = 'Activity Overview';
+    protected ?string $heading = 'Activity Overview';
 
     protected static ?int $sort = 2;
 

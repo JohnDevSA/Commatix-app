@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\IndustryResource\Pages;
 use App\Models\Industry;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,9 +18,9 @@ class IndustryResource extends Resource
 {
     protected static ?string $model = Industry::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static ?string $navigationGroup = 'System Administration';
+    protected static string | UnitEnum | null $navigationGroup = 'System Administration';
 
     protected static ?string $navigationLabel = 'Industries';
 
@@ -27,20 +31,20 @@ class IndustryResource extends Resource
         return auth()->user()?->isSuperAdmin() ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Industry Information')
+                Components\Section::make('Industry Information')
                     ->schema([
-                        Forms\Components\Grid::make(2)
+                        Components\Grid::make(2)
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                FormComponents\TextInput::make('name')
                                     ->required()
                                     ->maxLength(255)
                                     ->placeholder('e.g., Financial Services'),
 
-                                Forms\Components\TextInput::make('code')
+                                FormComponents\TextInput::make('code')
                                     ->required()
                                     ->unique(ignoreRecord: true)
                                     ->maxLength(50)
@@ -48,76 +52,76 @@ class IndustryResource extends Resource
                                     ->helperText('Unique identifier (use underscores, lowercase)'),
                             ]),
 
-                        Forms\Components\Textarea::make('description')
+                        FormComponents\Textarea::make('description')
                             ->rows(3)
                             ->placeholder('Description of this industry sector...')
                             ->columnSpanFull(),
 
-                        Forms\Components\Grid::make(3)
+                        Components\Grid::make(3)
                             ->schema([
-                                Forms\Components\TextInput::make('icon')
+                                FormComponents\TextInput::make('icon')
                                     ->placeholder('🏦')
                                     ->helperText('Emoji or icon for display'),
 
-                                Forms\Components\ColorPicker::make('color')
+                                FormComponents\ColorPicker::make('color')
                                     ->default('#6366f1')
                                     ->helperText('Color for badges and UI elements'),
 
-                                Forms\Components\TextInput::make('sort_order')
+                                FormComponents\TextInput::make('sort_order')
                                     ->numeric()
                                     ->default(0)
                                     ->helperText('Display order (lower numbers first)'),
                             ]),
                     ]),
 
-                Forms\Components\Section::make('South African Compliance')
+                Components\Section::make('South African Compliance')
                     ->schema([
-                        Forms\Components\Grid::make(2)
+                        Components\Grid::make(2)
                             ->schema([
-                                Forms\Components\Toggle::make('requires_fica')
+                                FormComponents\Toggle::make('requires_fica')
                                     ->label('Requires FICA Compliance')
                                     ->helperText('Financial Intelligence Centre Act requirements'),
 
-                                Forms\Components\Toggle::make('requires_bee_compliance')
+                                FormComponents\Toggle::make('requires_bee_compliance')
                                     ->label('Requires B-BBEE Compliance')
                                     ->default(true)
                                     ->helperText('Broad-Based Black Economic Empowerment'),
                             ]),
 
-                        Forms\Components\TagsInput::make('sic_codes')
+                        FormComponents\TagsInput::make('sic_codes')
                             ->label('SIC Codes')
                             ->placeholder('Add Standard Industrial Classification codes')
                             ->helperText('South African SIC codes for this industry'),
 
-                        Forms\Components\TagsInput::make('typical_compliance_requirements')
+                        FormComponents\TagsInput::make('typical_compliance_requirements')
                             ->label('Compliance Requirements')
                             ->placeholder('POPIA, SARS, etc.')
                             ->helperText('Typical regulatory compliance requirements'),
 
-                        Forms\Components\TagsInput::make('regulatory_bodies')
+                        FormComponents\TagsInput::make('regulatory_bodies')
                             ->label('Regulatory Bodies')
                             ->placeholder('FSB, SARS, Department of Health, etc.')
                             ->helperText('Relevant regulatory authorities'),
                     ]),
 
-                Forms\Components\Section::make('Industry Configuration')
+                Components\Section::make('Industry Configuration')
                     ->schema([
-                        Forms\Components\TextInput::make('typical_workflow_duration_days')
+                        FormComponents\TextInput::make('typical_workflow_duration_days')
                             ->label('Typical Workflow Duration')
                             ->numeric()
                             ->default(30)
                             ->suffix('days')
                             ->helperText('Average workflow completion time for this industry'),
 
-                        Forms\Components\TagsInput::make('common_document_types')
+                        FormComponents\TagsInput::make('common_document_types')
                             ->label('Common Document Types')
                             ->placeholder('FICA Documents, Tax Certificates, etc.')
                             ->helperText('Typical documents used in this industry'),
                     ]),
 
-                Forms\Components\Section::make('Status')
+                Components\Section::make('Status')
                     ->schema([
-                        Forms\Components\Toggle::make('is_active')
+                        FormComponents\Toggle::make('is_active')
                             ->label('Active')
                             ->default(true)
                             ->helperText('Whether this industry is available for selection'),
@@ -187,14 +191,14 @@ class IndustryResource extends Resource
                     ->label('B-BBEE Required'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make()
                     ->requiresConfirmation(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->requiresConfirmation(),
                 ]),
             ])

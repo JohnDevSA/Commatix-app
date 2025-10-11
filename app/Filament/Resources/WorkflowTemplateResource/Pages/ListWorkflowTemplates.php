@@ -10,6 +10,8 @@ class ListWorkflowTemplates extends ListRecords
 {
     protected static string $resource = WorkflowTemplateResource::class;
 
+    protected string $view = 'filament.resources.workflow-template-resource.pages.list-workflow-templates';
+
     protected function getHeaderActions(): array
     {
         return [

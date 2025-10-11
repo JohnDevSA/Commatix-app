@@ -1,12 +1,16 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\TenantResource\Pages;
 use App\Models\Tenant;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Actions;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
@@ -17,9 +21,9 @@ class TenantResource extends Resource
 {
     protected static ?string $model = Tenant::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static ?string $navigationGroup = 'Tenant Management';
+    protected static string | UnitEnum | null $navigationGroup = 'Tenant Management';
 
     protected static ?string $navigationLabel = 'Tenants';
 
@@ -28,22 +32,22 @@ class TenantResource extends Resource
         return auth()->user()?->canAccessGlobalResources() ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Tabs::make('Tenant Information')
+                Components\Tabs::make('Tenant Information')
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('Company Details')
+                        Components\Tabs\Tab::make('Company Details')
                             ->icon('heroicon-m-building-office')
                             ->schema([
-                                Forms\Components\Section::make('Company Information')
+                                Components\Section::make('Company Information')
                                     ->description('Essential business registration and legal information for South African compliance')
                                     ->icon('heroicon-m-identification')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)
+                                        Components\Grid::make(2)
                                             ->schema([
-                                                Forms\Components\TextInput::make('name')
+                                                FormComponents\TextInput::make('name')
                                                     ->label('Registered Company Name')
                                                     ->required()
                                                     ->maxLength(255)
@@ -51,13 +55,13 @@ class TenantResource extends Resource
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->columnSpanFull(),
 
-                                                Forms\Components\TextInput::make('trading_name')
+                                                FormComponents\TextInput::make('trading_name')
                                                     ->label('Trading Name (if different)')
                                                     ->maxLength(255)
                                                     ->placeholder('Enter trading name')
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('unique_code')
+                                                FormComponents\TextInput::make('unique_code')
                                                     ->label('Unique Tenant Code')
                                                     ->required()
                                                     ->unique(ignoreRecord: true)
@@ -69,27 +73,27 @@ class TenantResource extends Resource
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
-                                Forms\Components\Section::make('SA Business Registration')
+                                Components\Section::make('SA Business Registration')
                                     ->description('South African business compliance and registration details')
                                     ->icon('heroicon-m-document-check')
                                     ->schema([
-                                        Forms\Components\Grid::make(3)
+                                        Components\Grid::make(3)
                                             ->schema([
-                                                Forms\Components\TextInput::make('company_registration_number')
+                                                FormComponents\TextInput::make('company_registration_number')
                                                     ->label('CK Number')
                                                     ->maxLength(20)
                                                     ->placeholder('2019/123456/07')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('Company registration number'),
 
-                                                Forms\Components\TextInput::make('vat_number')
+                                                FormComponents\TextInput::make('vat_number')
                                                     ->label('VAT Number')
                                                     ->maxLength(15)
                                                     ->placeholder('4123456789')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('10-digit VAT number'),
 
-                                                Forms\Components\TextInput::make('tax_reference_number')
+                                                FormComponents\TextInput::make('tax_reference_number')
                                                     ->label('Tax Reference Number')
                                                     ->maxLength(20)
                                                     ->placeholder('9876543210')
@@ -100,22 +104,22 @@ class TenantResource extends Resource
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
 
-                        Forms\Components\Tabs\Tab::make('Contact & Address')
+                        Components\Tabs\Tab::make('Contact & Address')
                             ->icon('heroicon-m-map-pin')
                             ->schema([
-                                Forms\Components\Section::make('Primary Contact Information')
+                                Components\Section::make('Primary Contact Information')
                                     ->description('Main business contact details')
                                     ->icon('heroicon-m-user')
                                     ->schema([
-                                        Forms\Components\Grid::make(3)
+                                        Components\Grid::make(3)
                                             ->schema([
-                                                Forms\Components\TextInput::make('primary_contact_person')
+                                                FormComponents\TextInput::make('primary_contact_person')
                                                     ->label('Contact Person')
                                                     ->maxLength(255)
                                                     ->placeholder('John Doe')
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('primary_email')
+                                                FormComponents\TextInput::make('primary_email')
                                                     ->label('Primary Email')
                                                     ->email()
                                                     ->required()
@@ -123,7 +127,7 @@ class TenantResource extends Resource
                                                     ->placeholder('contact@company.co.za')
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('primary_phone')
+                                                FormComponents\TextInput::make('primary_phone')
                                                     ->label('Primary Phone')
                                                     ->tel()
                                                     ->maxLength(20)
@@ -133,26 +137,26 @@ class TenantResource extends Resource
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
-                                Forms\Components\Section::make('Billing Contact Information')
+                                Components\Section::make('Billing Contact Information')
                                     ->description('Billing and financial contact details')
                                     ->icon('heroicon-m-credit-card')
                                     ->schema([
-                                        Forms\Components\Grid::make(3)
+                                        Components\Grid::make(3)
                                             ->schema([
-                                                Forms\Components\TextInput::make('billing_contact_person')
+                                                FormComponents\TextInput::make('billing_contact_person')
                                                     ->label('Billing Contact')
                                                     ->maxLength(255)
                                                     ->placeholder('Jane Smith')
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('billing_email')
+                                                FormComponents\TextInput::make('billing_email')
                                                     ->label('Billing Email')
                                                     ->email()
                                                     ->maxLength(255)
                                                     ->placeholder('billing@company.co.za')
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('billing_phone')
+                                                FormComponents\TextInput::make('billing_phone')
                                                     ->label('Billing Phone')
                                                     ->tel()
                                                     ->maxLength(20)
@@ -162,29 +166,29 @@ class TenantResource extends Resource
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
 
-                                Forms\Components\Section::make('Address Information')
+                                Components\Section::make('Address Information')
                                     ->description('Physical and postal address details')
                                     ->icon('heroicon-m-map')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)
+                                        Components\Grid::make(2)
                                             ->schema([
-                                                Forms\Components\Fieldset::make('Physical Address')
+                                                Components\Fieldset::make('Physical Address')
                                                     ->schema([
-                                                        Forms\Components\TextInput::make('physical_address_line1')
+                                                        FormComponents\TextInput::make('physical_address_line1')
                                                             ->label('Address Line 1')
                                                             ->maxLength(255)
                                                             ->extraInputAttributes(['class' => 'glass-input']),
-                                                        Forms\Components\TextInput::make('physical_address_line2')
+                                                        FormComponents\TextInput::make('physical_address_line2')
                                                             ->label('Address Line 2')
                                                             ->maxLength(255)
                                                             ->extraInputAttributes(['class' => 'glass-input']),
-                                                        Forms\Components\Grid::make(3)
+                                                        Components\Grid::make(3)
                                                             ->schema([
-                                                                Forms\Components\TextInput::make('physical_city')
+                                                                FormComponents\TextInput::make('physical_city')
                                                                     ->label('City')
                                                                     ->maxLength(100)
                                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                                                Forms\Components\Select::make('physical_province')
+                                                                FormComponents\Select::make('physical_province')
                                                                     ->label('Province')
                                                                     ->options([
                                                                         'EC' => 'Eastern Cape',
@@ -199,7 +203,7 @@ class TenantResource extends Resource
                                                                     ])
                                                                     ->searchable()
                                                                     ->extraAttributes(['class' => 'glass-input']),
-                                                                Forms\Components\TextInput::make('physical_postal_code')
+                                                                FormComponents\TextInput::make('physical_postal_code')
                                                                     ->label('Postal Code')
                                                                     ->maxLength(10)
                                                                     ->placeholder('1234')
@@ -208,23 +212,23 @@ class TenantResource extends Resource
                                                     ])
                                                     ->extraAttributes(['class' => 'border-l-4 border-commatix-500 pl-4']),
 
-                                                Forms\Components\Fieldset::make('Postal Address')
+                                                Components\Fieldset::make('Postal Address')
                                                     ->schema([
-                                                        Forms\Components\TextInput::make('postal_address_line1')
+                                                        FormComponents\TextInput::make('postal_address_line1')
                                                             ->label('Address Line 1')
                                                             ->maxLength(255)
                                                             ->extraInputAttributes(['class' => 'glass-input']),
-                                                        Forms\Components\TextInput::make('postal_address_line2')
+                                                        FormComponents\TextInput::make('postal_address_line2')
                                                             ->label('Address Line 2')
                                                             ->maxLength(255)
                                                             ->extraInputAttributes(['class' => 'glass-input']),
-                                                        Forms\Components\Grid::make(3)
+                                                        Components\Grid::make(3)
                                                             ->schema([
-                                                                Forms\Components\TextInput::make('postal_city')
+                                                                FormComponents\TextInput::make('postal_city')
                                                                     ->label('City')
                                                                     ->maxLength(100)
                                                                     ->extraInputAttributes(['class' => 'glass-input']),
-                                                                Forms\Components\Select::make('postal_province')
+                                                                FormComponents\Select::make('postal_province')
                                                                     ->label('Province')
                                                                     ->options([
                                                                         'EC' => 'Eastern Cape',
@@ -239,7 +243,7 @@ class TenantResource extends Resource
                                                                     ])
                                                                     ->searchable()
                                                                     ->extraAttributes(['class' => 'glass-input']),
-                                                                Forms\Components\TextInput::make('postal_code')
+                                                                FormComponents\TextInput::make('postal_code')
                                                                     ->label('Postal Code')
                                                                     ->maxLength(10)
                                                                     ->placeholder('1234')
@@ -252,16 +256,16 @@ class TenantResource extends Resource
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.2s']),
                             ]),
 
-                        Forms\Components\Tabs\Tab::make('Subscription & Billing')
+                        Components\Tabs\Tab::make('Subscription & Billing')
                             ->icon('heroicon-m-credit-card')
                             ->schema([
-                                Forms\Components\Section::make('Subscription Details')
+                                Components\Section::make('Subscription Details')
                                     ->description('Service tier and billing configuration')
                                     ->icon('heroicon-m-star')
                                     ->schema([
-                                        Forms\Components\Grid::make(3)
+                                        Components\Grid::make(3)
                                             ->schema([
-                                                Forms\Components\Select::make('subscription_tier')
+                                                FormComponents\Select::make('subscription_tier')
                                                     ->label('Service Tier')
                                                     ->options([
                                                         'trial' => 'Trial (14 days)',
@@ -273,7 +277,7 @@ class TenantResource extends Resource
                                                     ->searchable()
                                                     ->extraAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\Select::make('billing_cycle')
+                                                FormComponents\Select::make('billing_cycle')
                                                     ->label('Billing Cycle')
                                                     ->options([
                                                         'monthly' => 'Monthly',
@@ -282,7 +286,7 @@ class TenantResource extends Resource
                                                     ])
                                                     ->extraAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\Select::make('currency')
+                                                FormComponents\Select::make('currency')
                                                     ->label('Currency')
                                                     ->options([
                                                         'ZAR' => 'South African Rand (ZAR)',
@@ -294,21 +298,21 @@ class TenantResource extends Resource
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
-                                Forms\Components\Section::make('Billing Dates & Limits')
+                                Components\Section::make('Billing Dates & Limits')
                                     ->description('Subscription periods and spending controls')
                                     ->icon('heroicon-m-calendar-days')
                                     ->schema([
-                                        Forms\Components\Grid::make(3)
+                                        Components\Grid::make(3)
                                             ->schema([
-                                                Forms\Components\DatePicker::make('subscription_start_date')
+                                                FormComponents\DatePicker::make('subscription_start_date')
                                                     ->label('Subscription Start')
                                                     ->extraAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\DatePicker::make('subscription_end_date')
+                                                FormComponents\DatePicker::make('subscription_end_date')
                                                     ->label('Subscription End')
                                                     ->extraAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('monthly_spend_limit')
+                                                FormComponents\TextInput::make('monthly_spend_limit')
                                                     ->label('Monthly Spend Limit')
                                                     ->numeric()
                                                     ->prefix('R')
@@ -320,16 +324,16 @@ class TenantResource extends Resource
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
 
-                        Forms\Components\Tabs\Tab::make('Status & Verification')
+                        Components\Tabs\Tab::make('Status & Verification')
                             ->icon('heroicon-m-shield-check')
                             ->schema([
-                                Forms\Components\Section::make('Account Status')
+                                Components\Section::make('Account Status')
                                     ->description('Current account status and verification details')
                                     ->icon('heroicon-m-check-circle')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)
+                                        Components\Grid::make(2)
                                             ->schema([
-                                                Forms\Components\Select::make('status')
+                                                FormComponents\Select::make('status')
                                                     ->label('Account Status')
                                                     ->options([
                                                         'active' => 'Active',
@@ -341,7 +345,7 @@ class TenantResource extends Resource
                                                     ->default('trial')
                                                     ->extraAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('onboarding_step')
+                                                FormComponents\TextInput::make('onboarding_step')
                                                     ->label('Onboarding Progress')
                                                     ->numeric()
                                                     ->minValue(1)
@@ -353,18 +357,18 @@ class TenantResource extends Resource
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
-                                Forms\Components\Section::make('Verification & Compliance')
+                                Components\Section::make('Verification & Compliance')
                                     ->description('Account verification and compliance status')
                                     ->icon('heroicon-m-document-check')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)
+                                        Components\Grid::make(2)
                                             ->schema([
-                                                Forms\Components\Toggle::make('is_verified')
+                                                FormComponents\Toggle::make('is_verified')
                                                     ->label('Account Verified')
                                                     ->helperText('Email and identity verification completed')
                                                     ->extraAttributes(['class' => 'glass-card']),
 
-                                                Forms\Components\Toggle::make('onboarding_completed')
+                                                FormComponents\Toggle::make('onboarding_completed')
                                                     ->label('Onboarding Completed')
                                                     ->helperText('Full setup and configuration completed')
                                                     ->extraAttributes(['class' => 'glass-card']),
@@ -511,18 +515,18 @@ class TenantResource extends Resource
                     ->toggle(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
+                Actions\ViewAction::make()
                     ->label('View')
                     ->icon('heroicon-m-eye')
                     ->color('info'),
 
-                Tables\Actions\EditAction::make()
+                Actions\EditAction::make()
                     ->label('Edit')
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning'),
 
                 // Switch tenant action removed - dashboard route not configured
-                // Tables\Actions\Action::make('switch_tenant')
+                // Actions\Action::make('switch_tenant')
                 //     ->label('Switch')
                 //     ->icon('heroicon-m-arrow-right-circle')
                 //     ->color('primary')
@@ -530,8 +534,8 @@ class TenantResource extends Resource
                 //     ->openUrlInNewTab(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->requiresConfirmation(),
                 ]),
             ])

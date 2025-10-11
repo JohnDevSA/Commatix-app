@@ -1,12 +1,16 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\UserTypeResource\Pages;
 use App\Models\UserType;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Actions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,9 +19,9 @@ class UserTypeResource extends Resource
 {
     protected static ?string $model = UserType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-shield-check';
 
-    protected static ?string $navigationGroup = 'User Management';
+    protected static string | UnitEnum | null $navigationGroup = 'User Management';
 
     protected static ?string $navigationLabel = 'User Roles';
 
@@ -26,14 +30,14 @@ class UserTypeResource extends Resource
         return auth()->user()?->canAccessGlobalResources() ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\TextInput::make('name')
+                FormComponents\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Textarea::make('description')
+                FormComponents\Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),
             ]);
@@ -86,17 +90,17 @@ class UserTypeResource extends Resource
                     ->label('Has Users'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('view_users')
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
+                Actions\Action::make('view_users')
                     ->icon('heroicon-o-users')
                     ->color('info')
                     ->url(fn (UserType $record): string => '/admin/users?'.http_build_query(['tableFilters' => ['user_type_id' => ['values' => [$record->id]]]]))
                     ->openUrlInNewTab(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->requiresConfirmation()
                         ->modalDescription('Are you sure you want to delete these user types? This action cannot be undone and will affect all users assigned to these roles.'),
                 ]),

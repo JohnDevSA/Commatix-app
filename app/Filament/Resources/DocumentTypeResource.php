@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\DocumentTypeResource\Pages;
 use App\Models\AccessScope;
 use App\Models\DocumentType;
 use App\Models\Industry;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -17,9 +21,9 @@ class DocumentTypeResource extends Resource
 {
     protected static ?string $model = DocumentType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationGroup = 'System Administration';
+    protected static string | UnitEnum | null $navigationGroup = 'System Administration';
 
     protected static ?string $navigationLabel = 'Document Types';
 
@@ -28,27 +32,27 @@ class DocumentTypeResource extends Resource
         return auth()->user()?->canAccessGlobalResources() ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Document Type Information')
+                Components\Section::make('Document Type Information')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        FormComponents\TextInput::make('name')
                             ->required()
                             ->maxLength(255)
                             ->placeholder('e.g., FICA Documents, Tax Returns, Invoices'),
 
-                        Forms\Components\Textarea::make('description')
+                        FormComponents\Textarea::make('description')
                             ->rows(3)
                             ->placeholder('Describe the purpose and usage of this document type...')
                             ->columnSpanFull(),
                     ])
                     ->columns(1),
 
-                Forms\Components\Section::make('Access & Scope Configuration')
+                Components\Section::make('Access & Scope Configuration')
                     ->schema([
-                        Forms\Components\Select::make('access_scope_id')
+                        FormComponents\Select::make('access_scope_id')
                             ->label('Access Scope')
                             ->relationship('accessScope', 'label')
                             ->required()
@@ -67,7 +71,7 @@ class DocumentTypeResource extends Resource
                             })
                             ->helperText('Determines who can access this document type'),
 
-                        Forms\Components\Select::make('industry_category')
+                        FormComponents\Select::make('industry_category')
                             ->label('Target Industry')
                             ->options(Industry::getDisplayOptions())
                             ->searchable()
@@ -83,7 +87,7 @@ class DocumentTypeResource extends Resource
                             })
                             ->helperText('Which industry should have access to this document type'),
 
-                        Forms\Components\Select::make('tenant_id')
+                        FormComponents\Select::make('tenant_id')
                             ->label('Specific Tenant')
                             ->relationship('tenant', 'name')
                             ->searchable()
@@ -106,14 +110,14 @@ class DocumentTypeResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Additional Configuration')
+                Components\Section::make('Additional Configuration')
                     ->schema([
-                        Forms\Components\Toggle::make('allows_multiple')
+                        FormComponents\Toggle::make('allows_multiple')
                             ->label('Allow Multiple Files')
                             ->helperText('Users can upload multiple files of this type')
                             ->default(true),
 
-                        Forms\Components\TextInput::make('max_file_size_mb')
+                        FormComponents\TextInput::make('max_file_size_mb')
                             ->label('Max File Size (MB)')
                             ->numeric()
                             ->default(10)
@@ -121,7 +125,7 @@ class DocumentTypeResource extends Resource
                             ->maxValue(100)
                             ->helperText('Maximum file size allowed in megabytes'),
 
-                        Forms\Components\TagsInput::make('allowed_file_types')
+                        FormComponents\TagsInput::make('allowed_file_types')
                             ->label('Allowed File Types')
                             ->placeholder('pdf, jpg, png, docx')
                             ->helperText('Enter file extensions (without dots)')
@@ -229,14 +233,14 @@ class DocumentTypeResource extends Resource
                     ->toggle(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make()
                     ->requiresConfirmation(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->requiresConfirmation(),
                 ]),
             ])

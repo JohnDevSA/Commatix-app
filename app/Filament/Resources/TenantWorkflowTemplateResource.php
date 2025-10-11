@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\CreateTenantWorkflowTemplate;
 use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\EditTenantWorkflowTemplate;
@@ -8,8 +10,11 @@ use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\ListTenantWorkfl
 use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\ViewTenantWorkflowTemplate;
 use App\Filament\Resources\TenantWorkflowTemplateResource\RelationManagers\MilestonesRelationManager;
 use App\Models\WorkflowTemplate;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,11 +24,11 @@ class TenantWorkflowTemplateResource extends Resource
 {
     protected static ?string $model = WorkflowTemplate::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $navigationLabel = 'Workflow Templates';
 
-    protected static ?string $navigationGroup = 'Workflows';
+    protected static string | UnitEnum | null $navigationGroup = 'Workflows';
 
     protected static ?string $slug = 'tenant-workflow-templates';
 
@@ -34,24 +39,24 @@ class TenantWorkflowTemplateResource extends Resource
         return auth()->user()?->canManageWorkflows() ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Basic Information')
+                Components\Section::make('Basic Information')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        FormComponents\TextInput::make('name')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Textarea::make('description')
+                        FormComponents\Textarea::make('description')
                             ->required()
                             ->rows(3),
-                        Forms\Components\Select::make('industry_category')
+                        FormComponents\Select::make('industry_category')
                             ->options(\App\Models\Industry::getDisplayOptions())
                             ->label('Industry')
                             ->searchable()
                             ->required(),
-                        Forms\Components\TextInput::make('estimated_duration_days')
+                        FormComponents\TextInput::make('estimated_duration_days')
                             ->label('Estimated Duration (Days)')
                             ->numeric()
                             ->default(0)
@@ -61,27 +66,27 @@ class TenantWorkflowTemplateResource extends Resource
                     ->collapsible()
                     ->collapsed(),
 
-                Forms\Components\Section::make('Settings')
+                Components\Section::make('Settings')
                     ->schema([
-                        Forms\Components\Hidden::make('access_scope_id')
+                        FormComponents\Hidden::make('access_scope_id')
                             ->default(function () {
                                 $scope = \App\Models\AccessScope::where('name', 'tenant_custom')->first();
 
                                 return $scope ? $scope->id : 1; // Fallback to ID 1 if not found
                             }),
-                        Forms\Components\Hidden::make('template_type')
+                        FormComponents\Hidden::make('template_type')
                             ->default('custom'),
-                        Forms\Components\Hidden::make('created_by')
+                        FormComponents\Hidden::make('created_by')
                             ->default(fn () => auth()->id()),
-                        Forms\Components\Hidden::make('user_id')
+                        FormComponents\Hidden::make('user_id')
                             ->default(fn () => auth()->id()),
-                        Forms\Components\Hidden::make('is_public')
+                        FormComponents\Hidden::make('is_public')
                             ->default(false),
-                        Forms\Components\Hidden::make('is_system_template')
+                        FormComponents\Hidden::make('is_system_template')
                             ->default(false),
-                        Forms\Components\Hidden::make('template_version')
+                        FormComponents\Hidden::make('template_version')
                             ->default('1.0'),
-                        Forms\Components\Select::make('complexity_level')
+                        FormComponents\Select::make('complexity_level')
                             ->options([
                                 'simple' => 'Simple',
                                 'medium' => 'Medium',
@@ -89,7 +94,7 @@ class TenantWorkflowTemplateResource extends Resource
                             ])
                             ->default('medium')
                             ->required(),
-                        Forms\Components\Toggle::make('is_published')
+                        FormComponents\Toggle::make('is_published')
                             ->label('Published')
                             ->default(false),
                     ])
@@ -201,7 +206,7 @@ class TenantWorkflowTemplateResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\Action::make('copy')
+                Actions\Action::make('copy')
                     ->label('Use Template')
                     ->icon('heroicon-o-document-plus')
                     ->color('success')
@@ -261,8 +266,8 @@ class TenantWorkflowTemplateResource extends Resource
                         $this->dispatch('refresh');
                     }),
 
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()
+                Actions\ViewAction::make(),
+                Actions\EditAction::make()
                     ->visible(fn (WorkflowTemplate $record) => $record->created_by === auth()->id()),
             ]);
     }

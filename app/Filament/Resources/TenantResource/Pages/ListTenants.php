@@ -10,6 +10,8 @@ class ListTenants extends ListRecords
 {
     protected static string $resource = TenantResource::class;
 
+    protected string $view = 'filament.resources.tenant-resource.pages.list-tenants';
+
     protected function getHeaderActions(): array
     {
         return [

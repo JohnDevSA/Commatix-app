@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\TaskResource\Pages\CreateTask;
 use App\Filament\Resources\TaskResource\Pages\EditTask;
@@ -11,8 +13,10 @@ use App\Models\Task;
 use App\Models\User;
 use App\Models\WorkflowTemplate;
 use Carbon\Carbon;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,11 +26,11 @@ class TaskResource extends Resource
 {
     protected static ?string $model = Task::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static ?string $navigationLabel = 'Tasks';
 
-    protected static ?string $navigationGroup = 'Workflows';
+    protected static string | UnitEnum | null $navigationGroup = 'Workflows';
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
@@ -45,18 +49,18 @@ class TaskResource extends Resource
         return $query->where('tenant_id', $user->tenant_id);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Task Details')
+                Components\Section::make('Task Details')
                     ->schema([
-                        Forms\Components\TextInput::make('title')
+                        FormComponents\TextInput::make('title')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Textarea::make('description')
+                        FormComponents\Textarea::make('description')
                             ->rows(3),
-                        Forms\Components\Select::make('workflow_template_id')
+                        FormComponents\Select::make('workflow_template_id')
                             ->label('Workflow Template')
                             ->relationship('workflowTemplate', 'name')
                             ->searchable()
@@ -71,7 +75,7 @@ class TaskResource extends Resource
                                     }
                                 }
                             }),
-                        Forms\Components\Select::make('subscriber_id')
+                        FormComponents\Select::make('subscriber_id')
                             ->label('Subscriber')
                             ->relationship('subscriber', 'email')
                             ->searchable(['email', 'first_name', 'last_name'])
@@ -79,17 +83,17 @@ class TaskResource extends Resource
                             ->required()
                             ->getOptionLabelFromRecordUsing(fn (Subscriber $record): string => "{$record->first_name} {$record->last_name} ({$record->email})")
                             ->createOptionForm([
-                                Forms\Components\Hidden::make('tenant_id')
+                                FormComponents\Hidden::make('tenant_id')
                                     ->default(fn () => tenant() ? tenant()->id : null),
-                                Forms\Components\TextInput::make('first_name')
+                                FormComponents\TextInput::make('first_name')
                                     ->required(),
-                                Forms\Components\TextInput::make('last_name')
+                                FormComponents\TextInput::make('last_name')
                                     ->required(),
-                                Forms\Components\TextInput::make('email')
+                                FormComponents\TextInput::make('email')
                                     ->email()
                                     ->required(),
-                                Forms\Components\TextInput::make('phone'),
-                                Forms\Components\Select::make('subscriber_list_id')
+                                FormComponents\TextInput::make('phone'),
+                                FormComponents\Select::make('subscriber_list_id')
                                     ->label('Subscriber List')
                                     ->relationship('subscriberList', 'name')
                                     ->required(),
@@ -107,14 +111,14 @@ class TaskResource extends Resource
                     ])
                     ->columns(1),
 
-                Forms\Components\Section::make('Assignment & Scheduling')
+                Components\Section::make('Assignment & Scheduling')
                     ->schema([
-                        Forms\Components\Select::make('assigned_to')
+                        FormComponents\Select::make('assigned_to')
                             ->label('Assigned To')
                             ->options(User::pluck('name', 'id'))
                             ->searchable()
                             ->required(),
-                        Forms\Components\Select::make('priority')
+                        FormComponents\Select::make('priority')
                             ->options([
                                 'low' => 'Low',
                                 'medium' => 'Medium',
@@ -123,7 +127,7 @@ class TaskResource extends Resource
                             ])
                             ->default('medium')
                             ->required(),
-                        Forms\Components\DatePicker::make('scheduled_start_date')
+                        FormComponents\DatePicker::make('scheduled_start_date')
                             ->label('Scheduled Start Date')
                             ->default(now())
                             ->required()
@@ -136,9 +140,9 @@ class TaskResource extends Resource
                                     $set('status', 'draft');
                                 }
                             }),
-                        Forms\Components\DatePicker::make('due_date')
+                        FormComponents\DatePicker::make('due_date')
                             ->label('Due Date'),
-                        Forms\Components\Select::make('status')
+                        FormComponents\Select::make('status')
                             ->options([
                                 'draft' => 'Draft',
                                 'scheduled' => 'Scheduled',
@@ -152,9 +156,9 @@ class TaskResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Additional Information')
+                Components\Section::make('Additional Information')
                     ->schema([
-                        Forms\Components\Textarea::make('notes')
+                        FormComponents\Textarea::make('notes')
                             ->rows(3),
                     ])
                     ->collapsible(),
@@ -243,13 +247,13 @@ class TaskResource extends Resource
                     ->query(fn ($query) => $query->whereBetween('due_date', [now(), now()->addWeek()])),
             ])
             ->actions([
-                Tables\Actions\Action::make('start_early')
+                Actions\Action::make('start_early')
                     ->label('Start Early')
                     ->icon('heroicon-o-play')
                     ->color('success')
                     ->visible(fn (Task $record) => $record->canStartEarly())
                     ->form([
-                        Forms\Components\Textarea::make('reason')
+                        FormComponents\Textarea::make('reason')
                             ->label('Reason for Early Start')
                             ->required()
                             ->helperText('Please provide a reason for starting this task before the scheduled date'),
@@ -264,7 +268,7 @@ class TaskResource extends Resource
                         }
                     }),
 
-                Tables\Actions\Action::make('start_task')
+                Actions\Action::make('start_task')
                     ->label('Start Task')
                     ->icon('heroicon-o-play')
                     ->color('primary')
@@ -279,7 +283,7 @@ class TaskResource extends Resource
                         }
                     }),
 
-                Tables\Actions\Action::make('progress_milestone')
+                Actions\Action::make('progress_milestone')
                     ->label('Progress')
                     ->icon('heroicon-o-arrow-right-circle')
                     ->color('warning')
@@ -316,12 +320,12 @@ class TaskResource extends Resource
                         }
                     }),
 
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

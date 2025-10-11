@@ -1,12 +1,16 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\TenantSubscriptionResource\Pages;
 use App\Models\TenantSubscription;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Actions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,9 +19,9 @@ class TenantSubscriptionResource extends Resource
 {
     protected static ?string $model = TenantSubscription::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-credit-card';
 
-    protected static ?string $navigationGroup = 'Tenant Management';
+    protected static string | UnitEnum | null $navigationGroup = 'Tenant Management';
 
     protected static ?string $navigationLabel = 'Subscriptions';
 
@@ -26,18 +30,18 @@ class TenantSubscriptionResource extends Resource
         return auth()->user()?->canAccessGlobalResources() ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Subscription Details')
+                Components\Section::make('Subscription Details')
                     ->schema([
-                        Forms\Components\Select::make('tenant_id')
+                        FormComponents\Select::make('tenant_id')
                             ->relationship('tenant', 'name')
                             ->required()
                             ->searchable()
                             ->preload(),
-                        Forms\Components\Select::make('plan_name')
+                        FormComponents\Select::make('plan_name')
                             ->label('Plan Name')
                             ->options([
                                 'trial' => 'Trial',
@@ -46,26 +50,26 @@ class TenantSubscriptionResource extends Resource
                                 'enterprise' => 'Enterprise',
                             ])
                             ->required(),
-                        Forms\Components\Select::make('billing_interval')
+                        FormComponents\Select::make('billing_interval')
                             ->options([
                                 'monthly' => 'Monthly',
                                 'quarterly' => 'Quarterly',
                                 'annually' => 'Annually',
                             ])
                             ->required(),
-                        Forms\Components\TextInput::make('amount')
+                        FormComponents\TextInput::make('amount')
                             ->required()
                             ->numeric()
                             ->prefix('R')
                             ->step(0.01),
-                        Forms\Components\Select::make('currency')
+                        FormComponents\Select::make('currency')
                             ->options([
                                 'ZAR' => 'South African Rand (ZAR)',
                                 'USD' => 'US Dollar (USD)',
                             ])
                             ->required()
                             ->default('ZAR'),
-                        Forms\Components\Select::make('status')
+                        FormComponents\Select::make('status')
                             ->options([
                                 'active' => 'Active',
                                 'inactive' => 'Inactive',
@@ -77,28 +81,28 @@ class TenantSubscriptionResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Billing Period')
+                Components\Section::make('Billing Period')
                     ->schema([
-                        Forms\Components\DateTimePicker::make('current_period_start')
+                        FormComponents\DateTimePicker::make('current_period_start')
                             ->label('Current Period Start'),
-                        Forms\Components\DateTimePicker::make('current_period_end')
+                        FormComponents\DateTimePicker::make('current_period_end')
                             ->label('Current Period End'),
-                        Forms\Components\DateTimePicker::make('trial_ends_at')
+                        FormComponents\DateTimePicker::make('trial_ends_at')
                             ->label('Trial Ends At')
                             ->helperText('Leave empty if not on trial'),
-                        Forms\Components\Toggle::make('cancel_at_period_end')
+                        FormComponents\Toggle::make('cancel_at_period_end')
                             ->label('Cancel at Period End')
                             ->helperText('Subscription will not renew at the end of current period'),
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Payment Provider Integration')
+                Components\Section::make('Payment Provider Integration')
                     ->schema([
-                        Forms\Components\TextInput::make('stripe_subscription_id')
+                        FormComponents\TextInput::make('stripe_subscription_id')
                             ->label('Stripe Subscription ID')
                             ->maxLength(255)
                             ->helperText('For international payments'),
-                        Forms\Components\TextInput::make('payfast_subscription_id')
+                        FormComponents\TextInput::make('payfast_subscription_id')
                             ->label('PayFast Subscription ID')
                             ->maxLength(255)
                             ->helperText('For South African payments'),
@@ -219,14 +223,14 @@ class TenantSubscriptionResource extends Resource
                     ->label('Canceled Subscriptions'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('extend_trial')
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
+                Actions\Action::make('extend_trial')
                     ->icon('heroicon-o-clock')
                     ->color('warning')
                     ->visible(fn ($record) => $record->status === 'trialing')
                     ->form([
-                        Forms\Components\DatePicker::make('extend_to')
+                        FormComponents\DatePicker::make('extend_to')
                             ->label('Extend trial to')
                             ->required()
                             ->after('today'),
@@ -240,8 +244,8 @@ class TenantSubscriptionResource extends Resource
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->requiresConfirmation(),
                 ]),
             ])

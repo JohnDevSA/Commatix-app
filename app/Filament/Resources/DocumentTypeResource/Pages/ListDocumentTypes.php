@@ -10,6 +10,8 @@ class ListDocumentTypes extends ListRecords
 {
     protected static string $resource = DocumentTypeResource::class;
 
+    protected string $view = 'filament.resources.document-type-resource.pages.list-document-types';
+
     protected function getHeaderActions(): array
     {
         return [

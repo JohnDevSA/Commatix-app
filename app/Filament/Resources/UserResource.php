@@ -1,12 +1,16 @@
 <?php
 
 namespace App\Filament\Resources;
+use BackedEnum;
+use UnitEnum;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components;
+use Filament\Forms\Components as FormComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Actions;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
@@ -17,9 +21,9 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'User Management';
+    protected static string | UnitEnum | null $navigationGroup = 'User Management';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -47,22 +51,22 @@ class UserResource extends Resource
         return $query->where('tenant_id', $user->tenant_id);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Tabs::make('User Management')
+                Components\Tabs::make('User Management')
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('Personal Information')
+                        Components\Tabs\Tab::make('Personal Information')
                             ->icon('heroicon-m-user')
                             ->schema([
-                                Forms\Components\Section::make('User Details')
+                                Components\Section::make('User Details')
                                     ->description('Essential user information and authentication credentials')
                                     ->icon('heroicon-m-identification')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)
+                                        Components\Grid::make(2)
                                             ->schema([
-                                                Forms\Components\TextInput::make('name')
+                                                FormComponents\TextInput::make('name')
                                                     ->label('Full Name')
                                                     ->required()
                                                     ->maxLength(255)
@@ -70,7 +74,7 @@ class UserResource extends Resource
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->columnSpanFull(),
 
-                                                Forms\Components\TextInput::make('email')
+                                                FormComponents\TextInput::make('email')
                                                     ->label('Email Address')
                                                     ->email()
                                                     ->required()
@@ -80,7 +84,7 @@ class UserResource extends Resource
                                                     ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->helperText('This will be used for login and notifications'),
 
-                                                Forms\Components\TextInput::make('password')
+                                                FormComponents\TextInput::make('password')
                                                     ->label('Password')
                                                     ->password()
                                                     ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
@@ -92,26 +96,26 @@ class UserResource extends Resource
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
-                                Forms\Components\Section::make('Contact Information')
+                                Components\Section::make('Contact Information')
                                     ->description('Additional contact details and preferences')
                                     ->icon('heroicon-m-phone')
                                     ->schema([
-                                        Forms\Components\Grid::make(3)
+                                        Components\Grid::make(3)
                                             ->schema([
-                                                Forms\Components\TextInput::make('phone')
+                                                FormComponents\TextInput::make('phone')
                                                     ->label('Phone Number')
                                                     ->tel()
                                                     ->maxLength(20)
                                                     ->placeholder('+27 11 123 4567')
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\TextInput::make('position')
+                                                FormComponents\TextInput::make('position')
                                                     ->label('Job Position')
                                                     ->maxLength(100)
                                                     ->placeholder('Marketing Manager')
                                                     ->extraInputAttributes(['class' => 'glass-input']),
 
-                                                Forms\Components\Select::make('preferred_language')
+                                                FormComponents\Select::make('preferred_language')
                                                     ->label('Language')
                                                     ->options([
                                                         'en' => 'English',
@@ -126,16 +130,16 @@ class UserResource extends Resource
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
 
-                        Forms\Components\Tabs\Tab::make('Access & Permissions')
+                        Components\Tabs\Tab::make('Access & Permissions')
                             ->icon('heroicon-m-shield-check')
                             ->schema([
-                                Forms\Components\Section::make('User Role & Tenant Access')
+                                Components\Section::make('User Role & Tenant Access')
                                     ->description('Define user permissions and tenant association')
                                     ->icon('heroicon-m-key')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)
+                                        Components\Grid::make(2)
                                             ->schema([
-                                                Forms\Components\Select::make('user_type_id')
+                                                FormComponents\Select::make('user_type_id')
                                                     ->label('User Type / Role')
                                                     ->relationship(
                                                         name: 'userType',
@@ -155,7 +159,7 @@ class UserResource extends Resource
                                                     ->extraAttributes(['class' => 'glass-input'])
                                                     ->helperText('Determines user permissions and access level'),
 
-                                                Forms\Components\Select::make('tenant_id')
+                                                FormComponents\Select::make('tenant_id')
                                                     ->label('Associated Tenant')
                                                     ->relationship('tenant', 'name')
                                                     ->preload()
@@ -168,13 +172,13 @@ class UserResource extends Resource
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
-                                Forms\Components\Section::make('Organization Structure')
+                                Components\Section::make('Organization Structure')
                                     ->description('Division and department assignments')
                                     ->icon('heroicon-m-building-office')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)
+                                        Components\Grid::make(2)
                                             ->schema([
-                                                Forms\Components\Select::make('division_id')
+                                                FormComponents\Select::make('division_id')
                                                     ->label('Division / Department')
                                                     ->relationship(
                                                         name: 'division',
@@ -186,7 +190,7 @@ class UserResource extends Resource
                                                     ->extraAttributes(['class' => 'glass-input'])
                                                     ->helperText('Optional: Assign user to specific division'),
 
-                                                Forms\Components\DateTimePicker::make('email_verified_at')
+                                                FormComponents\DateTimePicker::make('email_verified_at')
                                                     ->label('Email Verified At')
                                                     ->extraAttributes(['class' => 'glass-input'])
                                                     ->helperText('Set to mark email as verified manually'),
@@ -195,21 +199,21 @@ class UserResource extends Resource
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in', 'style' => 'animation-delay: 0.1s']),
                             ]),
 
-                        Forms\Components\Tabs\Tab::make('Security & Preferences')
+                        Components\Tabs\Tab::make('Security & Preferences')
                             ->icon('heroicon-m-cog-6-tooth')
                             ->schema([
-                                Forms\Components\Section::make('Security Settings')
+                                Components\Section::make('Security Settings')
                                     ->description('Account security and authentication settings')
                                     ->icon('heroicon-m-lock-closed')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)
+                                        Components\Grid::make(2)
                                             ->schema([
-                                                Forms\Components\Toggle::make('two_factor_enabled')
+                                                FormComponents\Toggle::make('two_factor_enabled')
                                                     ->label('Two-Factor Authentication')
                                                     ->helperText('Enable 2FA for enhanced security')
                                                     ->extraAttributes(['class' => 'glass-card']),
 
-                                                Forms\Components\Toggle::make('is_active')
+                                                FormComponents\Toggle::make('is_active')
                                                     ->label('Account Active')
                                                     ->default(true)
                                                     ->helperText('Deactivate to prevent user login')
@@ -218,25 +222,25 @@ class UserResource extends Resource
                                     ])
                                     ->extraAttributes(['class' => 'glass-card animate-fade-in']),
 
-                                Forms\Components\Section::make('Notification Preferences')
+                                Components\Section::make('Notification Preferences')
                                     ->description('Configure email and SMS notification settings')
                                     ->icon('heroicon-m-bell')
                                     ->schema([
-                                        Forms\Components\Grid::make(3)
+                                        Components\Grid::make(3)
                                             ->schema([
-                                                Forms\Components\Toggle::make('email_notifications')
+                                                FormComponents\Toggle::make('email_notifications')
                                                     ->label('Email Notifications')
                                                     ->default(true)
                                                     ->helperText('Receive email notifications')
                                                     ->extraAttributes(['class' => 'glass-card']),
 
-                                                Forms\Components\Toggle::make('sms_notifications')
+                                                FormComponents\Toggle::make('sms_notifications')
                                                     ->label('SMS Notifications')
                                                     ->default(false)
                                                     ->helperText('Receive SMS notifications')
                                                     ->extraAttributes(['class' => 'glass-card']),
 
-                                                Forms\Components\Toggle::make('marketing_emails')
+                                                FormComponents\Toggle::make('marketing_emails')
                                                     ->label('Marketing Emails')
                                                     ->default(false)
                                                     ->helperText('Receive product updates and tips')
@@ -377,19 +381,19 @@ class UserResource extends Resource
                     ->toggle(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
+                Actions\ViewAction::make()
                     ->label('View')
                     ->icon('heroicon-m-eye')
                     ->color('info'),
 
-                Tables\Actions\EditAction::make()
+                Actions\EditAction::make()
                     ->label('Edit')
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning'),
 
-                \STS\FilamentImpersonate\Tables\Actions\Impersonate::make(),
+                \STS\FilamentImpersonate\Actions\Impersonate::make(),
 
-                Tables\Actions\Action::make('reset_password')
+                Actions\Action::make('reset_password')
                     ->label('Reset Password')
                     ->icon('heroicon-m-key')
                     ->color('danger')
@@ -403,13 +407,13 @@ class UserResource extends Resource
                         ->send()),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->requiresConfirmation()
                         ->modalHeading('Delete selected users')
                         ->modalDescription('Are you sure you want to delete these users? This action cannot be undone.'),
 
-                    Tables\Actions\BulkAction::make('activate_users')
+                    Actions\BulkAction::make('activate_users')
                         ->label('Activate Users')
                         ->icon('heroicon-m-check-circle')
                         ->color('success')
@@ -420,7 +424,7 @@ class UserResource extends Resource
                             ->success()
                             ->send()),
 
-                    Tables\Actions\BulkAction::make('deactivate_users')
+                    Actions\BulkAction::make('deactivate_users')
                         ->label('Deactivate Users')
                         ->icon('heroicon-m-x-circle')
                         ->color('danger')

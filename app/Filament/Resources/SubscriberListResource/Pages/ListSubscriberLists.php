@@ -10,6 +10,8 @@ class ListSubscriberLists extends ListRecords
 {
     protected static string $resource = SubscriberListResource::class;
 
+    protected string $view = 'filament.resources.subscriber-list-resource.pages.list-subscriber-lists';
+
     protected function getHeaderActions(): array
     {
         return [
