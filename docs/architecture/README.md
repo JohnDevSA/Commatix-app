@@ -70,8 +70,8 @@ Welcome to the Commatix architecture documentation. This guide will help you und
 ### Technology Stack
 
 **Backend:**
-- **Laravel 10.x** - PHP framework
-- **Filament 3.2** - Admin panel framework (TALL stack)
+- **Laravel 12.x** - PHP framework
+- **Filament 4.0** - Admin panel framework (TALL stack)
 - **MySQL/PostgreSQL** - Primary database
 - **Redis** - Caching and queues
 

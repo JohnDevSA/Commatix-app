@@ -167,7 +167,7 @@ Manage queue workers and background jobs
 Agents are specialized AI assistants with deep expertise in specific areas.
 
 ### @laravel-expert
-**Expertise:** Laravel 12, Filament 3, Multi-tenancy, SOLID principles
+**Expertise:** Laravel 12, Filament 4, Multi-tenancy, SOLID principles
 
 Use for:
 - Implementing new features
@@ -418,7 +418,7 @@ Consider adding:
 
 - [Claude Code Documentation](https://docs.claude.com/en/docs/claude-code)
 - [Laravel 12 Documentation](https://laravel.com/docs/12.x)
-- [Filament 3 Documentation](https://filamentphp.com/docs/3.x)
+- [Filament 4 Documentation](https://filamentphp.com/docs/4.x)
 - [Stancl Tenancy Documentation](https://tenancyforlaravel.com/docs/v3)
 - [Commatix Internal Wiki](#) *(add your wiki link here)*
 

@@ -169,7 +169,7 @@ public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
 ## Impersonation
 
 ### Configuration
-- **Package**: `stechstudio/filament-impersonate` (v3.16)
+- **Package**: `stechstudio/filament-impersonate` (v4.0)
 - **Trait**: `Lab404\Impersonate\Models\Impersonate` (added to User model)
 
 ### Impersonation Rules

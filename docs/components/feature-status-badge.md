@@ -293,7 +293,7 @@ php artisan filament:upgrade
 ## Related Documentation
 
 - [Developer Tools Page](../pages/developer-tools.md)
-- [Filament Components Documentation](https://filamentphp.com/docs/3.x/support/blade-components)
+- [Filament Components Documentation](https://filamentphp.com/docs/4.x/support/blade-components)
 - [Tailwind CSS Customization](https://tailwindcss.com/docs)
 
 ---

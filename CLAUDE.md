@@ -6,7 +6,7 @@
 
 ### Tech Stack
 - **Backend:** Laravel 12.x
-- **Admin Panel:** Filament v3.2
+- **Admin Panel:** Filament v4.0
 - **Multi-Tenancy:** stancl/tenancy 3.5
 - **Database:** MySQL (production), SQLite (development)
 - **Cache/Queue:** Redis (production), Database (development)
@@ -220,7 +220,7 @@ composer grumphp       # Pre-commit hooks
 
 ### Laravel Packages
 - `laravel/framework:^12.0` - Core framework
-- `filament/filament:^3.2` - Admin panel
+- `filament/filament:^4.0` - Admin panel
 - `stancl/tenancy:^3.5.1` - Multi-tenancy
 - `spatie/laravel-permission:^6.0` - Roles & permissions
 - `laravel/telescope:^5.14` - Debugging
@@ -378,7 +378,7 @@ Run `/deploy-check` command to verify:
 
 **Must Read:**
 1. Laravel 12 Documentation - https://laravel.com/docs/12.x
-2. Filament 3 Documentation - https://filamentphp.com/docs/3.x
+2. Filament 4 Documentation - https://filamentphp.com/docs/4.x
 3. Stancl Tenancy - https://tenancyforlaravel.com/docs/v3
 4. Spatie Permissions - https://spatie.be/docs/laravel-permission
 

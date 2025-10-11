@@ -2,7 +2,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Laravel](https://img.shields.io/badge/laravel-12.x-red)
-![Filament](https://img.shields.io/badge/admin-filament%203.x-orange)
+![Filament](https://img.shields.io/badge/admin-filament%204.x-orange)
 ![PHP](https://img.shields.io/badge/php-^8.2-blue)
 ![Tenancy](https://img.shields.io/badge/multi--tenant-stancl%203.5-green)
 
@@ -13,7 +13,7 @@
 ## 🧱 Stack Overview
 
 - **Backend**: Laravel 12.x
-- **Admin Panel**: Filament v3
+- **Admin Panel**: Filament v4
 - **Multi-Tenancy**: [stancl/tenancy](https://github.com/stancl/tenancy)
 - **Role & Permission Management**: [spatie/laravel-permission](https://github.com/spatie/laravel-permission)
 - **Email Integration**: [Resend Laravel](https://github.com/resend/resend-laravel)
