@@ -34,7 +34,16 @@ class MilestonesRelationManager extends RelationManager
                                 FormComponents\TextInput::make('name')
                                     ->required()
                                     ->maxLength(255)
-                                    ->live(onBlur: true),
+                                    ->live(onBlur: true)
+                                    ->columnSpan(1),
+                                FormComponents\Select::make('icon')
+                                    ->label('Icon')
+                                    ->options(\App\Helpers\IconHelper::getMilestoneIcons())
+                                    ->searchable()
+                                    ->allowHtml()
+                                    ->placeholder('Select an icon...')
+                                    ->helperText('Choose an icon for this milestone')
+                                    ->columnSpan(1),
                                 FormComponents\TextInput::make('sequence_order')
                                     ->numeric()
                                     ->required()
@@ -141,6 +150,11 @@ class MilestonesRelationManager extends RelationManager
                     ->sortable()
                     ->badge()
                     ->color('info'),
+                Tables\Columns\TextColumn::make('icon')
+                    ->label('')
+                    ->size('lg')
+                    ->default('📌')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),

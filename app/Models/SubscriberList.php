@@ -37,8 +37,8 @@ class SubscriberList extends Model
             'id' => 'integer',
             'tenant_id' => 'integer',
             'is_public' => 'boolean',
-            'created_at' => 'timestamp',
-            'updated_at' => 'timestamp',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
     }
 

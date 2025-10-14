@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @method static Builder|Task visibleTo(User $user)
+ */
 class Task extends Model
 {
     use HasFactory;
@@ -48,6 +52,42 @@ class Task extends Model
             'due_date' => 'date',
             'completed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Scope tasks to only those visible to the given user.
+     *
+     * Visibility rules:
+     * - Super admins: see all tasks
+     * - Tenant admins: see all tasks in their tenant
+     * - Regular users: see tasks in their division OR tasks assigned to them
+     *
+     * @param  Builder<Task>  $query
+     */
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        // Super admins see everything
+        if ($user->isSuperAdmin()) {
+            return $query;
+        }
+
+        // Tenant admins see all tasks in their tenant
+        if ($user->isTenantAdmin()) {
+            return $query->where('tenant_id', $user->tenant_id);
+        }
+
+        // Regular users see:
+        // 1. Tasks in their division (if they belong to a division)
+        // 2. Tasks directly assigned to them
+        return $query->where('tenant_id', $user->tenant_id)
+            ->where(function (Builder $query) use ($user) {
+                $query->where('assigned_to', $user->id);
+
+                // Only filter by division if user has a division
+                if ($user->division_id) {
+                    $query->orWhere('division_id', $user->division_id);
+                }
+            });
     }
 
     public function workflowTemplate(): BelongsTo

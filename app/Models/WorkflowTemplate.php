@@ -17,6 +17,7 @@ class WorkflowTemplate extends Model
         'uuid',
         'workflow_code',
         'name',
+        'icon',
         'description',
         'customization_notes',
         'email_enabled',

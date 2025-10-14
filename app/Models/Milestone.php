@@ -15,6 +15,7 @@ class Milestone extends Model
     protected $fillable = [
         'workflow_template_id',
         'name',
+        'icon',
         'description',
         'sequence_order',
         'estimated_duration_days',

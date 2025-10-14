@@ -13,12 +13,14 @@ use App\Models\Task;
 use App\Models\User;
 use App\Models\WorkflowTemplate;
 use Carbon\Carbon;
+use Deldius\UserField\UserColumn;
 use Filament\Actions;
 use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;
 use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\Size;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -41,12 +43,16 @@ class TaskResource extends Resource
             return $query->whereRaw('1 = 0');
         }
 
-        if ($user->isSuperAdmin()) {
-            return $query; // Super admins see all tasks
-        }
-
-        // Tenant users only see tasks from their tenant
-        return $query->where('tenant_id', $user->tenant_id);
+        // Apply visibility scope based on user role and division
+        // Eager load relationships to prevent N+1 queries
+        return $query->visibleTo($user)
+            ->with([
+                'subscriber',
+                'workflowTemplate',
+                'division',
+                'currentMilestone',
+                'assignedTo',
+            ]);
     }
 
     public static function form(Schema $schema): Schema
@@ -117,7 +123,23 @@ class TaskResource extends Resource
                             ->label('Assigned To')
                             ->options(User::pluck('name', 'id'))
                             ->searchable()
-                            ->required(),
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                // Auto-set division based on assigned user
+                                if ($state && empty($get('division_id'))) {
+                                    $user = User::find($state);
+                                    if ($user && $user->division_id) {
+                                        $set('division_id', $user->division_id);
+                                    }
+                                }
+                            }),
+                        FormComponents\Select::make('division_id')
+                            ->label('Division')
+                            ->relationship('division', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Will auto-populate based on assigned user'),
                         FormComponents\Select::make('priority')
                             ->options([
                                 'low' => 'Low',
@@ -206,9 +228,15 @@ class TaskResource extends Resource
                         default => 'gray',
                     })
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('assignedTo.name')
+                UserColumn::make('assigned_to')
                     ->label('Assigned To')
+                    ->size(Size::Small)
                     ->toggleable(),
+                Tables\Columns\TextColumn::make('division.name')
+                    ->label('Division')
+                    ->sortable()
+                    ->toggleable()
+                    ->placeholder('No division'),
                 Tables\Columns\TextColumn::make('scheduled_start_date')
                     ->label('Start Date')
                     ->date()

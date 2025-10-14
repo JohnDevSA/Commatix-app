@@ -12,7 +12,10 @@ class TaskMilestone extends Model
     use HasFactory;
 
     protected $fillable = [
+        'task_id',
         'milestone_id',
+        'sequence_order',
+        'status',
         'status_id',
         'sla_days',
         'sla_hours',
@@ -22,6 +25,9 @@ class TaskMilestone extends Model
         'requires_docs',
         'actions',
         'completed_at',
+        'started_at',
+        'completed_by',
+        'completion_notes',
         'status_type_id',
     ];
 
@@ -29,17 +35,26 @@ class TaskMilestone extends Model
     {
         return [
             'id' => 'integer',
+            'task_id' => 'integer',
             'milestone_id' => 'integer',
+            'sequence_order' => 'integer',
             'status_id' => 'integer',
             'approval_group_id' => 'integer',
             'requires_docs' => 'boolean',
             'actions' => 'array',
             'completed_at' => 'timestamp',
+            'started_at' => 'timestamp',
+            'completed_by' => 'integer',
             'status_type_id' => 'integer',
             'sla_days' => 'integer',
             'sla_hours' => 'integer',
             'sla_minutes' => 'integer',
         ];
+    }
+
+    public function task(): BelongsTo
+    {
+        return $this->belongsTo(Task::class);
     }
 
     public function milestone(): BelongsTo
@@ -50,6 +65,11 @@ class TaskMilestone extends Model
     public function statusType(): BelongsTo
     {
         return $this->belongsTo(StatusType::class);
+    }
+
+    public function completedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'completed_by');
     }
 
     public function taskMilestoneActivityTypes(): HasMany

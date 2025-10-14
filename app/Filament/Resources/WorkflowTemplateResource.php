@@ -56,7 +56,17 @@ class WorkflowTemplateResource extends Resource
                                                     ->maxLength(255)
                                                     ->placeholder('FICA KYC Verification Workflow')
                                                     ->extraInputAttributes(['class' => 'glass-input'])
-                                                    ->columnSpanFull(),
+                                                    ->columnSpan(1),
+
+                                                FormComponents\Select::make('icon')
+                                                    ->label('Icon')
+                                                    ->options(\App\Helpers\IconHelper::getWorkflowIcons())
+                                                    ->searchable()
+                                                    ->allowHtml()
+                                                    ->placeholder('Select an icon...')
+                                                    ->helperText('Choose an icon that represents this workflow')
+                                                    ->extraAttributes(['class' => 'glass-input'])
+                                                    ->columnSpan(1),
 
                                                 FormComponents\Select::make('template_type')
                                                     ->label('Template Type')
@@ -339,6 +349,11 @@ class WorkflowTemplateResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('icon')
+                    ->label('')
+                    ->size('lg')
+                    ->default('📄')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable()

@@ -2,9 +2,12 @@
 
 namespace App\Filament\Pages;
 
+use App\Helpers\SouthAfricanCities;
 use App\Models\Tenant;
 use BackedEnum;
 use Filament\Schemas\Components;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Forms\Components as FormComponents;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Schema;
@@ -176,33 +179,34 @@ class OrganizationSettings extends Page implements HasForms
                                                             ->label('Address Line 2')
                                                             ->maxLength(255)
                                                             ->extraInputAttributes(['class' => 'glass-input']),
-                                                        Components\Grid::make(3)
-                                                            ->schema([
-                                                                FormComponents\TextInput::make('physical_city')
-                                                                    ->label('City')
-                                                                    ->maxLength(100)
-                                                                    ->extraInputAttributes(['class' => 'glass-input']),
-                                                                FormComponents\Select::make('physical_province')
-                                                                    ->label('Province')
-                                                                    ->options([
-                                                                        'EC' => 'Eastern Cape',
-                                                                        'FS' => 'Free State',
-                                                                        'GP' => 'Gauteng',
-                                                                        'KZN' => 'KwaZulu-Natal',
-                                                                        'LP' => 'Limpopo',
-                                                                        'MP' => 'Mpumalanga',
-                                                                        'NC' => 'Northern Cape',
-                                                                        'NW' => 'North West',
-                                                                        'WC' => 'Western Cape',
-                                                                    ])
-                                                                    ->searchable()
-                                                                    ->extraAttributes(['class' => 'glass-input']),
-                                                                FormComponents\TextInput::make('physical_postal_code')
-                                                                    ->label('Postal Code')
-                                                                    ->maxLength(10)
-                                                                    ->placeholder('1234')
-                                                                    ->extraInputAttributes(['class' => 'glass-input']),
-                                                            ]),
+                                                        FormComponents\Select::make('physical_province')
+                                                            ->label('Province')
+                                                            ->options([
+                                                                'EC' => 'Eastern Cape',
+                                                                'FS' => 'Free State',
+                                                                'GP' => 'Gauteng',
+                                                                'KZN' => 'KwaZulu-Natal',
+                                                                'LP' => 'Limpopo',
+                                                                'MP' => 'Mpumalanga',
+                                                                'NC' => 'Northern Cape',
+                                                                'NW' => 'North West',
+                                                                'WC' => 'Western Cape',
+                                                            ])
+                                                            ->searchable()
+                                                            ->live()
+                                                            ->afterStateUpdated(fn ($state, callable $set) => $set('physical_city', null)),
+                                                        FormComponents\Select::make('physical_city')
+                                                            ->label('City')
+                                                            ->options(fn (Get $get): array => SouthAfricanCities::getSelectOptions($get('physical_province')))
+                                                            ->searchable()
+                                                            ->required()
+                                                            ->disabled(fn (Get $get): bool => ! $get('physical_province'))
+                                                            ->helperText(fn (Get $get): ?string => ! $get('physical_province') ? 'Please select a province first' : null),
+                                                        FormComponents\TextInput::make('physical_postal_code')
+                                                            ->label('Postal Code')
+                                                            ->maxLength(10)
+                                                            ->placeholder('1234')
+                                                            ->extraInputAttributes(['class' => 'glass-input']),
                                                     ])
                                                     ->extraAttributes(['class' => 'border-l-4 border-commatix-500 pl-4']),
 
@@ -216,33 +220,33 @@ class OrganizationSettings extends Page implements HasForms
                                                             ->label('Address Line 2')
                                                             ->maxLength(255)
                                                             ->extraInputAttributes(['class' => 'glass-input']),
-                                                        Components\Grid::make(3)
-                                                            ->schema([
-                                                                FormComponents\TextInput::make('postal_city')
-                                                                    ->label('City')
-                                                                    ->maxLength(100)
-                                                                    ->extraInputAttributes(['class' => 'glass-input']),
-                                                                FormComponents\Select::make('postal_province')
-                                                                    ->label('Province')
-                                                                    ->options([
-                                                                        'EC' => 'Eastern Cape',
-                                                                        'FS' => 'Free State',
-                                                                        'GP' => 'Gauteng',
-                                                                        'KZN' => 'KwaZulu-Natal',
-                                                                        'LP' => 'Limpopo',
-                                                                        'MP' => 'Mpumalanga',
-                                                                        'NC' => 'Northern Cape',
-                                                                        'NW' => 'North West',
-                                                                        'WC' => 'Western Cape',
-                                                                    ])
-                                                                    ->searchable()
-                                                                    ->extraAttributes(['class' => 'glass-input']),
-                                                                FormComponents\TextInput::make('postal_code')
-                                                                    ->label('Postal Code')
-                                                                    ->maxLength(10)
-                                                                    ->placeholder('1234')
-                                                                    ->extraInputAttributes(['class' => 'glass-input']),
-                                                            ]),
+                                                        FormComponents\Select::make('postal_province')
+                                                            ->label('Province')
+                                                            ->options([
+                                                                'EC' => 'Eastern Cape',
+                                                                'FS' => 'Free State',
+                                                                'GP' => 'Gauteng',
+                                                                'KZN' => 'KwaZulu-Natal',
+                                                                'LP' => 'Limpopo',
+                                                                'MP' => 'Mpumalanga',
+                                                                'NC' => 'Northern Cape',
+                                                                'NW' => 'North West',
+                                                                'WC' => 'Western Cape',
+                                                            ])
+                                                            ->searchable()
+                                                            ->live()
+                                                            ->afterStateUpdated(fn ($state, callable $set) => $set('postal_city', null)),
+                                                        FormComponents\Select::make('postal_city')
+                                                            ->label('City')
+                                                            ->options(fn (Get $get): array => SouthAfricanCities::getSelectOptions($get('postal_province')))
+                                                            ->searchable()
+                                                            ->disabled(fn (Get $get): bool => ! $get('postal_province'))
+                                                            ->helperText(fn (Get $get): ?string => ! $get('postal_province') ? 'Please select a province first' : null),
+                                                        FormComponents\TextInput::make('postal_code')
+                                                            ->label('Postal Code')
+                                                            ->maxLength(10)
+                                                            ->placeholder('1234')
+                                                            ->extraInputAttributes(['class' => 'glass-input']),
                                                     ])
                                                     ->extraAttributes(['class' => 'border-l-4 border-sa-gold-500 pl-4']),
                                             ]),

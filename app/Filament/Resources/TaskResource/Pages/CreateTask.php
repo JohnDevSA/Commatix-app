@@ -17,17 +17,38 @@ class CreateTask extends CreateRecord
 
     protected function beforeCreate(): void
     {
+        $user = auth()->user();
+
         // Set default values
-        $this->data['created_by'] = auth()->id();
+        $this->data['created_by'] = $user->id;
 
         // Set tenant_id if in tenant context
         if (tenant()) {
             $this->data['tenant_id'] = tenant()->id;
+        } elseif ($user->tenant_id) {
+            // Fallback to user's tenant if not in tenant context
+            $this->data['tenant_id'] = $user->tenant_id;
+        }
+
+        // Set division_id from the assigned user or current user's division
+        if (empty($this->data['division_id'])) {
+            // If a specific user is assigned, use their division
+            if (! empty($this->data['assigned_to'])) {
+                $assignedUser = \App\Models\User::find($this->data['assigned_to']);
+                if ($assignedUser && $assignedUser->division_id) {
+                    $this->data['division_id'] = $assignedUser->division_id;
+                }
+            } else {
+                // Otherwise use current user's division
+                if ($user->division_id) {
+                    $this->data['division_id'] = $user->division_id;
+                }
+            }
         }
 
         // Auto-assign to current user if not specified
         if (empty($this->data['assigned_to'])) {
-            $this->data['assigned_to'] = auth()->id();
+            $this->data['assigned_to'] = $user->id;
         }
     }
 

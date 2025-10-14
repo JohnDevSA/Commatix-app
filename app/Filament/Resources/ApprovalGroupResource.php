@@ -6,6 +6,7 @@ use UnitEnum;
 
 use App\Filament\Resources\ApprovalGroupResource\Pages;
 use App\Models\ApprovalGroup;
+use Deldius\UserField\UserColumn;
 use Filament\Actions;
 use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;

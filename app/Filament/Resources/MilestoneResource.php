@@ -45,7 +45,15 @@ class MilestoneResource extends Resource
                         FormComponents\TextInput::make('name')
                             ->required()
                             ->maxLength(255)
-                            ->columnSpan(2),
+                            ->columnSpan(1),
+                        FormComponents\Select::make('icon')
+                            ->label('Icon')
+                            ->options(\App\Helpers\IconHelper::getMilestoneIcons())
+                            ->searchable()
+                            ->allowHtml()
+                            ->placeholder('Select an icon...')
+                            ->helperText('Choose an icon that represents this milestone')
+                            ->columnSpan(1),
                         FormComponents\Textarea::make('hint')
                             ->rows(3)
                             ->columnSpanFull(),
@@ -107,6 +115,11 @@ class MilestoneResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('icon')
+                    ->label('')
+                    ->size('lg')
+                    ->default('📌')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('workflowTemplate.name')
                     ->label('Workflow Template')
                     ->searchable()
