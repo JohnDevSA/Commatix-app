@@ -8,11 +8,14 @@ use Filament\Forms\Components as FormComponents;
 use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
+use App\Filament\Traits\HasGlassmorphicForms;
 use Filament\Tables;
 use Filament\Tables\Table;
 
 class MilestonesRelationManager extends RelationManager
 {
+    use HasGlassmorphicForms;
+
     protected static string $relationship = 'milestones';
 
     protected static ?string $title = 'Workflow Milestones';
@@ -31,11 +34,6 @@ class MilestonesRelationManager extends RelationManager
                     ->schema([
                         Components\Grid::make(2)
                             ->schema([
-                                FormComponents\TextInput::make('name')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live(onBlur: true)
-                                    ->columnSpan(1),
                                 FormComponents\Select::make('icon')
                                     ->label('Icon')
                                     ->options(\App\Helpers\IconHelper::getMilestoneIcons())
@@ -43,6 +41,11 @@ class MilestonesRelationManager extends RelationManager
                                     ->allowHtml()
                                     ->placeholder('Select an icon...')
                                     ->helperText('Choose an icon for this milestone')
+                                    ->columnSpan(1),
+                                FormComponents\TextInput::make('name')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->live(onBlur: true)
                                     ->columnSpan(1),
                                 FormComponents\TextInput::make('sequence_order')
                                     ->numeric()

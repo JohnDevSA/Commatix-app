@@ -4,13 +4,20 @@ namespace App\Filament\Resources\TenantTopUpResource\Pages;
 
 use App\Contracts\Services\CreditManagementInterface;
 use App\Filament\Resources\TenantTopUpResource;
+use App\Filament\Traits\HasRightAlignedFormActions;
 use App\Models\Tenant;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTenantTopUp extends CreateRecord
 {
+    use HasRightAlignedFormActions;
+
     protected static string $resource = TenantTopUpResource::class;
+
+    protected ?string $heading = 'Add Tenant Credits';
+
+    protected ?string $subheading = 'Top up communication credits for a tenant account';
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
@@ -37,13 +44,19 @@ class CreateTenantTopUp extends CreateRecord
             Notification::make()
                 ->success()
                 ->title('Credits Added Successfully')
-                ->body("{$this->record->amount} {$this->record->channel} credits added to {$tenant->name}")
+                ->body("Added {$this->record->amount} {$this->record->channel} credits to {$tenant->name}")
+                ->icon('heroicon-o-check-circle')
+                ->iconColor('success')
+                ->duration(5000)
                 ->send();
         } catch (\Exception $e) {
             Notification::make()
                 ->danger()
-                ->title('Error Adding Credits')
+                ->title('Failed to Add Credits')
                 ->body($e->getMessage())
+                ->icon('heroicon-o-x-circle')
+                ->iconColor('danger')
+                ->persistent()
                 ->send();
         }
     }

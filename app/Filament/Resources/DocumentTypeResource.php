@@ -13,12 +13,14 @@ use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;
 use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use App\Filament\Traits\HasGlassmorphicForms;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
 class DocumentTypeResource extends Resource
 {
+    use HasGlassmorphicForms;
     protected static ?string $model = DocumentType::class;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-document-text';

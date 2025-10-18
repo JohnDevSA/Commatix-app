@@ -3,12 +3,15 @@
 namespace App\Filament\Resources\WorkflowTemplateResource\Pages;
 
 use App\Filament\Resources\WorkflowTemplateResource;
+use App\Filament\Traits\HasRightAlignedFormActions;
 use App\Models\Milestone;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateWorkflowTemplate extends CreateRecord
 {
+    use HasRightAlignedFormActions;
+
     protected static string $resource = WorkflowTemplateResource::class;
 
     protected function getRedirectUrl(): string

@@ -14,6 +14,7 @@ use Filament\Forms\Components as FormComponents;
 use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use App\Filament\Traits\HasGlassmorphicForms;
 use Filament\Actions;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SubscriberListResource extends Resource
 {
+    use HasGlassmorphicForms;
     protected static ?string $model = SubscriberList::class;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-queue-list';

@@ -3,12 +3,15 @@
 namespace App\Filament\Resources\TenantWorkflowTemplateResource\Pages;
 
 use App\Filament\Resources\TenantWorkflowTemplateResource;
+use App\Filament\Traits\HasRightAlignedFormActions;
 use App\Models\AccessScope;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTenantWorkflowTemplate extends CreateRecord
 {
+    use HasRightAlignedFormActions;
+
     protected static string $resource = TenantWorkflowTemplateResource::class;
 
     protected function getRedirectUrl(): string

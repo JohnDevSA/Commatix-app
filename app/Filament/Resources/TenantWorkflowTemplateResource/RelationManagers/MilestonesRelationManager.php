@@ -8,11 +8,14 @@ use Filament\Forms\Components as FormComponents;
 use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
+use App\Filament\Traits\HasGlassmorphicForms;
 use Filament\Tables;
 use Filament\Tables\Table;
 
 class MilestonesRelationManager extends RelationManager
 {
+    use HasGlassmorphicForms;
+
     protected static string $relationship = 'milestones';
 
     protected static ?string $title = 'Workflow Milestones';

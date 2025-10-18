@@ -5,6 +5,7 @@ use BackedEnum;
 use UnitEnum;
 
 use App\Filament\Resources\MilestoneResource\Pages;
+use App\Filament\Traits\HasGlassmorphicForms;
 use App\Models\Milestone;
 use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;
@@ -16,6 +17,7 @@ use Filament\Tables\Table;
 
 class MilestoneResource extends Resource
 {
+    use HasGlassmorphicForms;
     protected static ?string $model = Milestone::class;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-flag';
@@ -35,79 +37,153 @@ class MilestoneResource extends Resource
     {
         return $schema
             ->schema([
-                Components\Section::make('Milestone Information')
-                    ->schema([
-                        FormComponents\Select::make('workflow_template_id')
-                            ->relationship('workflowTemplate', 'name')
-                            ->searchable()
-                            ->required()
-                            ->columnSpan(2),
-                        FormComponents\TextInput::make('name')
-                            ->required()
-                            ->maxLength(255)
-                            ->columnSpan(1),
-                        FormComponents\Select::make('icon')
-                            ->label('Icon')
-                            ->options(\App\Helpers\IconHelper::getMilestoneIcons())
-                            ->searchable()
-                            ->allowHtml()
-                            ->placeholder('Select an icon...')
-                            ->helperText('Choose an icon that represents this milestone')
-                            ->columnSpan(1),
-                        FormComponents\Textarea::make('hint')
-                            ->rows(3)
-                            ->columnSpanFull(),
-                    ])->columns(2),
+                Components\Tabs::make('Milestone Configuration')
+                    ->tabs([
+                        Components\Tabs\Tab::make('Basic Information')
+                            ->icon('heroicon-m-flag')
+                            ->schema([
+                                Components\Section::make('Milestone Details')
+                                    ->description('Define the milestone name, icon, and associated workflow')
+                                    ->icon('heroicon-m-identification')
+                                    ->schema([
+                                        Components\Grid::make(2)
+                                            ->schema([
+                                                FormComponents\Select::make('workflow_template_id')
+                                                    ->label('Workflow Template')
+                                                    ->relationship('workflowTemplate', 'name')
+                                                    ->searchable()
+                                                    ->required()
+                                                    ->extraAttributes(self::glassInput())
+                                                    ->columnSpan(2),
 
-                Components\Section::make('Configuration')
-                    ->schema([
-                        FormComponents\TextInput::make('sla_days')
-                            ->required()
-                            ->numeric()
-                            ->suffix('days')
-                            ->helperText('Service Level Agreement in days'),
-                        FormComponents\Select::make('status_type_id')
-                            ->relationship('statusType', 'name')
-                            ->required(),
+                                                FormComponents\Select::make('icon')
+                                                    ->label('Icon')
+                                                    ->options(\App\Helpers\IconHelper::getMilestoneIcons())
+                                                    ->searchable()
+                                                    ->allowHtml()
+                                                    ->placeholder('Select an icon...')
+                                                    ->helperText('Choose an icon that represents this milestone')
+                                                    ->extraAttributes(self::glassInput())
+                                                    ->columnSpan(1),
 
-                        FormComponents\Toggle::make('requires_approval')
-                            ->label('Requires Approval')
-                            ->helperText('Whether this milestone requires approval before completion')
-                            ->reactive()
-                            ->afterStateUpdated(fn ($state, callable $set) => ! $state ? $set('approval_group_name', null) : null),
+                                                FormComponents\TextInput::make('name')
+                                                    ->label('Milestone Name')
+                                                    ->required()
+                                                    ->maxLength(255)
+                                                    ->placeholder('KYC Document Submission')
+                                                    ->extraInputAttributes(self::glassInput())
+                                                    ->columnSpan(1),
 
-                        FormComponents\TextInput::make('approval_group_name')
-                            ->label('Approval Group Name')
-                            ->helperText('Enter approval group name (Approval groups feature coming soon - will be division-based)')
-                            ->maxLength(255)
-                            ->visible(fn (callable $get) => $get('requires_approval'))
-                            ->placeholder('e.g., Finance Approvers, HR Managers'),
+                                                FormComponents\Textarea::make('hint')
+                                                    ->label('Hint / Instructions')
+                                                    ->rows(3)
+                                                    ->placeholder('Provide helpful instructions for this milestone...')
+                                                    ->extraInputAttributes(self::glassInput())
+                                                    ->columnSpanFull(),
+                                            ]),
+                                    ])
+                                    ->extraAttributes(self::glassCard()),
 
-                        FormComponents\Toggle::make('requires_docs')
-                            ->label('Requires Documentation')
-                            ->helperText('Whether this milestone requires document attachments')
-                            ->reactive(),
+                                Components\Section::make('Service Level Agreement')
+                                    ->description('Define SLA and status type for this milestone')
+                                    ->icon('heroicon-m-clock')
+                                    ->schema([
+                                        Components\Grid::make(2)
+                                            ->schema([
+                                                FormComponents\TextInput::make('sla_days')
+                                                    ->label('SLA Duration')
+                                                    ->required()
+                                                    ->numeric()
+                                                    ->suffix('days')
+                                                    ->placeholder('3')
+                                                    ->helperText('Service Level Agreement in days')
+                                                    ->extraInputAttributes(self::glassInput()),
 
-                        FormComponents\Select::make('document_requirements')
-                            ->label('Required Documents')
-                            ->multiple()
-                            ->relationship('documentRequirements', 'name')
-                            ->preload()
-                            ->searchable()
-                            ->helperText('Select the documents required for this milestone')
-                            ->visible(fn (callable $get) => $get('requires_docs'))
-                            ->columnSpanFull(),
-                    ])->columns(2),
+                                                FormComponents\Select::make('status_type_id')
+                                                    ->label('Status Type')
+                                                    ->relationship('statusType', 'name')
+                                                    ->required()
+                                                    ->extraAttributes(self::glassInput()),
+                                            ]),
+                                    ])
+                                    ->extraAttributes(self::glassCardSequence(1)),
+                            ]),
 
-                Components\Section::make('Actions')
-                    ->schema([
-                        FormComponents\Textarea::make('actions')
-                            ->label('Actions (JSON)')
-                            ->required()
-                            ->rows(5)
-                            ->columnSpanFull()
-                            ->helperText('Define the actions available at this milestone as JSON'),
-                    ]),
+                        Components\Tabs\Tab::make('Requirements & Approvals')
+                            ->icon('heroicon-m-shield-check')
+                            ->schema([
+                                Components\Section::make('Approval Configuration')
+                                    ->description('Configure approval requirements for this milestone')
+                                    ->icon('heroicon-m-user-group')
+                                    ->schema([
+                                        Components\Grid::make(2)
+                                            ->schema([
+                                                FormComponents\Toggle::make('requires_approval')
+                                                    ->label('Requires Approval')
+                                                    ->helperText('Whether this milestone requires approval before completion')
+                                                    ->reactive()
+                                                    ->afterStateUpdated(fn ($state, callable $set) => ! $state ? $set('approval_group_name', null) : null)
+                                                    ->extraAttributes(self::glassCard('none')),
+
+                                                FormComponents\TextInput::make('approval_group_name')
+                                                    ->label('Approval Group Name')
+                                                    ->helperText('Enter approval group name (Approval groups feature coming soon - will be division-based)')
+                                                    ->maxLength(255)
+                                                    ->visible(fn (callable $get) => $get('requires_approval'))
+                                                    ->placeholder('e.g., Finance Approvers, HR Managers')
+                                                    ->extraInputAttributes(self::glassInput()),
+                                            ]),
+                                    ])
+                                    ->extraAttributes(self::glassCard()),
+
+                                Components\Section::make('Document Requirements')
+                                    ->description('Specify required documentation for this milestone')
+                                    ->icon('heroicon-m-document-text')
+                                    ->schema([
+                                        Components\Grid::make(1)
+                                            ->schema([
+                                                FormComponents\Toggle::make('requires_docs')
+                                                    ->label('Requires Documentation')
+                                                    ->helperText('Whether this milestone requires document attachments')
+                                                    ->reactive()
+                                                    ->extraAttributes(self::glassCard('none')),
+
+                                                FormComponents\Select::make('document_requirements')
+                                                    ->label('Required Documents')
+                                                    ->multiple()
+                                                    ->relationship('documentRequirements', 'name')
+                                                    ->preload()
+                                                    ->searchable()
+                                                    ->helperText('Select the documents required for this milestone')
+                                                    ->visible(fn (callable $get) => $get('requires_docs'))
+                                                    ->extraAttributes(self::glassInput())
+                                                    ->columnSpanFull(),
+                                            ]),
+                                    ])
+                                    ->extraAttributes(self::glassCardSequence(1)),
+                            ]),
+
+                        Components\Tabs\Tab::make('Actions & Workflow')
+                            ->icon('heroicon-m-cog-6-tooth')
+                            ->schema([
+                                Components\Section::make('Milestone Actions')
+                                    ->description('Define available actions at this milestone stage')
+                                    ->icon('heroicon-m-command-line')
+                                    ->schema([
+                                        FormComponents\Textarea::make('actions')
+                                            ->label('Actions Configuration (JSON)')
+                                            ->required()
+                                            ->rows(8)
+                                            ->placeholder('{"approve": "Approve and Continue", "reject": "Reject and Return", "request_info": "Request More Information"}')
+                                            ->columnSpanFull()
+                                            ->helperText('Define the actions available at this milestone as JSON')
+                                            ->extraInputAttributes(self::glassInput()),
+                                    ])
+                                    ->extraAttributes(self::glassCard()),
+                            ]),
+                    ])
+                    ->columnSpanFull()
+                    ->extraAttributes(['class' => 'animate-slide-up']),
             ]);
     }
 

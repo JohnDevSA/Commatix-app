@@ -8,6 +8,8 @@ use App\Filament\Resources\TaskResource\Pages\CreateTask;
 use App\Filament\Resources\TaskResource\Pages\EditTask;
 use App\Filament\Resources\TaskResource\Pages\ListTasks;
 use App\Filament\Resources\TaskResource\Pages\ViewTask;
+use App\Filament\Traits\HasGlassmorphicForms;
+use App\Filament\Traits\HasSouthAfricanDateFormats;
 use App\Models\Subscriber;
 use App\Models\Task;
 use App\Models\User;
@@ -26,6 +28,9 @@ use Filament\Tables\Table;
 
 class TaskResource extends Resource
 {
+    use HasGlassmorphicForms;
+    use HasSouthAfricanDateFormats;
+
     protected static ?string $model = Task::class;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-list';
@@ -59,131 +64,233 @@ class TaskResource extends Resource
     {
         return $schema
             ->schema([
-                Components\Section::make('Task Details')
-                    ->schema([
-                        FormComponents\TextInput::make('title')
-                            ->required()
-                            ->maxLength(255),
-                        FormComponents\Textarea::make('description')
-                            ->rows(3),
-                        FormComponents\Select::make('workflow_template_id')
-                            ->label('Workflow Template')
-                            ->relationship('workflowTemplate', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->required()
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set) {
-                                if ($state) {
-                                    $workflow = WorkflowTemplate::find($state);
-                                    if ($workflow && $workflow->estimated_duration_days) {
-                                        $set('due_date', now()->addDays($workflow->estimated_duration_days)->toDateString());
-                                    }
-                                }
-                            }),
-                        FormComponents\Select::make('subscriber_id')
-                            ->label('Subscriber')
-                            ->relationship('subscriber', 'email')
-                            ->searchable(['email', 'first_name', 'last_name'])
-                            ->preload()
-                            ->required()
-                            ->getOptionLabelFromRecordUsing(fn (Subscriber $record): string => "{$record->first_name} {$record->last_name} ({$record->email})")
-                            ->createOptionForm([
-                                FormComponents\Hidden::make('tenant_id')
-                                    ->default(fn () => tenant() ? tenant()->id : null),
-                                FormComponents\TextInput::make('first_name')
-                                    ->required(),
-                                FormComponents\TextInput::make('last_name')
-                                    ->required(),
-                                FormComponents\TextInput::make('email')
-                                    ->email()
-                                    ->required(),
-                                FormComponents\TextInput::make('phone'),
-                                FormComponents\Select::make('subscriber_list_id')
-                                    ->label('Subscriber List')
-                                    ->relationship('subscriberList', 'name')
-                                    ->required(),
-                            ])
-                            ->createOptionUsing(function (array $data): int {
-                                // Ensure tenant_id is set for new subscribers
-                                if (tenant()) {
-                                    $data['tenant_id'] = tenant()->id;
-                                }
+                Components\Tabs::make('Task Management')
+                    ->tabs([
+                        Components\Tabs\Tab::make('Task Details')
+                            ->icon('heroicon-m-clipboard-document-list')
+                            ->schema([
+                                Components\Section::make('Basic Information')
+                                    ->description('Define the task title, description, and associated workflow')
+                                    ->icon('heroicon-m-information-circle')
+                                    ->schema([
+                                        Components\Grid::make(1)
+                                            ->schema([
+                                                FormComponents\TextInput::make('title')
+                                                    ->label('Task Title')
+                                                    ->required()
+                                                    ->maxLength(255)
+                                                    ->placeholder('KYC Verification for Client XYZ')
+                                                    ->extraInputAttributes(self::glassInput())
+                                                    ->columnSpanFull(),
 
-                                $subscriber = Subscriber::create($data);
+                                                FormComponents\Textarea::make('description')
+                                                    ->label('Task Description')
+                                                    ->rows(3)
+                                                    ->placeholder('Describe the task objectives and requirements...')
+                                                    ->extraInputAttributes(self::glassInput())
+                                                    ->columnSpanFull(),
+                                            ]),
+                                    ])
+                                    ->extraAttributes(self::glassCard()),
 
-                                return $subscriber->id;
-                            }),
+                                Components\Section::make('Workflow & Subscriber')
+                                    ->description('Select the workflow template and associated subscriber')
+                                    ->icon('heroicon-m-user-circle')
+                                    ->schema([
+                                        Components\Grid::make(2)
+                                            ->schema([
+                                                FormComponents\Select::make('workflow_template_id')
+                                                    ->label('Workflow Template')
+                                                    ->relationship('workflowTemplate', 'name')
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->required()
+                                                    ->reactive()
+                                                    ->extraAttributes(self::glassInput())
+                                                    ->helperText('Select the workflow process for this task')
+                                                    ->afterStateUpdated(function ($state, callable $set) {
+                                                        if ($state) {
+                                                            $workflow = WorkflowTemplate::find($state);
+                                                            if ($workflow && $workflow->estimated_duration_days) {
+                                                                $set('due_date', now()->addDays($workflow->estimated_duration_days)->toDateString());
+                                                            }
+                                                        }
+                                                    })
+                                                    ->columnSpan(2),
+
+                                                FormComponents\Select::make('subscriber_id')
+                                                    ->label('Subscriber')
+                                                    ->relationship('subscriber', 'email')
+                                                    ->searchable(['email', 'first_name', 'last_name'])
+                                                    ->preload()
+                                                    ->required()
+                                                    ->extraAttributes(self::glassInput())
+                                                    ->helperText('Select or create a subscriber for this task')
+                                                    ->getOptionLabelFromRecordUsing(fn (Subscriber $record): string => "{$record->first_name} {$record->last_name} ({$record->email})")
+                                                    ->createOptionForm([
+                                                        FormComponents\Hidden::make('tenant_id')
+                                                            ->default(fn () => tenant() ? tenant()->id : null),
+                                                        FormComponents\TextInput::make('first_name')
+                                                            ->required()
+                                                            ->extraInputAttributes(self::glassInput()),
+                                                        FormComponents\TextInput::make('last_name')
+                                                            ->required()
+                                                            ->extraInputAttributes(self::glassInput()),
+                                                        FormComponents\TextInput::make('email')
+                                                            ->email()
+                                                            ->required()
+                                                            ->extraInputAttributes(self::glassInput()),
+                                                        FormComponents\TextInput::make('phone')
+                                                            ->extraInputAttributes(self::glassInput()),
+                                                        FormComponents\Select::make('subscriber_list_id')
+                                                            ->label('Subscriber List')
+                                                            ->relationship('subscriberList', 'name')
+                                                            ->required()
+                                                            ->extraAttributes(self::glassInput()),
+                                                    ])
+                                                    ->createOptionUsing(function (array $data): int {
+                                                        // Ensure tenant_id is set for new subscribers
+                                                        if (tenant()) {
+                                                            $data['tenant_id'] = tenant()->id;
+                                                        }
+
+                                                        $subscriber = Subscriber::create($data);
+
+                                                        return $subscriber->id;
+                                                    })
+                                                    ->columnSpan(2),
+                                            ]),
+                                    ])
+                                    ->extraAttributes(self::glassCardSequence(1)),
+                            ]),
+
+                        Components\Tabs\Tab::make('Assignment & Priority')
+                            ->icon('heroicon-m-user-group')
+                            ->schema([
+                                Components\Section::make('Task Assignment')
+                                    ->description('Assign the task to a user and division')
+                                    ->icon('heroicon-m-user-plus')
+                                    ->schema([
+                                        Components\Grid::make(2)
+                                            ->schema([
+                                                FormComponents\Select::make('assigned_to')
+                                                    ->label('Assigned To')
+                                                    ->options(User::pluck('name', 'id'))
+                                                    ->searchable()
+                                                    ->required()
+                                                    ->reactive()
+                                                    ->extraAttributes(self::glassInput())
+                                                    ->helperText('Select the user responsible for this task')
+                                                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                                        // Auto-set division based on assigned user
+                                                        if ($state && empty($get('division_id'))) {
+                                                            $user = User::find($state);
+                                                            if ($user && $user->division_id) {
+                                                                $set('division_id', $user->division_id);
+                                                            }
+                                                        }
+                                                    }),
+
+                                                FormComponents\Select::make('division_id')
+                                                    ->label('Division')
+                                                    ->relationship('division', 'name')
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->extraAttributes(self::glassInput())
+                                                    ->helperText('Will auto-populate based on assigned user'),
+                                            ]),
+                                    ])
+                                    ->extraAttributes(self::glassCard()),
+
+                                Components\Section::make('Priority & Status')
+                                    ->description('Set task priority and current status')
+                                    ->icon('heroicon-m-flag')
+                                    ->schema([
+                                        Components\Grid::make(2)
+                                            ->schema([
+                                                FormComponents\Select::make('priority')
+                                                    ->label('Priority Level')
+                                                    ->options([
+                                                        'low' => '🟢 Low Priority',
+                                                        'medium' => '🟡 Medium Priority',
+                                                        'high' => '🟠 High Priority',
+                                                        'critical' => '🔴 Critical Priority',
+                                                    ])
+                                                    ->default('medium')
+                                                    ->required()
+                                                    ->extraAttributes(self::glassInput()),
+
+                                                FormComponents\Select::make('status')
+                                                    ->label('Task Status')
+                                                    ->options([
+                                                        'draft' => 'Draft',
+                                                        'scheduled' => 'Scheduled',
+                                                        'in_progress' => 'In Progress',
+                                                        'on_hold' => 'On Hold',
+                                                        'completed' => 'Completed',
+                                                        'cancelled' => 'Cancelled',
+                                                    ])
+                                                    ->default('draft')
+                                                    ->required()
+                                                    ->extraAttributes(self::glassInput()),
+                                            ]),
+                                    ])
+                                    ->extraAttributes(self::glassCardSequence(1)),
+                            ]),
+
+                        Components\Tabs\Tab::make('Scheduling & Timeline')
+                            ->icon('heroicon-m-calendar')
+                            ->schema([
+                                Components\Section::make('Task Timeline')
+                                    ->description('Define start and due dates for this task')
+                                    ->icon('heroicon-m-clock')
+                                    ->schema([
+                                        Components\Grid::make(2)
+                                            ->schema([
+                                                FormComponents\DatePicker::make('scheduled_start_date')
+                                                    ->label('Scheduled Start Date')
+                                                    ->default(now())
+                                                    ->required()
+                                                    ->reactive()
+                                                    ->extraInputAttributes(self::glassInput())
+                                                    ->helperText('When this task should begin')
+                                                    ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                                        // Auto-set status based on start date
+                                                        if ($state && Carbon::parse($state)->isFuture()) {
+                                                            $set('status', 'scheduled');
+                                                        } else {
+                                                            $set('status', 'draft');
+                                                        }
+                                                    }),
+
+                                                FormComponents\DatePicker::make('due_date')
+                                                    ->label('Due Date')
+                                                    ->extraInputAttributes(self::glassInput())
+                                                    ->helperText('Task completion deadline (auto-populated from workflow)'),
+                                            ]),
+                                    ])
+                                    ->extraAttributes(self::glassCard()),
+                            ]),
+
+                        Components\Tabs\Tab::make('Additional Notes')
+                            ->icon('heroicon-m-document-text')
+                            ->schema([
+                                Components\Section::make('Task Notes')
+                                    ->description('Add any additional notes or instructions')
+                                    ->icon('heroicon-m-pencil-square')
+                                    ->schema([
+                                        FormComponents\Textarea::make('notes')
+                                            ->label('Notes')
+                                            ->rows(6)
+                                            ->placeholder('Add any additional notes, requirements, or special instructions...')
+                                            ->extraInputAttributes(self::glassInput())
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->extraAttributes(self::glassCard()),
+                            ]),
                     ])
-                    ->columns(1),
-
-                Components\Section::make('Assignment & Scheduling')
-                    ->schema([
-                        FormComponents\Select::make('assigned_to')
-                            ->label('Assigned To')
-                            ->options(User::pluck('name', 'id'))
-                            ->searchable()
-                            ->required()
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                                // Auto-set division based on assigned user
-                                if ($state && empty($get('division_id'))) {
-                                    $user = User::find($state);
-                                    if ($user && $user->division_id) {
-                                        $set('division_id', $user->division_id);
-                                    }
-                                }
-                            }),
-                        FormComponents\Select::make('division_id')
-                            ->label('Division')
-                            ->relationship('division', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->helperText('Will auto-populate based on assigned user'),
-                        FormComponents\Select::make('priority')
-                            ->options([
-                                'low' => 'Low',
-                                'medium' => 'Medium',
-                                'high' => 'High',
-                                'critical' => 'Critical',
-                            ])
-                            ->default('medium')
-                            ->required(),
-                        FormComponents\DatePicker::make('scheduled_start_date')
-                            ->label('Scheduled Start Date')
-                            ->default(now())
-                            ->required()
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, callable $get, callable $set) {
-                                // Auto-set status based on start date
-                                if ($state && Carbon::parse($state)->isFuture()) {
-                                    $set('status', 'scheduled');
-                                } else {
-                                    $set('status', 'draft');
-                                }
-                            }),
-                        FormComponents\DatePicker::make('due_date')
-                            ->label('Due Date'),
-                        FormComponents\Select::make('status')
-                            ->options([
-                                'draft' => 'Draft',
-                                'scheduled' => 'Scheduled',
-                                'in_progress' => 'In Progress',
-                                'on_hold' => 'On Hold',
-                                'completed' => 'Completed',
-                                'cancelled' => 'Cancelled',
-                            ])
-                            ->default('draft')
-                            ->required(),
-                    ])
-                    ->columns(2),
-
-                Components\Section::make('Additional Information')
-                    ->schema([
-                        FormComponents\Textarea::make('notes')
-                            ->rows(3),
-                    ])
-                    ->collapsible(),
+                    ->columnSpanFull()
+                    ->extraAttributes(['class' => 'animate-slide-up']),
             ]);
     }
 
@@ -239,12 +346,12 @@ class TaskResource extends Resource
                     ->placeholder('No division'),
                 Tables\Columns\TextColumn::make('scheduled_start_date')
                     ->label('Start Date')
-                    ->date()
+                    ->date(self::saDateFormat())
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('due_date')
                     ->label('Due Date')
-                    ->date()
+                    ->date(self::saDateFormat())
                     ->sortable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('currentMilestone.name')

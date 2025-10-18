@@ -3,11 +3,14 @@
 namespace App\Filament\Resources\TaskResource\Pages;
 
 use App\Filament\Resources\TaskResource;
+use App\Filament\Traits\HasRightAlignedFormActions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTask extends CreateRecord
 {
+    use HasRightAlignedFormActions;
+
     protected static string $resource = TaskResource::class;
 
     protected function getRedirectUrl(): string

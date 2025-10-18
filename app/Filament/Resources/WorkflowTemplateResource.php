@@ -50,14 +50,6 @@ class WorkflowTemplateResource extends Resource
                                     ->schema([
                                         Components\Grid::make(2)
                                             ->schema([
-                                                FormComponents\TextInput::make('name')
-                                                    ->label('Template Name')
-                                                    ->required()
-                                                    ->maxLength(255)
-                                                    ->placeholder('FICA KYC Verification Workflow')
-                                                    ->extraInputAttributes(['class' => 'glass-input'])
-                                                    ->columnSpan(1),
-
                                                 FormComponents\Select::make('icon')
                                                     ->label('Icon')
                                                     ->options(\App\Helpers\IconHelper::getWorkflowIcons())
@@ -66,6 +58,14 @@ class WorkflowTemplateResource extends Resource
                                                     ->placeholder('Select an icon...')
                                                     ->helperText('Choose an icon that represents this workflow')
                                                     ->extraAttributes(['class' => 'glass-input'])
+                                                    ->columnSpan(1),
+
+                                                FormComponents\TextInput::make('name')
+                                                    ->label('Template Name')
+                                                    ->required()
+                                                    ->maxLength(255)
+                                                    ->placeholder('FICA KYC Verification Workflow')
+                                                    ->extraInputAttributes(['class' => 'glass-input'])
                                                     ->columnSpan(1),
 
                                                 FormComponents\Select::make('template_type')

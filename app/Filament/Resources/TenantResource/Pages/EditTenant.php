@@ -3,11 +3,14 @@
 namespace App\Filament\Resources\TenantResource\Pages;
 
 use App\Filament\Resources\TenantResource;
+use App\Filament\Traits\HasRightAlignedFormActions;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditTenant extends EditRecord
 {
+    use HasRightAlignedFormActions;
+
     protected static string $resource = TenantResource::class;
 
     protected function getHeaderActions(): array

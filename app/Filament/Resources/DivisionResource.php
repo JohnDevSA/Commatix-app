@@ -5,6 +5,7 @@ use BackedEnum;
 use UnitEnum;
 
 use App\Filament\Resources\DivisionResource\Pages;
+use App\Filament\Traits\HasGlassmorphicForms;
 use App\Models\Division;
 use Filament\Actions;
 use Filament\Schemas\Components;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class DivisionResource extends Resource
 {
+    use HasGlassmorphicForms;
     protected static ?string $model = Division::class;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';

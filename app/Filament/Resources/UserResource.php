@@ -5,6 +5,7 @@ use BackedEnum;
 use UnitEnum;
 
 use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Traits\HasSouthAfricanDateFormats;
 use App\Models\User;
 use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class UserResource extends Resource
 {
+    use HasSouthAfricanDateFormats;
+
     protected static ?string $model = User::class;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-users';
@@ -336,14 +339,14 @@ class UserResource extends Resource
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
-                    ->dateTime('M j, Y')
+                    ->dateTime(self::saDateFormat())
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->color('gray'),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Updated')
-                    ->dateTime('M j, Y H:i')
+                    ->dateTime(self::saDateTimeFormat())
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->color('gray'),

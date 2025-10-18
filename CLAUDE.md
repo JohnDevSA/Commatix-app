@@ -216,6 +216,54 @@ composer grumphp       # Pre-commit hooks
 - Composer validation
 - PHPUnit tests
 
+## 🎨 UI/UX Design System
+
+Commatix follows a comprehensive **Design System** for consistent, accessible, and elegant user interfaces.
+
+### Design Philosophy
+- **Glassmorphism aesthetic** - Modern, layered glass effects
+- **South African UX standards** - Right-aligned form buttons, local formats
+- **WCAG 2.1 AA compliant** - Accessible to all users
+- **Mobile-first responsive** - Optimized for all screen sizes
+- **Performance-focused** - Fast, smooth, optimized
+
+### Color System (OKLCH)
+```
+commatix-500: oklch(0.65 0.18 200)  - Primary brand color
+sa-gold-500:  oklch(0.8 0.12 85)    - South African accent
+tenant-blue:  oklch(0.65 0.18 230)  - Tenant-specific colors
+```
+
+### Typography
+- **Font Family:** Figtree sans-serif
+- **Type Scale:** text-xs to text-3xl (12px to 30px)
+- **Font Weights:** font-medium (buttons), font-semibold (subheadings), font-bold (headings)
+
+### Animations
+- `animate-fade-in` - Entrance animations (0.3s)
+- `animate-slide-up` - Card reveals (0.3s)
+- `animate-glass-float` - Decorative floating (6s infinite)
+- `animate-metric-up` - Data visualization (0.6s)
+
+### South African UX Standards
+- Form action buttons: **ALWAYS right-aligned**
+- Button order: Cancel (left) → Primary Action (right)
+- Date format: DD/MM/YYYY
+- Currency: R 1,250.00 (with space after R)
+- Phone: +27 12 345 6789 (with spaces)
+
+### UI/UX Commands
+```bash
+/design-system        # Quick reference
+/ui-check [file]      # Validate UI implementation
+/ui-expert <task>     # UI/UX specialist with browser preview
+```
+
+### Documentation
+- **Complete Guide:** `DESIGN_SYSTEM.md`
+- **Theme Config:** `tailwind.config.js`
+- **Components:** `resources/views/filament/components/`
+
 ## 📦 Key Packages
 
 ### Laravel Packages
@@ -255,9 +303,11 @@ npm run dev                    # Vite HMR
 2. **Generate Code** (`php artisan blueprint:build`)
 3. **Create Filament Resource** (`/filament-resource ModelName`)
 4. **Implement Business Logic** (Service classes)
-5. **Write Tests** (Unit + Feature)
-6. **Run Quality Checks** (`composer lint`)
-7. **Commit** (GrumPHP runs automatically)
+5. **Design UI/UX** (follow `DESIGN_SYSTEM.md`)
+6. **Validate UI** (`/ui-check [file-path]`)
+7. **Write Tests** (Unit + Feature)
+8. **Run Quality Checks** (`composer lint`)
+9. **Commit** (GrumPHP runs automatically)
 
 ### Database Workflow
 ```bash
@@ -455,10 +505,12 @@ User::count();
 **When implementing features:**
 1. Check existing patterns first
 2. Follow SOLID principles
-3. Write tests
-4. Consider multi-tenancy
-5. Add proper type hints
-6. Document complex logic
+3. Follow Design System (`DESIGN_SYSTEM.md`)
+4. Write tests
+5. Consider multi-tenancy
+6. Add proper type hints
+7. Document complex logic
+8. Validate UI/UX with `/ui-check`
 
 **Preferred patterns:**
 - Service classes for business logic

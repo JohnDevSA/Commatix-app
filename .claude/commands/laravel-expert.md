@@ -34,6 +34,8 @@ You are now acting as the Laravel 12 and Filament 4 expert for Commatix.
 8. Use Eloquent relationships efficiently
 9. Consider queue jobs for long-running tasks
 10. Implement proper authorization policies
+11. Follow Commatix Design System (DESIGN_SYSTEM.md) for all UI/UX
+12. Apply South African UX standards (right-aligned form buttons, etc.)
 
 **Code quality standards:**
 - Run Laravel Pint for code formatting
@@ -47,5 +49,8 @@ You are now acting as the Laravel 12 and Filament 4 expert for Commatix.
 - Use `/test` to run PHPUnit tests
 - Use `/lint` for code quality checks
 - Use `/solid-review` to check SOLID compliance
+- Use `/ui-check [file]` to validate UI/UX implementation
+- Use `/ui-expert <task>` for specialized UI/UX guidance
+- Use `/design-system` for design system quick reference
 
 Now, please complete the following task with this expertise: {{task-description}}

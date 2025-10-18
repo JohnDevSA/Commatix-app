@@ -30,14 +30,33 @@ class AppPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('app')
-            ->path('/')
+            ->path('dashboard')
             ->login()
+            ->registration()
             ->brandName('Commatix')
 //            ->brandLogo(asset('images/commatix-logo.svg'))
             ->brandLogoHeight('2rem')
             ->favicon(asset('images/favicon.ico'))
             ->colors([
-                'primary' => Color::Blue,
+                // Commatix OKLCH Primary Brand Colors
+                'primary' => [
+                    50 => 'oklch(0.98 0.02 200)',
+                    100 => 'oklch(0.95 0.05 200)',
+                    200 => 'oklch(0.90 0.08 200)',
+                    300 => 'oklch(0.82 0.12 200)',
+                    400 => 'oklch(0.74 0.15 200)',
+                    500 => 'oklch(0.65 0.18 200)',  // Main brand color
+                    600 => 'oklch(0.56 0.15 200)',
+                    700 => 'oklch(0.47 0.12 200)',
+                    800 => 'oklch(0.38 0.09 200)',
+                    900 => 'oklch(0.29 0.06 200)',
+                    950 => 'oklch(0.20 0.03 200)',
+                ],
+                // South African Gold Accent
+                'sa-gold' => [
+                    500 => 'oklch(0.8 0.12 85)',
+                ],
+                // Semantic colors (keep standard for consistency)
                 'secondary' => Color::Slate,
                 'success' => Color::Green,
                 'warning' => Color::Amber,
@@ -47,6 +66,20 @@ class AppPanelProvider extends PanelProvider
             ->darkMode(false)
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('17rem')
+            ->renderHook(
+                'panels::body.start',
+                fn () => view('filament.custom-styles')
+            )
+            ->renderHook(
+                'panels::head.end',
+                fn () => view('filament.themes.glass')
+            )
+            ->renderHook(
+                'panels::styles.before',
+                fn () => auth()->check() && auth()->user()->tenant
+                    ? view('filament.tenant-colors', ['tenant' => auth()->user()->tenant])
+                    : ''
+            )
             ->navigationGroups([
                 'Dashboard',
                 'Multi-Tenant Management',

@@ -76,6 +76,12 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'verification_documents',
         'onboarding_completed',
         'onboarding_step',
+        'onboarding_status',
+        'onboarding_started_at',
+        'onboarding_completed_at',
+        'selected_use_case',
+        'selected_integrations',
+        'setup_wizard_data',
         'monthly_spend_limit',
         'current_month_spend',
         'currency',
@@ -140,6 +146,12 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'verification_documents',
         'onboarding_completed',
         'onboarding_step',
+        'onboarding_status',
+        'onboarding_started_at',
+        'onboarding_completed_at',
+        'selected_use_case',
+        'selected_integrations',
+        'setup_wizard_data',
         'monthly_spend_limit',
         'current_month_spend',
         'currency',
@@ -165,6 +177,10 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'is_verified' => 'boolean',
             'verification_documents' => 'array',
             'onboarding_completed' => 'boolean',
+            'onboarding_started_at' => 'timestamp',
+            'onboarding_completed_at' => 'timestamp',
+            'selected_integrations' => 'array',
+            'setup_wizard_data' => 'array',
             'monthly_spend_limit' => 'decimal:2',
             'current_month_spend' => 'decimal:2',
             'verified_at' => 'timestamp',
@@ -217,6 +233,16 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     public function tenantAuditLogs(): HasMany
     {
         return $this->hasMany(TenantAuditLog::class);
+    }
+
+    public function onboardingProgress(): HasMany
+    {
+        return $this->hasMany(OnboardingProgress::class);
+    }
+
+    public function consentRecords(): HasMany
+    {
+        return $this->hasMany(ConsentRecord::class);
     }
 
     // Custom methods for SA business logic

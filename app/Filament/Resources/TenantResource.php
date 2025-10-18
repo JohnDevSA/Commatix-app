@@ -5,6 +5,7 @@ use BackedEnum;
 use UnitEnum;
 
 use App\Filament\Resources\TenantResource\Pages;
+use App\Filament\Traits\HasSouthAfricanDateFormats;
 use App\Models\Tenant;
 use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class TenantResource extends Resource
 {
+    use HasSouthAfricanDateFormats;
+
     protected static ?string $model = Tenant::class;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
@@ -386,42 +389,46 @@ class TenantResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\Layout\Stack::make([
-                    Tables\Columns\TextColumn::make('name')
-                        ->weight(FontWeight::Bold)
-                        ->size('lg')
-                        ->color('primary')
-                        ->searchable()
-                        ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Company Name')
+                    ->description(fn ($record) => $record->trading_name ?: 'No trading name')
+                    ->searchable(['name', 'trading_name'])
+                    ->sortable()
+                    ->weight(FontWeight::SemiBold)
+                    ->color('primary')
+                    ->wrap(),
 
-                    Tables\Columns\TextColumn::make('trading_name')
-                        ->color('gray')
-                        ->size('sm')
-                        ->searchable()
-                        ->placeholder('No trading name'),
-                ])
-                    ->space(1)
-                    ->extraAttributes(['class' => 'glass-card p-2']),
+                Tables\Columns\TextColumn::make('unique_code')
+                    ->label('Code')
+                    ->badge()
+                    ->color('info')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->copyMessage('Code copied!')
+                    ->tooltip('Click to copy'),
 
-                Tables\Columns\Layout\Stack::make([
-                    Tables\Columns\TextColumn::make('unique_code')
-                        ->label('Tenant Code')
-                        ->badge()
-                        ->color('secondary')
-                        ->searchable()
-                        ->sortable(),
+                Tables\Columns\TextColumn::make('primary_email')
+                    ->label('Contact Email')
+                    ->icon('heroicon-m-envelope')
+                    ->iconPosition(IconPosition::Before)
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->copyMessage('Email copied!')
+                    ->tooltip('Click to copy')
+                    ->limit(30),
 
-                    Tables\Columns\TextColumn::make('primary_email')
-                        ->icon('heroicon-m-envelope')
-                        ->iconPosition(IconPosition::Before)
-                        ->size('sm')
-                        ->color('gray')
-                        ->searchable()
-                        ->copyable(),
-                ])
-                    ->space(1),
+                Tables\Columns\TextColumn::make('primary_phone')
+                    ->label('Phone')
+                    ->icon('heroicon-m-phone')
+                    ->iconPosition(IconPosition::Before)
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->placeholder('No phone'),
 
                 Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'active' => 'success',
@@ -437,58 +444,48 @@ class TenantResource extends Resource
                         'suspended' => 'heroicon-m-x-circle',
                         default => 'heroicon-m-question-mark-circle',
                     })
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'active' => 'Active',
-                        'trial' => 'Trial',
-                        'inactive' => 'Inactive',
-                        'suspended' => 'Suspended',
-                        default => 'Unknown',
-                    })
                     ->sortable(),
 
-                Tables\Columns\Layout\Stack::make([
-                    Tables\Columns\IconColumn::make('is_verified')
-                        ->label('Verified')
-                        ->boolean()
-                        ->trueIcon('heroicon-o-shield-check')
-                        ->falseIcon('heroicon-o-shield-exclamation')
-                        ->trueColor('success')
-                        ->falseColor('warning')
-                        ->sortable(),
+                Tables\Columns\IconColumn::make('is_verified')
+                    ->label('Verified')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-shield-check')
+                    ->falseIcon('heroicon-o-shield-exclamation')
+                    ->trueColor('success')
+                    ->falseColor('warning')
+                    ->sortable()
+                    ->tooltip(fn ($record) => $record->is_verified ? 'Account verified' : 'Verification pending'),
 
-                    Tables\Columns\TextColumn::make('subscription_tier')
-                        ->label('Tier')
-                        ->badge()
-                        ->color(fn (string $state): string => match ($state) {
-                            'enterprise' => 'primary',
-                            'professional' => 'success',
-                            'basic' => 'info',
-                            'trial' => 'warning',
-                            default => 'gray',
-                        })
-                        ->formatStateUsing(fn (string $state): string => ucfirst($state))
-                        ->sortable(),
-                ])
-                    ->space(1),
+                Tables\Columns\TextColumn::make('subscription_tier')
+                    ->label('Tier')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'enterprise' => 'primary',
+                        'professional' => 'success',
+                        'basic' => 'info',
+                        'trial' => 'warning',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => ucfirst($state))
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
-                    ->dateTime('M j, Y')
+                    ->dateTime(self::saDateFormat())
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->color('gray'),
+                    ->color('gray')
+                    ->since()
+                    ->tooltip(fn ($record) => 'Created: ' . $record->created_at->format(self::saDateTimeFormat())),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Updated')
-                    ->dateTime('M j, Y H:i')
+                    ->dateTime(self::saDateFormat())
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->color('gray'),
             ])
-            ->contentGrid([
-                'md' => 2,
-                'xl' => 3,
-            ])
+            ->defaultSort('created_at', 'desc')
+            ->striped()
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
@@ -497,7 +494,8 @@ class TenantResource extends Resource
                         'inactive' => 'Inactive',
                         'suspended' => 'Suspended',
                     ])
-                    ->multiple(),
+                    ->multiple()
+                    ->indicator('Status'),
 
                 Tables\Filters\SelectFilter::make('subscription_tier')
                     ->label('Subscription Tier')
@@ -507,42 +505,87 @@ class TenantResource extends Resource
                         'professional' => 'Professional',
                         'enterprise' => 'Enterprise',
                     ])
-                    ->multiple(),
+                    ->multiple()
+                    ->indicator('Tier'),
 
-                Tables\Filters\Filter::make('verified_only')
-                    ->label('Verified Tenants')
-                    ->query(fn (Builder $query): Builder => $query->where('is_verified', true))
-                    ->toggle(),
+                Tables\Filters\TernaryFilter::make('is_verified')
+                    ->label('Verification Status')
+                    ->placeholder('All tenants')
+                    ->trueLabel('Verified only')
+                    ->falseLabel('Unverified only')
+                    ->indicator('Verification'),
+
+                Tables\Filters\Filter::make('created_this_month')
+                    ->label('Created This Month')
+                    ->query(fn (Builder $query): Builder =>
+                        $query->where('created_at', '>=', now()->startOfMonth())
+                    )
+                    ->toggle()
+                    ->indicator('This Month'),
             ])
+            ->filtersLayout(Tables\Enums\FiltersLayout::AboveContent)
+            ->persistFiltersInSession()
+            ->filtersTriggerAction(
+                fn (Actions\Action $action) => $action
+                    ->button()
+                    ->label('Filters')
+                    ->icon('heroicon-m-funnel')
+            )
             ->actions([
                 Actions\ViewAction::make()
-                    ->label('View')
                     ->icon('heroicon-m-eye')
                     ->color('info'),
 
                 Actions\EditAction::make()
-                    ->label('Edit')
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning'),
-
-                // Switch tenant action removed - dashboard route not configured
-                // Actions\Action::make('switch_tenant')
-                //     ->label('Switch')
-                //     ->icon('heroicon-m-arrow-right-circle')
-                //     ->color('primary')
-                //     ->url(fn (Tenant $record): string => route('filament.app.pages.dashboard', ['tenant' => $record->id]))
-                //     ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Actions\BulkActionGroup::make([
+                    Actions\BulkAction::make('activate')
+                        ->label('Activate Selected')
+                        ->icon('heroicon-m-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(fn (\Illuminate\Support\Collection $records) =>
+                            $records->each->update(['status' => 'active'])
+                        ),
+
+                    Actions\BulkAction::make('suspend')
+                        ->label('Suspend Selected')
+                        ->icon('heroicon-m-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading('Suspend Tenants')
+                        ->modalDescription('Are you sure you want to suspend these tenants? They will lose access to the platform.')
+                        ->deselectRecordsAfterCompletion()
+                        ->action(fn (\Illuminate\Support\Collection $records) =>
+                            $records->each->update(['status' => 'suspended'])
+                        ),
+
                     Actions\DeleteBulkAction::make()
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->modalHeading('Delete Tenants')
+                        ->modalDescription('Are you sure? This will permanently delete the tenant and all associated data.'),
                 ]),
             ])
             ->emptyStateHeading('No tenants found')
             ->emptyStateDescription('Create your first tenant to get started with multi-tenant management.')
             ->emptyStateIcon('heroicon-o-building-office-2')
-            ->striped();
+            ->emptyStateActions([
+                Actions\Action::make('create')
+                    ->label('Create First Tenant')
+                    ->url(fn (): string => static::getUrl('create'))
+                    ->icon('heroicon-m-plus')
+                    ->button()
+                    ->color('primary'),
+            ])
+            ->poll('30s')
+            ->deferLoading()
+            ->persistSearchInSession()
+            ->persistSortInSession()
+            ->persistColumnSearchesInSession();
     }
 
     public static function getRelations(): array

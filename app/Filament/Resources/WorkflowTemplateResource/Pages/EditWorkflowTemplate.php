@@ -3,12 +3,15 @@
 namespace App\Filament\Resources\WorkflowTemplateResource\Pages;
 
 use App\Filament\Resources\WorkflowTemplateResource;
+use App\Filament\Traits\HasRightAlignedFormActions;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
 class EditWorkflowTemplate extends EditRecord
 {
+    use HasRightAlignedFormActions;
+
     protected static string $resource = WorkflowTemplateResource::class;
 
     protected function getHeaderActions(): array

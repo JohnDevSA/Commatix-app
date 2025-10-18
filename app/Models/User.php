@@ -118,6 +118,22 @@ class User extends Authenticatable
         return ! $this->isSuperAdmin();
     }
 
+    /**
+     * Get all consent records for this user (POPIA compliance).
+     */
+    public function consentRecords(): HasMany
+    {
+        return $this->hasMany(ConsentRecord::class);
+    }
+
+    /**
+     * Check if user has active consent for a specific type.
+     */
+    public function hasActiveConsent(string $type): bool
+    {
+        return ConsentRecord::userHasActiveConsent($this->id, $type);
+    }
+
     // Authorization Helper Methods
 
     /**

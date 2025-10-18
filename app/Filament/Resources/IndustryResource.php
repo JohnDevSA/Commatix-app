@@ -5,6 +5,7 @@ use BackedEnum;
 use UnitEnum;
 
 use App\Filament\Resources\IndustryResource\Pages;
+use App\Filament\Traits\HasGlassmorphicForms;
 use App\Models\Industry;
 use Filament\Actions;
 use Filament\Schemas\Components;
@@ -16,6 +17,7 @@ use Filament\Tables\Table;
 
 class IndustryResource extends Resource
 {
+    use HasGlassmorphicForms;
     protected static ?string $model = Industry::class;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
