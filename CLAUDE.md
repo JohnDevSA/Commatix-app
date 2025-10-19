@@ -11,6 +11,7 @@
 - **Database:** MySQL (production), SQLite (development)
 - **Cache/Queue:** Redis (production), Database (development)
 - **Frontend:** Vite, TailwindCSS, Alpine.js
+- **Package Manager:** pnpm (NOT npm)
 - **Email:** Resend Laravel
 - **SMS:** Vonage Client
 - **Permissions:** Spatie Laravel Permission
@@ -289,12 +290,12 @@ tenant-blue:  oklch(0.65 0.18 230)  - Tenant-specific colors
 ### Daily Development
 ```bash
 # Start development environment
-composer dev  # Starts Laravel, Queue, Vite
+composer dev  # Starts Laravel, Queue, Vite (uses pnpm)
 
 # Or individually:
 php artisan serve              # Laravel on :8000
 php artisan queue:work         # Queue worker
-npm run dev                    # Vite HMR
+pnpm run dev                   # Vite HMR
 ```
 
 ### Creating Features

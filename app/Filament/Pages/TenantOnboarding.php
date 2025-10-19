@@ -47,17 +47,11 @@ class TenantOnboarding extends Page implements HasForms
 
     protected static ?int $navigationSort = 1;
 
-    // Hide from navigation after onboarding complete
+    // Hide from navigation - onboarding is now handled outside Filament
     public static function shouldRegisterNavigation(): bool
     {
-        // Show for users without tenant (new registrations)
-        if (! Auth::user()->tenant_id) {
-            return true;
-        }
-
-        $tenant = Tenant::find(Auth::user()->tenant_id);
-
-        return ! $tenant?->onboarding_completed;
+        // Always hide - we now use the standalone onboarding flow at /onboarding
+        return false;
     }
 
     public ?OnboardingProgress $progress = null;

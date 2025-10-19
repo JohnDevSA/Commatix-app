@@ -13,8 +13,13 @@ class WelcomeController extends Controller
      */
     public function index(): View | RedirectResponse
     {
-        // If user is already authenticated, redirect to dashboard
+        // If user is already authenticated
         if (auth()->check()) {
+            // Check if they have completed onboarding
+            if (! auth()->user()->tenant_id || ! auth()->user()->tenant?->onboarding_completed) {
+                return redirect()->route('onboarding.index');
+            }
+
             return redirect()->to('/dashboard');
         }
 

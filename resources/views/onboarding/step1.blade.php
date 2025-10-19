@@ -4,22 +4,32 @@
 
 @section('content')
 <div x-data="step1Form()" x-init="init()">
-    <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Tell us about your company</h2>
-        <p class="text-gray-600">Let's start with some basic information about your business</p>
+    <!-- Page Header -->
+    <div class="mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-3">Tell us about your company</h2>
+        <p class="text-lg text-gray-600">Let's start with some basic information about your business</p>
     </div>
 
     <form method="POST" action="{{ route('onboarding.process', 1) }}" @submit="handleSubmit">
         @csrf
         <input type="hidden" name="action" x-model="action">
 
-        <!-- Basic Information -->
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-commatix-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
-                </svg>
-                Basic Information
+        <!-- Basic Information Section -->
+        <div class="mb-8 bg-gradient-to-br from-blue-50/30 to-purple-50/30 rounded-2xl p-8 border border-blue-100/50 shadow-sm hover:shadow-md transition-all duration-300"
+             x-data="{ show: false }"
+             x-init="setTimeout(() => show = true, 100)"
+             x-show="show"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform translate-y-4"
+             x-transition:enter-end="opacity-100 transform translate-y-0">
+
+            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mr-3 shadow-md">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <span>Basic Information</span>
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -95,13 +105,22 @@
             </div>
         </div>
 
-        <!-- Company Classification -->
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-commatix-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14 16a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2zM8 16a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H8z"/>
-                </svg>
-                Company Classification
+        <!-- Company Classification Section -->
+        <div class="mb-8 bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-2xl p-8 border border-purple-100/50 shadow-sm hover:shadow-md transition-all duration-300"
+             x-data="{ show: false }"
+             x-init="setTimeout(() => show = true, 200)"
+             x-show="show"
+             x-transition:enter="transition ease-out duration-300 delay-100"
+             x-transition:enter-start="opacity-0 transform translate-y-4"
+             x-transition:enter-end="opacity-100 transform translate-y-0">
+
+            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mr-3 shadow-md">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14 16a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2zM8 16a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H8z"/>
+                    </svg>
+                </div>
+                <span>Company Classification</span>
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -207,14 +226,23 @@
             </div>
         </div>
 
-        <!-- Contact Information -->
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-commatix-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                </svg>
-                Contact Information
+        <!-- Contact Information Section -->
+        <div class="mb-8 bg-gradient-to-br from-green-50/30 to-emerald-50/30 rounded-2xl p-8 border border-green-100/50 shadow-sm hover:shadow-md transition-all duration-300"
+             x-data="{ show: false }"
+             x-init="setTimeout(() => show = true, 300)"
+             x-show="show"
+             x-transition:enter="transition ease-out duration-300 delay-200"
+             x-transition:enter-start="opacity-0 transform translate-y-4"
+             x-transition:enter-end="opacity-100 transform translate-y-0">
+
+            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mr-3 shadow-md">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                    </svg>
+                </div>
+                <span>Contact Information</span>
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -260,13 +288,22 @@
             </div>
         </div>
 
-        <!-- Physical Address -->
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-commatix-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
-                </svg>
-                Physical Address
+        <!-- Physical Address Section -->
+        <div class="mb-8 bg-gradient-to-br from-orange-50/30 to-amber-50/30 rounded-2xl p-8 border border-orange-100/50 shadow-sm hover:shadow-md transition-all duration-300"
+             x-data="{ show: false }"
+             x-init="setTimeout(() => show = true, 400)"
+             x-show="show"
+             x-transition:enter="transition ease-out duration-300 delay-300"
+             x-transition:enter-start="opacity-0 transform translate-y-4"
+             x-transition:enter-end="opacity-100 transform translate-y-0">
+
+            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mr-3 shadow-md">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <span>Physical Address</span>
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -346,22 +383,31 @@
             </div>
         </div>
 
-        <!-- Postal Address -->
-        <div class="mb-8">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-commatix-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                    </svg>
-                    Postal Address
+        <!-- Postal Address Section -->
+        <div class="mb-8 bg-gradient-to-br from-indigo-50/30 to-blue-50/30 rounded-2xl p-8 border border-indigo-100/50 shadow-sm hover:shadow-md transition-all duration-300"
+             x-data="{ show: false }"
+             x-init="setTimeout(() => show = true, 500)"
+             x-show="show"
+             x-transition:enter="transition ease-out duration-300 delay-400"
+             x-transition:enter-start="opacity-0 transform translate-y-4"
+             x-transition:enter-end="opacity-100 transform translate-y-0">
+
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center mr-3 shadow-md">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                        </svg>
+                    </div>
+                    <span>Postal Address</span>
                 </h3>
-                <label class="flex items-center cursor-pointer">
+                <label class="flex items-center cursor-pointer group">
                     <input type="checkbox" name="same_as_physical" value="1"
                            x-model="sameAsPhysical"
                            {{ old('same_as_physical', $stepData['same_as_physical'] ?? false) ? 'checked' : '' }}
-                           class="w-4 h-4 text-commatix-600 border-gray-300 rounded focus:ring-commatix-500">
-                    <span class="ml-2 text-sm text-gray-700">Same as physical address</span>
+                           class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 cursor-pointer">
+                    <span class="ml-3 text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">Same as physical address</span>
                 </label>
             </div>
 
@@ -443,13 +489,13 @@
         </div>
 
         <!-- Action Buttons (Right-aligned per SA UX standards) -->
-        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+        <div class="flex items-center justify-end space-x-4 pt-8 mt-8 border-t-2 border-gray-100">
             <button type="submit"
                     @click="action = 'next'"
-                    class="px-8 py-3 bg-commatix-500 text-white font-semibold rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center">
+                    class="btn-monday-primary inline-flex items-center group">
                 Continue
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                <svg class="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>
             </button>
         </div>

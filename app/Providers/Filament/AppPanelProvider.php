@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Widgets\RecentTenantsWidget;
 use App\Filament\Widgets\SystemOverviewWidget;
 use App\Filament\Widgets\TenantGrowthChart;
+use App\Http\Middleware\RedirectIfNotOnboarded;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -111,6 +112,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                RedirectIfNotOnboarded::class,
             ])
             ->plugins([
                 DebuggerPlugin::make()

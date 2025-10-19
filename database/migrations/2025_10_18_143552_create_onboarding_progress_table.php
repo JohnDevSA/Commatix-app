@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('onboarding_progress', function (Blueprint $table) {
             $table->id();
 
-            // Tenant relationship
-            $table->string('tenant_id');
-            $table->foreign('tenant_id')
-                ->references('id')
-                ->on('tenants')
+            // User relationship (onboarding is per user, not tenant)
+            $table->foreignId('user_id')
+                ->constrained()
                 ->onDelete('cascade');
 
             // Current wizard step (1-6)
@@ -50,9 +48,9 @@ return new class extends Migration
             $table->timestamps();
 
             // Indexes for performance
-            $table->index('tenant_id');
+            $table->index('user_id');
             $table->index('current_step');
-            $table->index(['tenant_id', 'completed_at']);
+            $table->index(['user_id', 'completed_at']);
         });
     }
 

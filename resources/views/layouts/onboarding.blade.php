@@ -9,30 +9,46 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        /* Glassmorphism effects */
+        /* Monday.com-inspired glassmorphism effects */
         .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
         }
 
         .glass-input {
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-input:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(148, 163, 184, 0.4);
         }
 
         .glass-input:focus {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 1);
             border-color: oklch(0.65 0.18 200);
-            box-shadow: 0 0 0 3px rgba(100, 149, 237, 0.1);
+            box-shadow: 0 0 0 4px rgba(100, 149, 237, 0.1);
+            transform: translateY(-1px);
         }
 
         /* Commatix brand colors */
         .bg-commatix-500 {
             background-color: oklch(0.65 0.18 200);
+        }
+
+        .bg-commatix-gradient {
+            background: linear-gradient(135deg, oklch(0.65 0.18 200) 0%, oklch(0.56 0.15 220) 100%);
         }
 
         .text-commatix-600 {
@@ -43,60 +59,122 @@
             background-color: oklch(0.8 0.12 85);
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        /* Progress indicator */
+        /* Monday.com-style progress indicator */
         .step-indicator {
             position: relative;
+            padding: 0 20px;
         }
 
         .step-indicator::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: rgba(148, 163, 184, 0.3);
+            top: 20px;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: linear-gradient(to right,
+                oklch(0.65 0.18 200) 0%,
+                oklch(0.65 0.18 200) var(--progress, 0%),
+                rgba(148, 163, 184, 0.2) var(--progress, 0%),
+                rgba(148, 163, 184, 0.2) 100%
+            );
             z-index: 0;
+            border-radius: 2px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .step-circle {
             position: relative;
             z-index: 1;
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
         }
 
         .step-circle.completed {
             background: oklch(0.65 0.18 200);
             color: white;
+            box-shadow: 0 4px 12px rgba(0, 115, 234, 0.3);
+            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .step-circle.completed:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 115, 234, 0.4);
         }
 
         .step-circle.current {
             background: white;
-            border: 3px solid oklch(0.65 0.18 200);
+            border: 4px solid oklch(0.65 0.18 200);
             color: oklch(0.65 0.18 200);
-            box-shadow: 0 0 0 4px rgba(100, 149, 237, 0.1);
+            box-shadow: 0 0 0 6px rgba(100, 149, 237, 0.15);
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
         .step-circle.upcoming {
+            background: rgba(148, 163, 184, 0.15);
+            color: rgba(71, 85, 105, 0.5);
+            border: 2px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .step-circle.upcoming:hover {
             background: rgba(148, 163, 184, 0.2);
-            color: rgba(71, 85, 105, 0.6);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 6px rgba(100, 149, 237, 0.15); }
+            50% { box-shadow: 0 0 0 8px rgba(100, 149, 237, 0.25); }
+        }
+
+        /* Monday.com button styles */
+        .btn-monday-primary {
+            background: linear-gradient(135deg, oklch(0.65 0.18 200) 0%, oklch(0.56 0.15 220) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 12px 32px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-monday-primary:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .btn-monday-primary:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-monday-secondary {
+            background: white;
+            color: oklch(0.65 0.18 200);
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 2px solid rgba(148, 163, 184, 0.3);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-monday-secondary:hover {
+            background: rgba(100, 149, 237, 0.05);
+            border-color: oklch(0.65 0.18 200);
+            transform: translateY(-1px);
         }
     </style>
 </head>
@@ -127,25 +205,29 @@
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 py-12">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <main class="flex-1 py-16">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- Progress Steps -->
-                <div class="mb-12">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-semibold text-gray-900">Setup Progress</h2>
-                        <span class="text-sm font-medium text-commatix-600">
-                            {{ $completionPercentage }}% Complete
-                        </span>
+                <div class="mb-16">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 mb-1">Let's get you set up</h2>
+                            <p class="text-sm text-gray-600">We'll have you up and running in just a few minutes</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-commatix-600 mb-1">{{ $completionPercentage }}%</div>
+                            <div class="text-xs text-gray-500 uppercase tracking-wide">Complete</div>
+                        </div>
                     </div>
 
                     <!-- Progress Bar -->
-                    <div class="w-full bg-gray-200 rounded-full h-2 mb-8 overflow-hidden">
-                        <div class="h-full bg-gradient-to-r from-commatix-500 to-purple-500 rounded-full transition-all duration-500"
+                    <div class="w-full bg-gray-200 rounded-full h-3 mb-12 overflow-hidden shadow-inner">
+                        <div class="h-full bg-gradient-to-r from-commatix-500 via-commatix-600 to-purple-500 rounded-full transition-all duration-700 ease-out shadow-sm animate-progress-fill"
                              style="width: {{ $completionPercentage }}%"></div>
                     </div>
 
                     <!-- Step Indicators -->
-                    <div class="step-indicator flex items-center justify-between">
+                    <div class="step-indicator flex items-center justify-between" style="--progress: {{ ($currentStep - 1) * 20 }}%">
                         @foreach([
                             1 => 'Company',
                             2 => 'Team',
@@ -154,17 +236,18 @@
                             5 => 'POPIA',
                             6 => 'Pricing'
                         ] as $stepNum => $stepLabel)
-                            <div class="flex flex-col items-center">
-                                <div class="step-circle {{ $stepNum < $currentStep ? 'completed' : ($stepNum == $currentStep ? 'current' : 'upcoming') }}">
+                            <div class="flex flex-col items-center space-y-3">
+                                <div class="step-circle {{ $stepNum < $currentStep ? 'completed' : ($stepNum == $currentStep ? 'current' : 'upcoming') }}"
+                                     title="{{ $stepLabel }}">
                                     @if($stepNum < $currentStep)
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                         </svg>
                                     @else
                                         {{ $stepNum }}
                                     @endif
                                 </div>
-                                <span class="mt-2 text-xs font-medium {{ $stepNum == $currentStep ? 'text-gray-900' : 'text-gray-500' }}">
+                                <span class="text-xs font-semibold whitespace-nowrap {{ $stepNum == $currentStep ? 'text-gray-900' : ($stepNum < $currentStep ? 'text-commatix-600' : 'text-gray-400') }}">
                                     {{ $stepLabel }}
                                 </span>
                             </div>
@@ -174,29 +257,37 @@
 
                 <!-- Success/Error Messages -->
                 @if(session('success'))
-                    <div class="mb-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-800 animate-fade-in">
+                    <div class="mb-8 p-5 rounded-2xl bg-green-50 border-2 border-green-200 text-green-800 animate-slide-down shadow-md">
                         <div class="flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            {{ session('success') }}
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-semibold">{{ session('success') }}</p>
+                            </div>
                         </div>
                     </div>
                 @endif
 
                 @if(session('error'))
-                    <div class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-800 animate-fade-in">
+                    <div class="mb-8 p-5 rounded-2xl bg-red-50 border-2 border-red-200 text-red-800 animate-slide-down shadow-md">
                         <div class="flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                            </svg>
-                            {{ session('error') }}
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-500 flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-semibold">{{ session('error') }}</p>
+                            </div>
                         </div>
                     </div>
                 @endif
 
                 <!-- Step Content -->
-                <div class="glass-card rounded-2xl p-8 animate-fade-in">
+                <div class="glass-card rounded-3xl p-12 animate-scale-in">
                     @yield('content')
                 </div>
             </div>

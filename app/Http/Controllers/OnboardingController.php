@@ -14,14 +14,6 @@ use Illuminate\Http\RedirectResponse;
 class OnboardingController extends Controller
 {
     /**
-     * Middleware to ensure user is authenticated
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Start or resume onboarding
      */
     public function index(): RedirectResponse

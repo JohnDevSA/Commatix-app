@@ -4,9 +4,9 @@
 
 @section('content')
 <div x-data="step2Form()" x-init="init()">
-    <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Tell us about your role</h2>
-        <p class="text-gray-600">Help us understand how you'll use Commatix</p>
+    <div class="mb-10">
+        <h2 class="text-4xl font-bold text-gray-900 mb-3">Tell us about your role</h2>
+        <p class="text-lg text-gray-600">Help us understand how you'll use Commatix</p>
     </div>
 
     <form method="POST" action="{{ route('onboarding.process', 2) }}" @submit="handleSubmit">
@@ -191,10 +191,10 @@
         </div>
 
         <!-- Action Buttons (Right-aligned per SA UX standards) -->
-        <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+        <div class="flex items-center justify-between pt-8 mt-8 border-t-2 border-gray-100">
             <a href="{{ route('onboarding.step', 1) }}"
-               class="px-6 py-3 text-gray-600 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               class="btn-monday-secondary inline-flex items-center group">
+                <svg class="w-5 h-5 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
                 </svg>
                 Back
@@ -202,10 +202,10 @@
 
             <button type="submit"
                     @click="action = 'next'"
-                    class="px-8 py-3 bg-commatix-500 text-white font-semibold rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center">
+                    class="btn-monday-primary inline-flex items-center group">
                 Continue
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                <svg class="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>
             </button>
         </div>
