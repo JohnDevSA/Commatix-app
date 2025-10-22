@@ -134,14 +134,13 @@ class Industry extends Model
         } catch (\Exception $e) {
             // If cache fails (Redis down), query database directly
             \Log::warning('Industry cache failed, using direct query', ['error' => $e->getMessage()]);
+
             return static::active()->ordered()->get();
         }
     }
 
     /**
      * Get industries as select options (ID => name) with Redis caching
-     *
-     * @return array
      */
     public static function getSelectOptions(): array
     {
@@ -151,18 +150,17 @@ class Industry extends Model
             });
         } catch (\Exception $e) {
             \Log::warning('Industry select options cache failed', ['error' => $e->getMessage()]);
+
             return static::active()->ordered()->pluck('name', 'id')->toArray();
         }
     }
 
     /**
      * Get industries with display names (code => display_name)
-     *
-     * @return array
      */
     public static function getDisplayOptions(): array
     {
-        return Cache::remember(self::CACHE_KEY_SELECT_OPTIONS . ':display', self::CACHE_TTL, function () {
+        return Cache::remember(self::CACHE_KEY_SELECT_OPTIONS.':display', self::CACHE_TTL, function () {
             return static::active()->ordered()->get()->mapWithKeys(function ($industry) {
                 return [$industry->code => $industry->display_name];
             })->toArray();
@@ -171,9 +169,6 @@ class Industry extends Model
 
     /**
      * Find industry by ID with Redis caching
-     *
-     * @param int $id
-     * @return self|null
      */
     public static function findCached(int $id): ?self
     {
@@ -186,9 +181,6 @@ class Industry extends Model
 
     /**
      * Find industry by code with Redis caching
-     *
-     * @param string $code
-     * @return self|null
      */
     public static function findByCodeCached(string $code): ?self
     {
@@ -201,14 +193,12 @@ class Industry extends Model
 
     /**
      * Clear all industry caches
-     *
-     * @return void
      */
     public static function clearCache(): void
     {
         Cache::forget(self::CACHE_KEY_ALL_ACTIVE);
         Cache::forget(self::CACHE_KEY_SELECT_OPTIONS);
-        Cache::forget(self::CACHE_KEY_SELECT_OPTIONS . ':display');
+        Cache::forget(self::CACHE_KEY_SELECT_OPTIONS.':display');
 
         // Clear individual industry caches
         $industries = static::all();

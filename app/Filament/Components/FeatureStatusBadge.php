@@ -2,7 +2,6 @@
 
 namespace App\Filament\Components;
 
-use Filament\Support\Enums\IconPosition;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 

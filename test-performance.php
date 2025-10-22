@@ -17,8 +17,8 @@ $user = User::first();
 tenancy()->initialize(\App\Models\Tenant::first());
 
 echo "📊 Current Data:\n";
-echo "  - Tasks: " . Task::count() . "\n";
-echo "  - Users: " . User::count() . "\n\n";
+echo '  - Tasks: '.Task::count()."\n";
+echo '  - Users: '.User::count()."\n\n";
 
 // Test WITHOUT eager loading
 echo "❌ WITHOUT Eager Loading:\n";
@@ -43,7 +43,7 @@ $timeWithout = (microtime(true) - $start) * 1000;
 DB::connection()->disableQueryLog();
 
 echo "  Queries: {$queriesWithout}\n";
-echo "  Time: " . number_format($timeWithout, 2) . "ms\n\n";
+echo '  Time: '.number_format($timeWithout, 2)."ms\n\n";
 
 // Test WITH eager loading
 echo "✅ WITH Eager Loading:\n";
@@ -69,15 +69,15 @@ $timeWith = (microtime(true) - $start) * 1000;
 DB::connection()->disableQueryLog();
 
 echo "  Queries: {$queriesWith}\n";
-echo "  Time: " . number_format($timeWith, 2) . "ms\n\n";
+echo '  Time: '.number_format($timeWith, 2)."ms\n\n";
 
 // Results
 echo "📈 IMPROVEMENT:\n";
 $queryReduction = (($queriesWithout - $queriesWith) / $queriesWithout) * 100;
 $timeReduction = (($timeWithout - $timeWith) / $timeWithout) * 100;
 
-echo "  Query reduction: " . number_format($queryReduction, 1) . "%\n";
-echo "  Time reduction: " . number_format($timeReduction, 1) . "%\n\n";
+echo '  Query reduction: '.number_format($queryReduction, 1)."%\n";
+echo '  Time reduction: '.number_format($timeReduction, 1)."%\n\n";
 
 // Cache test
 echo "💾 CACHE TEST:\n";
@@ -85,9 +85,9 @@ $start = microtime(true);
 cache()->put('test', 'value', 60);
 $value = cache()->get('test');
 $cacheTime = (microtime(true) - $start) * 1000;
-echo "  Driver: " . config('cache.default') . "\n";
-echo "  Operation time: " . number_format($cacheTime, 3) . "ms\n";
-echo "  Status: " . ($value === 'value' ? '✅ Working' : '❌ Failed') . "\n\n";
+echo '  Driver: '.config('cache.default')."\n";
+echo '  Operation time: '.number_format($cacheTime, 3)."ms\n";
+echo '  Status: '.($value === 'value' ? '✅ Working' : '❌ Failed')."\n\n";
 
 echo "🎯 VERDICT:\n";
 if ($queryReduction > 50) {
@@ -98,5 +98,5 @@ if ($queryReduction > 50) {
     echo "  ❌ Eager loading might have issues\n";
 }
 
-echo "\n💡 NOTE: With only " . Task::count() . " tasks, improvements are minimal.\n";
+echo "\n💡 NOTE: With only ".Task::count()." tasks, improvements are minimal.\n";
 echo "   Real gains appear with 100+ records!\n\n";

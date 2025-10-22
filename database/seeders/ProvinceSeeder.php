@@ -69,6 +69,6 @@ class ProvinceSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ Seeded ' . count($provinces) . ' South African provinces');
+        $this->command->info('✅ Seeded '.count($provinces).' South African provinces');
     }
 }

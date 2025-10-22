@@ -1,28 +1,29 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\IndustryResource\Pages;
 use App\Filament\Traits\HasGlassmorphicForms;
 use App\Models\Industry;
+use BackedEnum;
 use Filament\Actions;
-use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class IndustryResource extends Resource
 {
     use HasGlassmorphicForms;
+
     protected static ?string $model = Industry::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static string | UnitEnum | null $navigationGroup = 'System Administration';
+    protected static string|UnitEnum|null $navigationGroup = 'System Administration';
 
     protected static ?string $navigationLabel = 'Industries';
 

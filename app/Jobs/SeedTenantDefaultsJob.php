@@ -71,7 +71,7 @@ class SeedTenantDefaultsJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::info("Starting tenant defaults seeding", [
+        Log::info('Starting tenant defaults seeding', [
             'tenant_id' => $this->tenant->id,
             'use_case' => $this->selectedUseCase,
             'sample_data' => $this->includeSampleData,
@@ -92,11 +92,11 @@ class SeedTenantDefaultsJob implements ShouldQueue
                 $this->seedSampleData();
             }
 
-            Log::info("Tenant defaults seeding completed", [
+            Log::info('Tenant defaults seeding completed', [
                 'tenant_id' => $this->tenant->id,
             ]);
         } catch (Throwable $e) {
-            Log::error("Tenant defaults seeding failed", [
+            Log::error('Tenant defaults seeding failed', [
                 'tenant_id' => $this->tenant->id,
                 'error' => $e->getMessage(),
             ]);
@@ -118,7 +118,7 @@ class SeedTenantDefaultsJob implements ShouldQueue
             return;
         }
 
-        Log::info("Seeding industry templates for use case", [
+        Log::info('Seeding industry templates for use case', [
             'tenant_id' => $this->tenant->id,
             'use_case' => $this->selectedUseCase,
         ]);
@@ -135,11 +135,11 @@ class SeedTenantDefaultsJob implements ShouldQueue
         $seederClass = $seederMap[$this->selectedUseCase] ?? null;
 
         if ($seederClass && class_exists("Database\\Seeders\\{$seederClass}")) {
-            Artisan::call("db:seed", [
+            Artisan::call('db:seed', [
                 '--class' => "Database\\Seeders\\{$seederClass}",
             ]);
 
-            Log::info("Industry templates seeded", [
+            Log::info('Industry templates seeded', [
                 'tenant_id' => $this->tenant->id,
                 'seeder' => $seederClass,
             ]);
@@ -167,7 +167,7 @@ class SeedTenantDefaultsJob implements ShouldQueue
             ]);
         }
 
-        Log::info("Default divisions created", [
+        Log::info('Default divisions created', [
             'tenant_id' => $this->tenant->id,
             'divisions' => $teamStructure,
         ]);
@@ -178,16 +178,16 @@ class SeedTenantDefaultsJob implements ShouldQueue
      */
     protected function seedSampleData(): void
     {
-        Log::info("Seeding sample data", [
+        Log::info('Seeding sample data', [
             'tenant_id' => $this->tenant->id,
         ]);
 
         // Run demo data seeder
-        Artisan::call("db:seed", [
+        Artisan::call('db:seed', [
             '--class' => 'Database\\Seeders\\DemoTenantSeeder',
         ]);
 
-        Log::info("Sample data seeded", [
+        Log::info('Sample data seeded', [
             'tenant_id' => $this->tenant->id,
         ]);
     }
@@ -197,7 +197,7 @@ class SeedTenantDefaultsJob implements ShouldQueue
      */
     public function failed(Throwable $exception): void
     {
-        Log::error("Tenant defaults seeding permanently failed", [
+        Log::error('Tenant defaults seeding permanently failed', [
             'tenant_id' => $this->tenant->id,
             'error' => $exception->getMessage(),
         ]);

@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class WelcomeController extends Controller
 {
     /**
      * Show the welcome/homepage.
      */
-    public function index(): View | RedirectResponse
+    public function index(): View|RedirectResponse
     {
         // If user is already authenticated
         if (auth()->check()) {

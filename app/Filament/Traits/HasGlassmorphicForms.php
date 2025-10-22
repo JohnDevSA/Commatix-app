@@ -34,9 +34,8 @@ trait HasGlassmorphicForms
     /**
      * Get glass card styling attributes with optional animation delay
      *
-     * @param string $animation Animation type ('fade-in', 'slide-up', or 'none')
-     * @param float $delay Animation delay in seconds (e.g., 0.1, 0.2, 0.3)
-     * @return array
+     * @param  string  $animation  Animation type ('fade-in', 'slide-up', or 'none')
+     * @param  float  $delay  Animation delay in seconds (e.g., 0.1, 0.2, 0.3)
      */
     protected static function glassCard(string $animation = 'fade-in', float $delay = 0): array
     {
@@ -57,8 +56,6 @@ trait HasGlassmorphicForms
 
     /**
      * Get glass input styling attributes
-     *
-     * @return array
      */
     protected static function glassInput(): array
     {
@@ -68,10 +65,9 @@ trait HasGlassmorphicForms
     /**
      * Get glass card with sequential animation delays
      *
-     * @param int $index Zero-based index for staggered animation (0, 1, 2, etc.)
-     * @param string $animation Animation type ('fade-in' or 'slide-up')
-     * @param float $delayIncrement Delay increment per index (default: 0.1s)
-     * @return array
+     * @param  int  $index  Zero-based index for staggered animation (0, 1, 2, etc.)
+     * @param  string  $animation  Animation type ('fade-in' or 'slide-up')
+     * @param  float  $delayIncrement  Delay increment per index (default: 0.1s)
      */
     protected static function glassCardSequence(int $index, string $animation = 'fade-in', float $delayIncrement = 0.1): array
     {
@@ -81,11 +77,10 @@ trait HasGlassmorphicForms
     /**
      * Get common section configuration with icon, description, and glass styling
      *
-     * @param string $title Section title
-     * @param string $description Section description
-     * @param string $icon Heroicon name (e.g., 'heroicon-m-user')
-     * @param int $animationIndex Animation sequence index
-     * @return array
+     * @param  string  $title  Section title
+     * @param  string  $description  Section description
+     * @param  string  $icon  Heroicon name (e.g., 'heroicon-m-user')
+     * @param  int  $animationIndex  Animation sequence index
      */
     protected static function glassSectionConfig(
         string $title,

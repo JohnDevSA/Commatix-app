@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Events\OnboardingCompleted;
 use App\Models\OnboardingProgress;
 use App\Models\Tenant;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class OnboardingController extends Controller
 {
@@ -127,6 +127,7 @@ class OnboardingController extends Controller
 
         // Redirect to next step or stay on current
         $nextStep = $request->input('action') === 'next' ? $step + 1 : $step;
+
         return redirect()->route('onboarding.step', ['step' => $nextStep])
             ->with('success', 'Progress saved!');
     }
@@ -183,7 +184,8 @@ class OnboardingController extends Controller
                 ->with('success', 'Welcome to Commatix! Your workspace is ready.');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Onboarding completion failed: ' . $e->getMessage());
+            \Log::error('Onboarding completion failed: '.$e->getMessage());
+
             return redirect()->route('onboarding.step', ['step' => 6])
                 ->with('error', 'There was an error completing your setup. Please try again.');
         }

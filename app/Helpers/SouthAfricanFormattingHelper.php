@@ -19,8 +19,8 @@ class SouthAfricanFormattingHelper
     /**
      * Format currency in South African Rand (ZAR)
      *
-     * @param float|int|string $amount The amount to format
-     * @param bool $compact If true, omit the space (R1,250 instead of R 1,250.00)
+     * @param  float|int|string  $amount  The amount to format
+     * @param  bool  $compact  If true, omit the space (R1,250 instead of R 1,250.00)
      * @return string Formatted currency string
      *
      * @example
@@ -32,17 +32,17 @@ class SouthAfricanFormattingHelper
         $amount = floatval($amount);
 
         if ($compact) {
-            return 'R' . number_format($amount, 0, '.', ',');
+            return 'R'.number_format($amount, 0, '.', ',');
         }
 
-        return 'R ' . number_format($amount, 2, '.', ',');
+        return 'R '.number_format($amount, 2, '.', ',');
     }
 
     /**
      * Format date in South African standard (DD/MM/YYYY)
      *
-     * @param Carbon|string|null $date Date to format
-     * @param bool $includeTime Include time in format
+     * @param  Carbon|string|null  $date  Date to format
+     * @param  bool  $includeTime  Include time in format
      * @return string Formatted date string
      *
      * @example
@@ -51,7 +51,7 @@ class SouthAfricanFormattingHelper
      */
     public static function formatDate(Carbon|string|null $date, bool $includeTime = false): string
     {
-        if (!$date) {
+        if (! $date) {
             return '-';
         }
 
@@ -69,7 +69,7 @@ class SouthAfricanFormattingHelper
     /**
      * Format date in long South African format
      *
-     * @param Carbon|string|null $date Date to format
+     * @param  Carbon|string|null  $date  Date to format
      * @return string Formatted date string
      *
      * @example
@@ -77,7 +77,7 @@ class SouthAfricanFormattingHelper
      */
     public static function formatDateLong(Carbon|string|null $date): string
     {
-        if (!$date) {
+        if (! $date) {
             return '-';
         }
 
@@ -91,7 +91,7 @@ class SouthAfricanFormattingHelper
     /**
      * Format South African phone number with spaces
      *
-     * @param string|null $phone Phone number to format
+     * @param  string|null  $phone  Phone number to format
      * @return string Formatted phone number
      *
      * @example
@@ -100,7 +100,7 @@ class SouthAfricanFormattingHelper
      */
     public static function formatPhone(?string $phone): string
     {
-        if (!$phone) {
+        if (! $phone) {
             return '-';
         }
 
@@ -111,18 +111,18 @@ class SouthAfricanFormattingHelper
         if (str_starts_with($cleaned, '+27')) {
             $number = substr($cleaned, 3);
             if (strlen($number) >= 9) {
-                return '+27 ' . substr($number, 0, 2) . ' ' . substr($number, 2, 3) . ' ' . substr($number, 5);
+                return '+27 '.substr($number, 0, 2).' '.substr($number, 2, 3).' '.substr($number, 5);
             }
         }
 
         // Format mobile numbers (082 123 4567)
         if (str_starts_with($cleaned, '0') && strlen($cleaned) === 10) {
-            return substr($cleaned, 0, 3) . ' ' . substr($cleaned, 3, 3) . ' ' . substr($cleaned, 6);
+            return substr($cleaned, 0, 3).' '.substr($cleaned, 3, 3).' '.substr($cleaned, 6);
         }
 
         // Format landline numbers ((012) 345 6789)
         if (str_starts_with($cleaned, '0') && strlen($cleaned) >= 9) {
-            return '(' . substr($cleaned, 0, 3) . ') ' . substr($cleaned, 3, 3) . ' ' . substr($cleaned, 6);
+            return '('.substr($cleaned, 0, 3).') '.substr($cleaned, 3, 3).' '.substr($cleaned, 6);
         }
 
         return $phone; // Return original if format not recognized
@@ -131,8 +131,8 @@ class SouthAfricanFormattingHelper
     /**
      * Format a number with South African thousand separators
      *
-     * @param float|int $number Number to format
-     * @param int $decimals Number of decimal places
+     * @param  float|int  $number  Number to format
+     * @param  int  $decimals  Number of decimal places
      * @return string Formatted number
      *
      * @example
@@ -146,8 +146,8 @@ class SouthAfricanFormattingHelper
     /**
      * Format percentage for South African display
      *
-     * @param float|int $value Percentage value (e.g., 0.125 for 12.5%)
-     * @param int $decimals Number of decimal places
+     * @param  float|int  $value  Percentage value (e.g., 0.125 for 12.5%)
+     * @param  int  $decimals  Number of decimal places
      * @return string Formatted percentage
      *
      * @example
@@ -161,7 +161,7 @@ class SouthAfricanFormattingHelper
             $value *= 100;
         }
 
-        return number_format($value, $decimals, '.', ',') . '%';
+        return number_format($value, $decimals, '.', ',').'%';
     }
 
     /**

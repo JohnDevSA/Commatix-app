@@ -17,12 +17,19 @@ class TaskVisibilityTest extends TestCase
     use RefreshDatabase;
 
     private Tenant $tenant;
+
     private UserType $superAdminType;
+
     private UserType $tenantAdminType;
+
     private UserType $regularUserType;
+
     private Division $divisionA;
+
     private Division $divisionB;
+
     private WorkflowTemplate $workflow;
+
     private Subscriber $subscriber;
 
     protected function setUp(): void

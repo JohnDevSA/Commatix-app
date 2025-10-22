@@ -1,28 +1,29 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\MilestoneResource\Pages;
 use App\Filament\Traits\HasGlassmorphicForms;
 use App\Models\Milestone;
-use Filament\Schemas\Components;
-use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use BackedEnum;
 use Filament\Actions;
+use Filament\Forms\Components as FormComponents;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class MilestoneResource extends Resource
 {
     use HasGlassmorphicForms;
+
     protected static ?string $model = Milestone::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-flag';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-flag';
 
-    protected static string | UnitEnum | null $navigationGroup = 'System Administration';
+    protected static string|UnitEnum|null $navigationGroup = 'System Administration';
 
     protected static ?string $navigationLabel = 'Workflow Milestones';
 

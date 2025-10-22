@@ -1,33 +1,34 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Contracts\Services\TaskSchedulingInterface;
 use App\Filament\Resources\SubscriberListResource\Pages;
+use App\Filament\Traits\HasGlassmorphicForms;
 use App\Models\SubscriberList;
 use App\Models\User;
 use App\Models\WorkflowTemplate;
-use Filament\Schemas\Components;
+use BackedEnum;
+use Filament\Actions;
 use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use App\Filament\Traits\HasGlassmorphicForms;
-use Filament\Actions;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class SubscriberListResource extends Resource
 {
     use HasGlassmorphicForms;
+
     protected static ?string $model = SubscriberList::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-queue-list';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-queue-list';
 
-    protected static string | UnitEnum | null $navigationGroup = 'CRM';
+    protected static string|UnitEnum|null $navigationGroup = 'CRM';
 
     protected static ?string $navigationLabel = 'Subscriber Lists';
 

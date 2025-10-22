@@ -75,32 +75,29 @@ class Province extends Model
             });
         } catch (\Exception $e) {
             \Log::warning('Province cache failed, using direct query', ['error' => $e->getMessage()]);
+
             return static::orderBy('name')->get();
         }
     }
 
     /**
      * Get provinces as select options (code => name) with caching
-     *
-     * @return array
      */
     public static function getSelectOptions(): array
     {
         try {
-            return Cache::remember(self::CACHE_KEY_ALL . ':options', self::CACHE_TTL, function () {
+            return Cache::remember(self::CACHE_KEY_ALL.':options', self::CACHE_TTL, function () {
                 return static::orderBy('name')->pluck('name', 'code')->toArray();
             });
         } catch (\Exception $e) {
             \Log::warning('Province select options cache failed', ['error' => $e->getMessage()]);
+
             return static::orderBy('name')->pluck('name', 'code')->toArray();
         }
     }
 
     /**
      * Find province by code with Redis caching
-     *
-     * @param string $code
-     * @return self|null
      */
     public static function findByCodeCached(string $code): ?self
     {
@@ -113,13 +110,11 @@ class Province extends Model
 
     /**
      * Clear all province caches
-     *
-     * @return void
      */
     public static function clearCache(): void
     {
         Cache::forget(self::CACHE_KEY_ALL);
-        Cache::forget(self::CACHE_KEY_ALL . ':options');
+        Cache::forget(self::CACHE_KEY_ALL.':options');
 
         // Clear individual province caches
         $provinces = static::all();

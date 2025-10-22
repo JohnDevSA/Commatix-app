@@ -1,22 +1,22 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\TenantResource\Pages;
 use App\Filament\Traits\HasSouthAfricanDateFormats;
 use App\Models\Tenant;
-use Filament\Schemas\Components;
-use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use BackedEnum;
 use Filament\Actions;
+use Filament\Forms\Components as FormComponents;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class TenantResource extends Resource
 {
@@ -24,9 +24,9 @@ class TenantResource extends Resource
 
     protected static ?string $model = Tenant::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Tenant Management';
+    protected static string|UnitEnum|null $navigationGroup = 'Tenant Management';
 
     protected static ?string $navigationLabel = 'Tenants';
 
@@ -475,7 +475,7 @@ class TenantResource extends Resource
                     ->sortable()
                     ->color('gray')
                     ->since()
-                    ->tooltip(fn ($record) => 'Created: ' . $record->created_at->format(self::saDateTimeFormat())),
+                    ->tooltip(fn ($record) => 'Created: '.$record->created_at->format(self::saDateTimeFormat())),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Updated')
@@ -517,8 +517,7 @@ class TenantResource extends Resource
 
                 Tables\Filters\Filter::make('created_this_month')
                     ->label('Created This Month')
-                    ->query(fn (Builder $query): Builder =>
-                        $query->where('created_at', '>=', now()->startOfMonth())
+                    ->query(fn (Builder $query): Builder => $query->where('created_at', '>=', now()->startOfMonth())
                     )
                     ->toggle()
                     ->indicator('This Month'),
@@ -548,8 +547,7 @@ class TenantResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->deselectRecordsAfterCompletion()
-                        ->action(fn (\Illuminate\Support\Collection $records) =>
-                            $records->each->update(['status' => 'active'])
+                        ->action(fn (\Illuminate\Support\Collection $records) => $records->each->update(['status' => 'active'])
                         ),
 
                     Actions\BulkAction::make('suspend')
@@ -560,8 +558,7 @@ class TenantResource extends Resource
                         ->modalHeading('Suspend Tenants')
                         ->modalDescription('Are you sure you want to suspend these tenants? They will lose access to the platform.')
                         ->deselectRecordsAfterCompletion()
-                        ->action(fn (\Illuminate\Support\Collection $records) =>
-                            $records->each->update(['status' => 'suspended'])
+                        ->action(fn (\Illuminate\Support\Collection $records) => $records->each->update(['status' => 'suspended'])
                         ),
 
                     Actions\DeleteBulkAction::make()

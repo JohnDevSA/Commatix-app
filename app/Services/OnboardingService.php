@@ -9,7 +9,6 @@ use App\Models\Province;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Stancl\Tenancy\Facades\Tenancy;
@@ -20,16 +19,14 @@ use Stancl\Tenancy\Facades\Tenancy;
  * Handles the complete onboarding process for new tenants.
  * This service ensures proper tenant creation, database setup,
  * admin user creation, and tenant initialization.
- *
- * @package App\Services
  */
 class OnboardingService
 {
     /**
      * Complete the onboarding process and create tenant
      *
-     * @param User $user The user completing onboarding
-     * @param OnboardingProgress $progress The onboarding progress record
+     * @param  User  $user  The user completing onboarding
+     * @param  OnboardingProgress  $progress  The onboarding progress record
      * @return array{success: bool, tenant: Tenant|null, message: string}
      */
     public function completeOnboarding(User $user, OnboardingProgress $progress): array
@@ -42,12 +39,13 @@ class OnboardingService
 
             // Validate we have required data
             $validation = $this->validateStepData($allStepData);
-            if (!$validation['valid']) {
+            if (! $validation['valid']) {
                 DB::rollBack();
+
                 return [
                     'success' => false,
                     'tenant' => null,
-                    'message' => 'Missing required onboarding data: ' . $validation['message'],
+                    'message' => 'Missing required onboarding data: '.$validation['message'],
                 ];
             }
 
@@ -95,16 +93,13 @@ class OnboardingService
             return [
                 'success' => false,
                 'tenant' => null,
-                'message' => 'Onboarding failed: ' . $e->getMessage(),
+                'message' => 'Onboarding failed: '.$e->getMessage(),
             ];
         }
     }
 
     /**
      * Gather all step data from progress
-     *
-     * @param OnboardingProgress $progress
-     * @return array
      */
     protected function gatherAllStepData(OnboardingProgress $progress): array
     {
@@ -121,7 +116,6 @@ class OnboardingService
     /**
      * Validate that all required step data exists
      *
-     * @param array $stepData
      * @return array{valid: bool, message: string}
      */
     protected function validateStepData(array $stepData): array
@@ -165,10 +159,6 @@ class OnboardingService
 
     /**
      * Create tenant from onboarding data
-     *
-     * @param array $stepData
-     * @param User $user
-     * @return Tenant
      */
     protected function createTenant(array $stepData, User $user): Tenant
     {
@@ -181,14 +171,14 @@ class OnboardingService
 
         // Get industry code (if industry_id provided, fetch the code)
         $industryCode = null;
-        if (!empty($step1['industry_id'])) {
+        if (! empty($step1['industry_id'])) {
             $industry = Industry::findCached($step1['industry_id']);
             $industryCode = $industry?->code;
         }
 
         // Create tenant
         $tenant = Tenant::create([
-            'id' => 'tenant_' . Str::uuid(),
+            'id' => 'tenant_'.Str::uuid(),
             'name' => $step1['company_name'],
             'trading_name' => $step1['trading_name'] ?? null,
             'unique_code' => $this->generateUniqueCode($step1['company_name']),
@@ -221,7 +211,7 @@ class OnboardingService
             'max_subscribers' => $this->getMaxSubscribersByPlan($step6['plan'] ?? 'professional'),
             'allowed_channels' => ['email', 'sms'],
             'communication_timezone' => 'Africa/Johannesburg',
-            'popia_consent_obtained' => !empty($step5['accept_privacy']),
+            'popia_consent_obtained' => ! empty($step5['accept_privacy']),
             'popia_consent_date' => now(),
             'data_retention_period_days' => 365,
             'status' => 'active',
@@ -248,11 +238,6 @@ class OnboardingService
 
     /**
      * Initialize tenant database and create admin user
-     *
-     * @param Tenant $tenant
-     * @param User $user
-     * @param array $stepData
-     * @return void
      */
     protected function initializeTenantDatabase(Tenant $tenant, User $user, array $stepData): void
     {
@@ -277,11 +262,6 @@ class OnboardingService
 
     /**
      * Create tenant admin user
-     *
-     * @param Tenant $tenant
-     * @param User $centralUser
-     * @param array $stepData
-     * @return void
      */
     protected function createTenantAdminUser(Tenant $tenant, User $centralUser, array $stepData): void
     {
@@ -310,10 +290,6 @@ class OnboardingService
 
     /**
      * Create initial divisions if specified
-     *
-     * @param Tenant $tenant
-     * @param array $stepData
-     * @return void
      */
     protected function createInitialDivisions(Tenant $tenant, array $stepData): void
     {
@@ -344,10 +320,6 @@ class OnboardingService
 
     /**
      * Send team invites if specified
-     *
-     * @param Tenant $tenant
-     * @param array $stepData
-     * @return void
      */
     protected function sendTeamInvites(Tenant $tenant, array $stepData): void
     {
@@ -377,9 +349,6 @@ class OnboardingService
 
     /**
      * Generate unique code for tenant
-     *
-     * @param string $companyName
-     * @return string
      */
     protected function generateUniqueCode(string $companyName): string
     {
@@ -388,7 +357,7 @@ class OnboardingService
         $code = $baseCode;
 
         while (Tenant::where('unique_code', $code)->exists()) {
-            $code = $baseCode . $counter;
+            $code = $baseCode.$counter;
             $counter++;
         }
 
@@ -397,13 +366,10 @@ class OnboardingService
 
     /**
      * Get max users by subscription plan
-     *
-     * @param string $plan
-     * @return int
      */
     protected function getMaxUsersByPlan(string $plan): int
     {
-        return match($plan) {
+        return match ($plan) {
             'starter' => 5,
             'professional' => 25,
             'enterprise' => 9999,
@@ -413,13 +379,10 @@ class OnboardingService
 
     /**
      * Get max subscribers by subscription plan
-     *
-     * @param string $plan
-     * @return int
      */
     protected function getMaxSubscribersByPlan(string $plan): int
     {
-        return match($plan) {
+        return match ($plan) {
             'starter' => 1000,
             'professional' => 10000,
             'enterprise' => 999999,
@@ -429,8 +392,6 @@ class OnboardingService
 
     /**
      * Get cached provinces for onboarding
-     *
-     * @return array
      */
     public function getProvinces(): array
     {
@@ -438,6 +399,7 @@ class OnboardingService
             return Province::getSelectOptions();
         } catch (\Exception $e) {
             Log::warning('Failed to load provinces from database', ['error' => $e->getMessage()]);
+
             return $this->getFallbackProvinces();
         }
     }
@@ -460,14 +422,13 @@ class OnboardingService
             return $industries;
         } catch (\Exception $e) {
             Log::warning('Failed to load industries from database', ['error' => $e->getMessage()]);
+
             return collect($this->getFallbackIndustries());
         }
     }
 
     /**
      * Fallback provinces if database unavailable
-     *
-     * @return array
      */
     protected function getFallbackProvinces(): array
     {
@@ -486,27 +447,25 @@ class OnboardingService
 
     /**
      * Fallback industries if database unavailable
-     *
-     * @return array
      */
     protected function getFallbackIndustries(): array
     {
         return [
-            (object)['id' => 1, 'name' => 'Technology & IT', 'icon' => '💻'],
-            (object)['id' => 2, 'name' => 'Healthcare & Medical', 'icon' => '🏥'],
-            (object)['id' => 3, 'name' => 'Finance & Banking', 'icon' => '🏦'],
-            (object)['id' => 4, 'name' => 'Legal Services', 'icon' => '⚖️'],
-            (object)['id' => 5, 'name' => 'Manufacturing', 'icon' => '🏭'],
-            (object)['id' => 6, 'name' => 'Retail & E-commerce', 'icon' => '🛍️'],
-            (object)['id' => 7, 'name' => 'Construction & Engineering', 'icon' => '🏗️'],
-            (object)['id' => 8, 'name' => 'Education & Training', 'icon' => '🎓'],
-            (object)['id' => 9, 'name' => 'Hospitality & Tourism', 'icon' => '🏨'],
-            (object)['id' => 10, 'name' => 'Transportation & Logistics', 'icon' => '🚚'],
-            (object)['id' => 11, 'name' => 'Professional Services', 'icon' => '💼'],
-            (object)['id' => 12, 'name' => 'Agriculture & Farming', 'icon' => '🌾'],
-            (object)['id' => 13, 'name' => 'Media & Entertainment', 'icon' => '🎬'],
-            (object)['id' => 14, 'name' => 'Real Estate', 'icon' => '🏠'],
-            (object)['id' => 15, 'name' => 'Other', 'icon' => '📊'],
+            (object) ['id' => 1, 'name' => 'Technology & IT', 'icon' => '💻'],
+            (object) ['id' => 2, 'name' => 'Healthcare & Medical', 'icon' => '🏥'],
+            (object) ['id' => 3, 'name' => 'Finance & Banking', 'icon' => '🏦'],
+            (object) ['id' => 4, 'name' => 'Legal Services', 'icon' => '⚖️'],
+            (object) ['id' => 5, 'name' => 'Manufacturing', 'icon' => '🏭'],
+            (object) ['id' => 6, 'name' => 'Retail & E-commerce', 'icon' => '🛍️'],
+            (object) ['id' => 7, 'name' => 'Construction & Engineering', 'icon' => '🏗️'],
+            (object) ['id' => 8, 'name' => 'Education & Training', 'icon' => '🎓'],
+            (object) ['id' => 9, 'name' => 'Hospitality & Tourism', 'icon' => '🏨'],
+            (object) ['id' => 10, 'name' => 'Transportation & Logistics', 'icon' => '🚚'],
+            (object) ['id' => 11, 'name' => 'Professional Services', 'icon' => '💼'],
+            (object) ['id' => 12, 'name' => 'Agriculture & Farming', 'icon' => '🌾'],
+            (object) ['id' => 13, 'name' => 'Media & Entertainment', 'icon' => '🎬'],
+            (object) ['id' => 14, 'name' => 'Real Estate', 'icon' => '🏠'],
+            (object) ['id' => 15, 'name' => 'Other', 'icon' => '📊'],
         ];
     }
 }

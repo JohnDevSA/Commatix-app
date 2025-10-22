@@ -36,8 +36,8 @@ class FixTaskMetadata extends Command
         // Find tasks with missing metadata
         $tasksWithMissingData = Task::where(function ($query) {
             $query->whereNull('tenant_id')
-                  ->orWhereNull('division_id')
-                  ->orWhereNull('created_by');
+                ->orWhereNull('division_id')
+                ->orWhereNull('created_by');
         })->get();
 
         if ($tasksWithMissingData->isEmpty()) {

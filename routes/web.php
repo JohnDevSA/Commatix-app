@@ -23,9 +23,9 @@ Route::get('/test-onboarding', function () {
             'KZN' => 'KwaZulu-Natal',
         ],
         'industries' => collect([
-            (object)['id' => 1, 'name' => 'Technology'],
-            (object)['id' => 2, 'name' => 'Healthcare'],
-            (object)['id' => 3, 'name' => 'Finance'],
+            (object) ['id' => 1, 'name' => 'Technology'],
+            (object) ['id' => 2, 'name' => 'Healthcare'],
+            (object) ['id' => 3, 'name' => 'Finance'],
         ]),
     ]);
 });

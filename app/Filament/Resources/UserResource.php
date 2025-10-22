@@ -1,22 +1,22 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Traits\HasSouthAfricanDateFormats;
 use App\Models\User;
-use Filament\Schemas\Components;
-use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use BackedEnum;
 use Filament\Actions;
+use Filament\Forms\Components as FormComponents;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class UserResource extends Resource
 {
@@ -24,9 +24,9 @@ class UserResource extends Resource
 
     protected static ?string $model = User::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-users';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
-    protected static string | UnitEnum | null $navigationGroup = 'User Management';
+    protected static string|UnitEnum|null $navigationGroup = 'User Management';
 
     protected static ?string $recordTitleAttribute = 'name';
 

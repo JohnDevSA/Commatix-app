@@ -40,7 +40,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'physical_address_line1',
         'physical_address_line2',
         'physical_city',
-        'physical_province',
+        'physical_province_id',
         'physical_postal_code',
         'postal_address_line1',
         'postal_address_line2',
@@ -110,7 +110,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'physical_address_line1',
         'physical_address_line2',
         'physical_city',
-        'physical_province',
+        'physical_province_id',
         'physical_postal_code',
         'postal_address_line1',
         'postal_address_line2',
@@ -243,6 +243,14 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     public function consentRecords(): HasMany
     {
         return $this->hasMany(ConsentRecord::class);
+    }
+
+    /**
+     * Get the province for this tenant's physical address
+     */
+    public function physicalProvince()
+    {
+        return $this->belongsTo(Province::class, 'physical_province_id');
     }
 
     // Custom methods for SA business logic

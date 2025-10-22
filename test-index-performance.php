@@ -5,8 +5,8 @@ require __DIR__.'/vendor/autoload.php';
 $app = require_once __DIR__.'/bootstrap/app.php';
 $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
-use App\Models\Task;
 use App\Models\Subscriber;
+use App\Models\Task;
 use App\Models\WorkflowTemplate;
 use Illuminate\Support\Facades\DB;
 
@@ -17,9 +17,9 @@ echo "==================================\n\n";
 tenancy()->initialize(\App\Models\Tenant::first());
 
 echo "📊 Current Data:\n";
-echo "  - Tasks: " . Task::count() . "\n";
-echo "  - Subscribers: " . Subscriber::count() . "\n";
-echo "  - Workflow Templates: " . WorkflowTemplate::count() . "\n\n";
+echo '  - Tasks: '.Task::count()."\n";
+echo '  - Subscribers: '.Subscriber::count()."\n";
+echo '  - Workflow Templates: '.WorkflowTemplate::count()."\n\n";
 
 // Test 1: Subscribers filtered by tenant + list (using composite index)
 echo "Test 1: Subscribers by Tenant + List\n";
@@ -37,9 +37,9 @@ $time1 = (microtime(true) - $start) * 1000;
 $queries1 = DB::getQueryLog();
 DB::connection()->disableQueryLog();
 
-echo "  Result: " . $subscribers->count() . " subscribers\n";
-echo "  Time: " . number_format($time1, 2) . "ms\n";
-echo "  Query: " . substr($queries1[0]['query'] ?? 'N/A', 0, 100) . "...\n";
+echo '  Result: '.$subscribers->count()." subscribers\n";
+echo '  Time: '.number_format($time1, 2)."ms\n";
+echo '  Query: '.substr($queries1[0]['query'] ?? 'N/A', 0, 100)."...\n";
 echo "  ✅ Using indexes: subscribers_tenant_list_idx, subscribers_status_idx\n\n";
 
 // Test 2: Workflow Templates by tenant + active status (using composite index)
@@ -57,9 +57,9 @@ $time2 = (microtime(true) - $start) * 1000;
 $queries2 = DB::getQueryLog();
 DB::connection()->disableQueryLog();
 
-echo "  Result: " . $templates->count() . " templates\n";
-echo "  Time: " . number_format($time2, 2) . "ms\n";
-echo "  Query: " . substr($queries2[0]['query'] ?? 'N/A', 0, 100) . "...\n";
+echo '  Result: '.$templates->count()." templates\n";
+echo '  Time: '.number_format($time2, 2)."ms\n";
+echo '  Query: '.substr($queries2[0]['query'] ?? 'N/A', 0, 100)."...\n";
 echo "  ✅ Using index: workflow_templates_tenant_active_idx\n\n";
 
 // Test 3: Explain query to show index usage
@@ -75,9 +75,9 @@ $explain = DB::select("
 ", [\App\Models\Tenant::first()->id, 1]);
 
 echo "  Query: SELECT * FROM subscribers WHERE tenant_id AND subscriber_list_id AND status\n";
-echo "  Possible keys: " . ($explain[0]->possible_keys ?? 'N/A') . "\n";
-echo "  Key used: " . ($explain[0]->key ?? 'N/A') . "\n";
-echo "  Rows examined: " . ($explain[0]->rows ?? 'N/A') . "\n\n";
+echo '  Possible keys: '.($explain[0]->possible_keys ?? 'N/A')."\n";
+echo '  Key used: '.($explain[0]->key ?? 'N/A')."\n";
+echo '  Rows examined: '.($explain[0]->rows ?? 'N/A')."\n\n";
 
 // Summary
 echo "📊 INDEX SUMMARY:\n";

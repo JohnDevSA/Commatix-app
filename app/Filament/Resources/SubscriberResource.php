@@ -1,30 +1,31 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\SubscriberResource\Pages;
+use App\Filament\Traits\HasGlassmorphicForms;
 use App\Models\Subscriber;
 use App\Models\SubscriberList;
+use BackedEnum;
 use Filament\Actions;
-use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
-use App\Filament\Traits\HasGlassmorphicForms;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class SubscriberResource extends Resource
 {
     use HasGlassmorphicForms;
+
     protected static ?string $model = Subscriber::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-users';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
-    protected static string | UnitEnum | null $navigationGroup = 'CRM';
+    protected static string|UnitEnum|null $navigationGroup = 'CRM';
 
     protected static ?string $navigationLabel = 'Subscribers';
 

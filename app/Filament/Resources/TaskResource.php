@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\TaskResource\Pages\CreateTask;
 use App\Filament\Resources\TaskResource\Pages\EditTask;
@@ -14,17 +12,19 @@ use App\Models\Subscriber;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\WorkflowTemplate;
+use BackedEnum;
 use Carbon\Carbon;
 use Deldius\UserField\UserColumn;
 use Filament\Actions;
-use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Size;
 use Filament\Tables;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class TaskResource extends Resource
 {
@@ -33,11 +33,11 @@ class TaskResource extends Resource
 
     protected static ?string $model = Task::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static ?string $navigationLabel = 'Tasks';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Workflows';
+    protected static string|UnitEnum|null $navigationGroup = 'Workflows';
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {

@@ -11,7 +11,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -81,7 +80,7 @@ class CreateTenantDatabaseJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::info("Starting tenant database provisioning", [
+        Log::info('Starting tenant database provisioning', [
             'tenant_id' => $this->tenant->id,
             'tenant_name' => $this->tenant->name,
         ]);
@@ -102,12 +101,12 @@ class CreateTenantDatabaseJob implements ShouldQueue
             // Step 5: Fire success event
             event(new TenantDatabaseCreated($this->tenant));
 
-            Log::info("Tenant database provisioning completed successfully", [
+            Log::info('Tenant database provisioning completed successfully', [
                 'tenant_id' => $this->tenant->id,
             ]);
         } catch (Throwable $e) {
             // Log the error
-            Log::error("Tenant database provisioning failed", [
+            Log::error('Tenant database provisioning failed', [
                 'tenant_id' => $this->tenant->id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -150,7 +149,7 @@ class CreateTenantDatabaseJob implements ShouldQueue
         if (! $this->tenant->database()->exists()) {
             $this->tenant->database()->makeDatabase();
 
-            Log::info("Tenant database created", [
+            Log::info('Tenant database created', [
                 'tenant_id' => $this->tenant->id,
                 'database_name' => $this->tenant->database()->getName(),
             ]);
@@ -169,7 +168,7 @@ class CreateTenantDatabaseJob implements ShouldQueue
 
         $output = Artisan::output();
 
-        Log::info("Tenant migrations completed", [
+        Log::info('Tenant migrations completed', [
             'tenant_id' => $this->tenant->id,
             'output' => $output,
         ]);
@@ -182,7 +181,7 @@ class CreateTenantDatabaseJob implements ShouldQueue
      */
     public function failed(Throwable $exception): void
     {
-        Log::critical("Tenant database provisioning permanently failed after all retries", [
+        Log::critical('Tenant database provisioning permanently failed after all retries', [
             'tenant_id' => $this->tenant->id,
             'tenant_name' => $this->tenant->name,
             'error' => $exception->getMessage(),

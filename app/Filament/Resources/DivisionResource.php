@@ -1,29 +1,30 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\DivisionResource\Pages;
 use App\Filament\Traits\HasGlassmorphicForms;
 use App\Models\Division;
+use BackedEnum;
 use Filament\Actions;
-use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class DivisionResource extends Resource
 {
     use HasGlassmorphicForms;
+
     protected static ?string $model = Division::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Organization';
+    protected static string|UnitEnum|null $navigationGroup = 'Organization';
 
     protected static ?string $navigationLabel = 'Divisions';
 

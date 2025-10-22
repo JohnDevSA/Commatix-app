@@ -1,20 +1,20 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\TenantSubscriptionResource\Pages;
-use App\Models\TenantSubscription;
-use Filament\Schemas\Components;
-use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use App\Filament\Traits\HasGlassmorphicForms;
+use App\Models\TenantSubscription;
+use BackedEnum;
 use Filament\Actions;
+use Filament\Forms\Components as FormComponents;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class TenantSubscriptionResource extends Resource
 {
@@ -22,9 +22,9 @@ class TenantSubscriptionResource extends Resource
 
     protected static ?string $model = TenantSubscription::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-credit-card';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Tenant Management';
+    protected static string|UnitEnum|null $navigationGroup = 'Tenant Management';
 
     protected static ?string $navigationLabel = 'Subscriptions';
 

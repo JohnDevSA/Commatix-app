@@ -6,13 +6,13 @@ use App\Events\OnboardingCompleted;
 use App\Models\OnboardingProgress;
 use App\Models\Tenant;
 use BackedEnum;
-use Filament\Schemas\Components\Wizard;
-use Filament\Schemas\Components\Wizard\Step;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Wizard;
+use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -35,7 +35,7 @@ class TenantOnboarding extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-rocket-launch';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rocket-launch';
 
     protected static ?string $slug = 'tenant-onboarding';
 
@@ -70,6 +70,7 @@ class TenantOnboarding extends Page implements HasForms
             // User doesn't have a tenant yet - this is expected for new registrations
             // The onboarding wizard will create the tenant
             $this->tenant = null;
+
             return;
         }
 
@@ -386,7 +387,7 @@ class TenantOnboarding extends Page implements HasForms
                             ->maxLength(255)
                             ->placeholder('PO Box 12345')
                             ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => $get('step_1_data.same_as_physical'))
-                            ->required(fn (\Filament\Schemas\Components\Utilities\Get $get) => !$get('step_1_data.same_as_physical'))
+                            ->required(fn (\Filament\Schemas\Components\Utilities\Get $get) => ! $get('step_1_data.same_as_physical'))
                             ->columnSpan(2),
 
                         \Filament\Forms\Components\TextInput::make('step_1_data.postal_address_line2')
@@ -400,7 +401,7 @@ class TenantOnboarding extends Page implements HasForms
                             ->maxLength(255)
                             ->placeholder('Johannesburg')
                             ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => $get('step_1_data.same_as_physical'))
-                            ->required(fn (\Filament\Schemas\Components\Utilities\Get $get) => !$get('step_1_data.same_as_physical'))
+                            ->required(fn (\Filament\Schemas\Components\Utilities\Get $get) => ! $get('step_1_data.same_as_physical'))
                             ->columnSpan(1),
 
                         \Filament\Forms\Components\Select::make('step_1_data.postal_province')
@@ -408,7 +409,7 @@ class TenantOnboarding extends Page implements HasForms
                             ->options(fn () => $this->getSAProvinces())
                             ->searchable()
                             ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => $get('step_1_data.same_as_physical'))
-                            ->required(fn (\Filament\Schemas\Components\Utilities\Get $get) => !$get('step_1_data.same_as_physical'))
+                            ->required(fn (\Filament\Schemas\Components\Utilities\Get $get) => ! $get('step_1_data.same_as_physical'))
                             ->columnSpan(1),
 
                         \Filament\Forms\Components\TextInput::make('step_1_data.postal_code')
@@ -416,7 +417,7 @@ class TenantOnboarding extends Page implements HasForms
                             ->placeholder('2000')
                             ->regex('/^\d{4}$/')
                             ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => $get('step_1_data.same_as_physical'))
-                            ->required(fn (\Filament\Schemas\Components\Utilities\Get $get) => !$get('step_1_data.same_as_physical'))
+                            ->required(fn (\Filament\Schemas\Components\Utilities\Get $get) => ! $get('step_1_data.same_as_physical'))
                             ->columnSpan(1),
                     ])
                     ->columns(2)
@@ -503,7 +504,7 @@ class TenantOnboarding extends Page implements HasForms
                             ->reorderable()
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
-                            ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => !$get('step_2_data.has_divisions'))
+                            ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => ! $get('step_2_data.has_divisions'))
                             ->minItems(fn (\Filament\Schemas\Components\Utilities\Get $get) => $get('step_2_data.has_divisions') ? 1 : 0)
                             ->maxItems(10)
                             ->helperText('Add your company\'s departments or divisions (max 10)')
@@ -543,7 +544,7 @@ class TenantOnboarding extends Page implements HasForms
                             ->reorderable()
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['email'] ?? 'New invite')
-                            ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => !$get('step_2_data.invite_team_now'))
+                            ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => ! $get('step_2_data.invite_team_now'))
                             ->minItems(fn (\Filament\Schemas\Components\Utilities\Get $get) => $get('step_2_data.invite_team_now') ? 1 : 0)
                             ->maxItems(20)
                             ->helperText('Enter email addresses of team members to invite (max 20)')
@@ -553,7 +554,7 @@ class TenantOnboarding extends Page implements HasForms
 
                         \Filament\Forms\Components\Placeholder::make('invite_note')
                             ->content('💡 Invited team members will receive an email to join your Commatix workspace')
-                            ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => !$get('step_2_data.invite_team_now'))
+                            ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => ! $get('step_2_data.invite_team_now'))
                             ->columnSpanFull(),
                     ])
                     ->columnSpanFull(),
@@ -855,7 +856,7 @@ class TenantOnboarding extends Page implements HasForms
                                     </div>
                                 </div>
                             '))
-                            ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => !$get('step_4_data.configure_payment_now'))
+                            ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => ! $get('step_4_data.configure_payment_now'))
                             ->columnSpanFull(),
                     ])
                     ->collapsible()
@@ -1040,7 +1041,7 @@ class TenantOnboarding extends Page implements HasForms
                             ->label('What we will do with your information:')
                             ->content(new \Illuminate\Support\HtmlString('
                                 <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 leading-relaxed">
-                                    <p class="mb-3">' . \App\Models\ConsentRecord::getConsentText(\App\Models\ConsentRecord::TYPE_PROCESSING) . '</p>
+                                    <p class="mb-3">'.\App\Models\ConsentRecord::getConsentText(\App\Models\ConsentRecord::TYPE_PROCESSING).'</p>
                                     <div class="mt-4 pt-4 border-t border-gray-300">
                                         <strong class="block mb-2">What information we collect:</strong>
                                         <ul class="list-disc list-inside space-y-1 ml-2">
@@ -1110,7 +1111,7 @@ class TenantOnboarding extends Page implements HasForms
                                 'sms' => 'SMS',
                                 'in_app' => 'In-app notifications',
                             ])
-                            ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => !$get('step_5_data.marketing_consent'))
+                            ->hidden(fn (\Filament\Schemas\Components\Utilities\Get $get) => ! $get('step_5_data.marketing_consent'))
                             ->default(['email', 'in_app'])
                             ->helperText('Select how you\'d like to receive marketing communications')
                             ->columnSpanFull(),
@@ -1677,8 +1678,6 @@ class TenantOnboarding extends Page implements HasForms
 
     /**
      * Get South African provinces from database.
-     *
-     * @return array
      */
     protected function getSAProvinces(): array
     {

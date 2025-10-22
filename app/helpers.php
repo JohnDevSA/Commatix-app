@@ -14,12 +14,12 @@
 
 use App\Helpers\SouthAfricanFormattingHelper;
 
-if (!function_exists('format_za_currency')) {
+if (! function_exists('format_za_currency')) {
     /**
      * Format currency in South African Rand (ZAR)
      *
-     * @param float|int|string $amount The amount to format
-     * @param bool $compact If true, omit the space (R1,250 instead of R 1,250.00)
+     * @param  float|int|string  $amount  The amount to format
+     * @param  bool  $compact  If true, omit the space (R1,250 instead of R 1,250.00)
      * @return string Formatted currency string
      *
      * @example format_za_currency(1250.00) // "R 1,250.00"
@@ -30,12 +30,12 @@ if (!function_exists('format_za_currency')) {
     }
 }
 
-if (!function_exists('format_za_date')) {
+if (! function_exists('format_za_date')) {
     /**
      * Format date in South African standard (DD/MM/YYYY)
      *
-     * @param Carbon\Carbon|string|null $date Date to format
-     * @param bool $includeTime Include time in format
+     * @param  Carbon\Carbon|string|null  $date  Date to format
+     * @param  bool  $includeTime  Include time in format
      * @return string Formatted date string
      *
      * @example format_za_date(now()) // "15/10/2025"
@@ -46,11 +46,11 @@ if (!function_exists('format_za_date')) {
     }
 }
 
-if (!function_exists('format_za_date_long')) {
+if (! function_exists('format_za_date_long')) {
     /**
      * Format date in long South African format
      *
-     * @param Carbon\Carbon|string|null $date Date to format
+     * @param  Carbon\Carbon|string|null  $date  Date to format
      * @return string Formatted date string
      *
      * @example format_za_date_long(now()) // "15 October 2025"
@@ -61,11 +61,11 @@ if (!function_exists('format_za_date_long')) {
     }
 }
 
-if (!function_exists('format_za_phone')) {
+if (! function_exists('format_za_phone')) {
     /**
      * Format South African phone number with spaces
      *
-     * @param string|null $phone Phone number to format
+     * @param  string|null  $phone  Phone number to format
      * @return string Formatted phone number
      *
      * @example format_za_phone('+27123456789') // "+27 12 345 6789"
@@ -76,12 +76,12 @@ if (!function_exists('format_za_phone')) {
     }
 }
 
-if (!function_exists('format_za_number')) {
+if (! function_exists('format_za_number')) {
     /**
      * Format a number with South African thousand separators
      *
-     * @param float|int $number Number to format
-     * @param int $decimals Number of decimal places
+     * @param  float|int  $number  Number to format
+     * @param  int  $decimals  Number of decimal places
      * @return string Formatted number
      *
      * @example format_za_number(1234567.89) // "1,234,567.89"
@@ -92,12 +92,12 @@ if (!function_exists('format_za_number')) {
     }
 }
 
-if (!function_exists('format_za_percentage')) {
+if (! function_exists('format_za_percentage')) {
     /**
      * Format percentage for South African display
      *
-     * @param float|int $value Percentage value
-     * @param int $decimals Number of decimal places
+     * @param  float|int  $value  Percentage value
+     * @param  int  $decimals  Number of decimal places
      * @return string Formatted percentage
      *
      * @example format_za_percentage(0.125) // "12.5%"

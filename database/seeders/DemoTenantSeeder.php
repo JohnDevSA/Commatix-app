@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Division;
+use App\Models\Province;
 use App\Models\Subscriber;
 use App\Models\SubscriberList;
 use App\Models\Tenant;
@@ -19,6 +20,11 @@ class DemoTenantSeeder extends Seeder
         // Use Admin type for tenant admins, User type for tenant users
         $tenantAdminType = UserType::where('name', 'Admin')->first();
         $tenantUserType = UserType::where('name', 'User')->first();
+
+        // Get province IDs for use in tenant data
+        $gauteng = Province::where('code', 'GP')->first();
+        $westernCape = Province::where('code', 'WC')->first();
+        $kwazuluNatal = Province::where('code', 'KZN')->first();
 
         // Get domain suffix from environment (e.g., .dev, .stage, .co.za)
         $domainSuffix = config('app.tenant_domain_suffix', '.local');
@@ -42,7 +48,7 @@ class DemoTenantSeeder extends Seeder
                     'primary_phone' => '+27123456789',
                     'physical_address_line1' => '123 Innovation Drive',
                     'physical_city' => 'Sandton',
-                    'physical_province' => 'gauteng',
+                    'physical_province_id' => $gauteng->id,
                     'physical_postal_code' => '2196',
                     'subscription_tier' => 'business',
                     'billing_cycle' => 'monthly',
@@ -99,7 +105,7 @@ class DemoTenantSeeder extends Seeder
                     'primary_phone' => '+27214567890',
                     'physical_address_line1' => '456 Financial Plaza',
                     'physical_city' => 'Cape Town',
-                    'physical_province' => 'western_cape',
+                    'physical_province_id' => $westernCape->id,
                     'physical_postal_code' => '8001',
                     'subscription_tier' => 'enterprise',
                     'billing_cycle' => 'annually',
@@ -157,7 +163,7 @@ class DemoTenantSeeder extends Seeder
                     'primary_phone' => '+27313456789',
                     'physical_address_line1' => '789 Medical Centre',
                     'physical_city' => 'Durban',
-                    'physical_province' => 'kwazulu_natal',
+                    'physical_province_id' => $kwazuluNatal->id,
                     'physical_postal_code' => '4001',
                     'subscription_tier' => 'business',
                     'billing_cycle' => 'monthly',

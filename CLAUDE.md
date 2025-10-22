@@ -204,10 +204,23 @@ php artisan test --filter=WorkflowTest
 - **Type Hints** - All methods have return types and parameter types
 
 ### Quality Tools
+
+**Run all quality checks in Docker:**
+
 ```bash
-composer lint          # Run all quality checks
-composer lint:fix      # Auto-fix issues
-composer grumphp       # Pre-commit hooks
+# Laravel Pint (code formatting)
+docker exec commatix-laravel.test-1 ./vendor/bin/pint --test  # Check only
+docker exec commatix-laravel.test-1 ./vendor/bin/pint         # Auto-fix
+
+# PHPStan (static analysis)
+docker exec commatix-laravel.test-1 ./vendor/bin/phpstan analyse --memory-limit=2G
+
+# Run tests
+docker exec commatix-laravel.test-1 php artisan test
+
+# Or use Composer scripts:
+./vendor/bin/sail composer lint          # Run all quality checks
+./vendor/bin/sail composer lint:fix      # Auto-fix issues
 ```
 
 ### Pre-Commit Checks (GrumPHP)
@@ -288,14 +301,31 @@ tenant-blue:  oklch(0.65 0.18 230)  - Tenant-specific colors
 ## 🔄 Development Workflow
 
 ### Daily Development
+
+**IMPORTANT:** This project uses Docker via Laravel Sail. Always run commands inside the Docker container.
+
 ```bash
 # Start development environment
-composer dev  # Starts Laravel, Queue, Vite (uses pnpm)
+./vendor/bin/sail up -d        # Start Docker containers
 
-# Or individually:
-php artisan serve              # Laravel on :8000
-php artisan queue:work         # Queue worker
-pnpm run dev                   # Vite HMR
+# Run commands in Docker (use one of these patterns):
+docker exec commatix-laravel.test-1 php artisan <command>
+./vendor/bin/sail artisan <command>
+./vendor/bin/sail composer <command>
+./vendor/bin/sail pnpm <command>
+
+# Examples:
+docker exec commatix-laravel.test-1 php artisan migrate
+docker exec commatix-laravel.test-1 ./vendor/bin/pint
+docker exec commatix-laravel.test-1 ./vendor/bin/phpstan analyse
+
+# Or using sail alias:
+./vendor/bin/sail artisan migrate
+./vendor/bin/sail composer test
+./vendor/bin/sail pnpm dev
+
+# Stop environment
+./vendor/bin/sail down
 ```
 
 ### Creating Features

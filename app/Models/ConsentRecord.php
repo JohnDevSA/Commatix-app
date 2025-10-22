@@ -251,10 +251,6 @@ class ConsentRecord extends Model
 
     /**
      * Check if user has active consent of specific type.
-     *
-     * @param  int  $userId
-     * @param  string  $type
-     * @return bool
      */
     public static function userHasActiveConsent(int $userId, string $type): bool
     {
@@ -273,7 +269,6 @@ class ConsentRecord extends Model
      * @param  string  $type  Consent type
      * @param  string  $consentText  Full text shown to user
      * @param  bool  $granted  Whether consent was granted
-     * @return self
      */
     public static function recordConsent(
         ?int $userId,
@@ -295,7 +290,6 @@ class ConsentRecord extends Model
      *
      * Returns all consent records (active and withdrawn) for compliance reporting.
      *
-     * @param  int  $userId
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getAuditTrailForUser(int $userId)
@@ -311,13 +305,13 @@ class ConsentRecord extends Model
     public static function getConsentText(string $type): string
     {
         $texts = [
-            self::TYPE_PROCESSING => "I hereby consent to Commatix processing my personal information in accordance with the Protection of Personal Information Act (POPIA). I understand that my information will be used solely for the purposes of providing the Commatix service and will be stored securely in South Africa. I have the right to access, correct, or request deletion of my personal information at any time.",
+            self::TYPE_PROCESSING => 'I hereby consent to Commatix processing my personal information in accordance with the Protection of Personal Information Act (POPIA). I understand that my information will be used solely for the purposes of providing the Commatix service and will be stored securely in South Africa. I have the right to access, correct, or request deletion of my personal information at any time.',
 
             self::TYPE_MARKETING => "I consent to receiving marketing communications from Commatix, including product updates, promotional offers, and newsletters via email and SMS. I understand that I can withdraw this consent at any time by clicking 'unsubscribe' in any email or replying 'STOP' to SMS messages.",
 
-            self::TYPE_PROFILING => "I consent to Commatix using automated processing and profiling to personalize my experience, provide recommendations, and improve service delivery. This may include analysis of my usage patterns and preferences.",
+            self::TYPE_PROFILING => 'I consent to Commatix using automated processing and profiling to personalize my experience, provide recommendations, and improve service delivery. This may include analysis of my usage patterns and preferences.',
 
-            self::TYPE_THIRD_PARTY => "I consent to Commatix sharing my personal information with trusted third-party service providers (such as payment processors, email service providers, and analytics tools) solely for the purpose of delivering and improving the Commatix service. All third parties are contractually bound to protect my information and comply with POPIA.",
+            self::TYPE_THIRD_PARTY => 'I consent to Commatix sharing my personal information with trusted third-party service providers (such as payment processors, email service providers, and analytics tools) solely for the purpose of delivering and improving the Commatix service. All third parties are contractually bound to protect my information and comply with POPIA.',
         ];
 
         return $texts[$type] ?? '';

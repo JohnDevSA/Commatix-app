@@ -1,36 +1,37 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\CreateTenantWorkflowTemplate;
 use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\EditTenantWorkflowTemplate;
 use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\ListTenantWorkflowTemplates;
 use App\Filament\Resources\TenantWorkflowTemplateResource\Pages\ViewTenantWorkflowTemplate;
 use App\Filament\Resources\TenantWorkflowTemplateResource\RelationManagers\MilestonesRelationManager;
+use App\Filament\Traits\HasGlassmorphicForms;
 use App\Models\WorkflowTemplate;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
-use Filament\Schemas\Components;
 use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
-use App\Filament\Traits\HasGlassmorphicForms;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use UnitEnum;
 
 class TenantWorkflowTemplateResource extends Resource
 {
     use HasGlassmorphicForms;
+
     protected static ?string $model = WorkflowTemplate::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $navigationLabel = 'Workflow Templates';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Workflows';
+    protected static string|UnitEnum|null $navigationGroup = 'Workflows';
 
     protected static ?string $slug = 'tenant-workflow-templates';
 

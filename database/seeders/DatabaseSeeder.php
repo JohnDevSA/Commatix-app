@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             UserTypeSeeder::class,
             AccessScopeSeeder::class,
             SuperAdminSeeder::class,
+            ProvinceSeeder::class,              // Added: SA Provinces (must run before tenants)
             IndustrySeeder::class,              // Added: Must run before workflows/documents
             SouthAfricanBusinessSeeder::class,
             CommunicationProviderSeeder::class,

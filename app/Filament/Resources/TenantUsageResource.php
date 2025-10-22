@@ -1,29 +1,29 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\TenantUsageResource\Pages;
-use App\Models\TenantUsage;
-use Filament\Actions;
-use Filament\Schemas\Components;
-use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use App\Filament\Traits\HasGlassmorphicForms;
+use App\Models\TenantUsage;
+use BackedEnum;
+use Filament\Actions;
+use Filament\Forms\Components as FormComponents;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class TenantUsageResource extends Resource
 {
     use HasGlassmorphicForms;
+
     protected static ?string $model = TenantUsage::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-chart-bar';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Tenant Management';
+    protected static string|UnitEnum|null $navigationGroup = 'Tenant Management';
 
     protected static ?string $navigationLabel = 'Usage Monitoring';
 

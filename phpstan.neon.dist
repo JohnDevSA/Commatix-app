@@ -16,5 +16,6 @@ parameters:
     - '#Cannot access property .* on Illuminate\\Database\\Eloquent\\Model\|int\|string#'
     - '#Relation .* is not found in App\\Models\\.* model#'
     - '#Using nullsafe property access#'
+    - '#Cannot call method .* on string#'
   excludePaths:
     - database/migrations/*

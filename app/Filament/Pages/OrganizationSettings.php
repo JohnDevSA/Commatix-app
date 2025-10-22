@@ -5,23 +5,23 @@ namespace App\Filament\Pages;
 use App\Helpers\SouthAfricanCities;
 use App\Models\Tenant;
 use BackedEnum;
-use Filament\Schemas\Components;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Forms\Components as FormComponents;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use UnitEnum;
 
 class OrganizationSettings extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Organization';
+    protected static string|UnitEnum|null $navigationGroup = 'Organization';
 
     protected static ?string $navigationLabel = 'Organization Settings';
 

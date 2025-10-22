@@ -22,7 +22,7 @@ trait HasRightAlignedFormActions
     /**
      * Align form actions to the right (South African UX standard)
      */
-    public function getFormActionsAlignment(): Alignment | string
+    public function getFormActionsAlignment(): Alignment|string
     {
         return Alignment::End;
     }

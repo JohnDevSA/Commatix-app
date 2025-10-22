@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Industry;
 use App\Models\OnboardingProgress;
-use App\Models\Province;
 use App\Services\OnboardingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -153,15 +151,16 @@ class OnboardingControllerModern extends Controller
         $user = Auth::user();
 
         // Ensure user has a tenant
-        if (!$user->tenant_id) {
+        if (! $user->tenant_id) {
             return redirect()->route('onboarding.index');
         }
 
         $tenant = $user->tenant;
 
         // If not completed, redirect to current step
-        if (!$tenant->onboarding_completed) {
+        if (! $tenant->onboarding_completed) {
             $progress = OnboardingProgress::where('user_id', $user->id)->first();
+
             return redirect()->route('onboarding.step', ['step' => $progress?->current_step ?? 1]);
         }
 
@@ -181,7 +180,7 @@ class OnboardingControllerModern extends Controller
         // Use the OnboardingService to handle all tenant creation logic
         $result = $this->onboardingService->completeOnboarding($user, $progress);
 
-        if (!$result['success']) {
+        if (! $result['success']) {
             return redirect()->route('onboarding.modern.step', ['step' => 6])
                 ->with('error', $result['message']);
         }
@@ -320,10 +319,10 @@ class OnboardingControllerModern extends Controller
 
         // Fallback user types
         return collect([
-            (object)['id' => 1, 'name' => 'Manager'],
-            (object)['id' => 2, 'name' => 'Team Member'],
-            (object)['id' => 3, 'name' => 'Administrator'],
-            (object)['id' => 4, 'name' => 'Consultant'],
+            (object) ['id' => 1, 'name' => 'Manager'],
+            (object) ['id' => 2, 'name' => 'Team Member'],
+            (object) ['id' => 3, 'name' => 'Administrator'],
+            (object) ['id' => 4, 'name' => 'Consultant'],
         ]);
     }
 
@@ -346,10 +345,10 @@ class OnboardingControllerModern extends Controller
 
         // Fallback workflow templates
         return collect([
-            (object)['id' => 1, 'name' => 'Client Onboarding'],
-            (object)['id' => 2, 'name' => 'Project Management'],
-            (object)['id' => 3, 'name' => 'Invoice Approval'],
-            (object)['id' => 4, 'name' => 'Employee Onboarding'],
+            (object) ['id' => 1, 'name' => 'Client Onboarding'],
+            (object) ['id' => 2, 'name' => 'Project Management'],
+            (object) ['id' => 3, 'name' => 'Invoice Approval'],
+            (object) ['id' => 4, 'name' => 'Employee Onboarding'],
         ]);
     }
 }

@@ -1,28 +1,28 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\WorkflowTemplateResource\Pages;
 use App\Filament\Resources\WorkflowTemplateResource\RelationManagers;
 use App\Models\WorkflowTemplate;
-use Filament\Schemas\Components;
-use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use BackedEnum;
 use Filament\Actions;
+use Filament\Forms\Components as FormComponents;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
+use UnitEnum;
 
 class WorkflowTemplateResource extends Resource
 {
     protected static ?string $model = WorkflowTemplate::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-document-duplicate';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-duplicate';
 
-    protected static string | UnitEnum | null $navigationGroup = 'System Administration';
+    protected static string|UnitEnum|null $navigationGroup = 'System Administration';
 
     protected static ?string $navigationLabel = 'Global Workflows';
 

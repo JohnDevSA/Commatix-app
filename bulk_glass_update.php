@@ -7,8 +7,7 @@
  * This script adds glassmorphism design to all remaining Filament resources.
  * It adds the HasGlassmorphicForms trait and updates form styling.
  */
-
-$resourcesDir = __DIR__ . '/app/Filament/Resources';
+$resourcesDir = __DIR__.'/app/Filament/Resources';
 
 // Resources to update
 $resourcesToUpdate = [
@@ -31,10 +30,11 @@ $updatedCount = 0;
 $errors = [];
 
 foreach ($resourcesToUpdate as $resourceFile) {
-    $filePath = $resourcesDir . '/' . $resourceFile;
+    $filePath = $resourcesDir.'/'.$resourceFile;
 
-    if (!file_exists($filePath)) {
+    if (! file_exists($filePath)) {
         $errors[] = "File not found: $resourceFile";
+
         continue;
     }
 
@@ -43,6 +43,7 @@ foreach ($resourcesToUpdate as $resourceFile) {
     // Skip if already has the trait
     if (strpos($content, 'HasGlassmorphicForms') !== false) {
         echo "✓ $resourceFile already has HasGlassmorphicForms trait\n";
+
         continue;
     }
 
@@ -59,7 +60,7 @@ foreach ($resourcesToUpdate as $resourceFile) {
     // Update Section components to use glass styling
     $content = preg_replace(
         '/Components\\\\Section::make\((.*?)\)\s*->schema\(/s',
-        'Components\\Section::make($1)' . "\n                    ->icon('heroicon-m-information-circle')\n                    ->extraAttributes(self::glassCard())\n                    ->schema(",
+        'Components\\Section::make($1)'."\n                    ->icon('heroicon-m-information-circle')\n                    ->extraAttributes(self::glassCard())\n                    ->schema(",
         $content
     );
 
@@ -102,7 +103,7 @@ echo "Bulk Glass Update Summary\n";
 echo "========================================\n";
 echo "Updated: $updatedCount resources\n";
 
-if (!empty($errors)) {
+if (! empty($errors)) {
     echo "\nErrors:\n";
     foreach ($errors as $error) {
         echo "  ✗ $error\n";

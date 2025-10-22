@@ -1,29 +1,30 @@
 <?php
 
 namespace App\Filament\Resources;
-use BackedEnum;
-use UnitEnum;
 
 use App\Filament\Resources\TenantTopUpResource\Pages;
-use App\Models\TenantTopUp;
-use Filament\Actions;
-use Filament\Schemas\Components;
-use Filament\Forms\Components as FormComponents;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use App\Filament\Traits\HasGlassmorphicForms;
+use App\Models\TenantTopUp;
+use BackedEnum;
+use Filament\Actions;
+use Filament\Forms\Components as FormComponents;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class TenantTopUpResource extends Resource
 {
     use HasGlassmorphicForms;
+
     protected static ?string $model = TenantTopUp::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Tenant Management';
+    protected static string|UnitEnum|null $navigationGroup = 'Tenant Management';
 
     protected static ?string $navigationLabel = 'Credit Top-Ups';
 

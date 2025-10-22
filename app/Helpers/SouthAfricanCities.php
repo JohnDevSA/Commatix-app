@@ -113,7 +113,7 @@ class SouthAfricanCities
     /**
      * Get cities for a specific province
      *
-     * @param string $provinceCode Province code (GP, WC, KZN, etc.)
+     * @param  string  $provinceCode  Province code (GP, WC, KZN, etc.)
      * @return array<string>
      */
     public static function getForProvince(string $provinceCode): array
@@ -132,13 +132,14 @@ class SouthAfricanCities
         foreach (self::getByProvince() as $provinceCities) {
             $cities = array_merge($cities, $provinceCities);
         }
+
         return array_unique($cities);
     }
 
     /**
      * Get cities formatted for Filament Select options
      *
-     * @param string|null $provinceCode Optional province code to filter by
+     * @param  string|null  $provinceCode  Optional province code to filter by
      * @return array<string, string>
      */
     public static function getSelectOptions(?string $provinceCode = null): array
