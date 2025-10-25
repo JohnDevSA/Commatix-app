@@ -127,6 +127,92 @@ alias sail='./vendor/bin/sail'
 
 ---
 
+## ☸️ Kubernetes Queue Workers (Optional)
+
+Commatix supports running queue workers in Kubernetes for production-like scaling and management while keeping the development environment (Sail) running locally.
+
+### Architecture
+
+**Hybrid Setup:**
+- **Sail (Docker Compose)**: Laravel app, MySQL, Mailpit, Redis
+- **Kubernetes**: Queue workers (default + campaigns)
+
+This allows you to:
+- ✅ Learn Kubernetes without disrupting development
+- ✅ Scale queue workers independently (1-20+ pods)
+- ✅ Monitor workers with Kubernetes tools
+- ✅ Practice production deployment patterns
+
+### Prerequisites
+
+- Docker Desktop with Kubernetes enabled
+- kubectl configured to access Docker Desktop cluster
+- Sail already running (`./vendor/bin/sail up -d`)
+
+### Quick Start
+
+```bash
+# 1. Ensure Sail is running (required for MySQL & Redis)
+./vendor/bin/sail up -d
+
+# 2. Create Kubernetes namespace and secrets
+kubectl create namespace commatix
+
+# Extract APP_KEY and DB_PASSWORD from your .env file
+kubectl create secret generic commatix-app \
+  --from-literal=app-key="$(grep APP_KEY .env | cut -d '=' -f2)" \
+  -n commatix
+
+kubectl create secret generic commatix-db \
+  --from-literal=password="$(grep DB_PASSWORD .env | cut -d '=' -f2)" \
+  -n commatix
+
+# 3. Build queue worker Docker image
+docker build -f Dockerfile.k8s-sail -t commatix-queue:latest .
+
+# 4. Deploy queue workers
+kubectl apply -f k8s/queue-workers-deployment.yaml
+
+# 5. Verify workers are running
+kubectl get pods -n commatix
+kubectl logs -f deployment/commatix-queue-default -n commatix
+```
+
+### Monitoring & Management
+
+```bash
+# Check all resources
+kubectl get all -n commatix
+
+# Scale workers up/down
+kubectl scale deployment/commatix-queue-default --replicas=5 -n commatix
+kubectl scale deployment/commatix-queue-campaigns --replicas=10 -n commatix
+
+# View logs
+kubectl logs -f deployment/commatix-queue-default -n commatix
+kubectl logs -f -l app=queue-worker -n commatix --max-log-requests=10
+
+# Restart workers (after code changes)
+docker build -f Dockerfile.k8s-sail -t commatix-queue:latest .
+kubectl rollout restart deployment/commatix-queue-default -n commatix
+kubectl rollout restart deployment/commatix-queue-campaigns -n commatix
+```
+
+### Documentation
+
+- **[k8s/README.md](k8s/README.md)** - Complete operations guide
+- **[k8s/QUICK-START.md](k8s/QUICK-START.md)** - Command reference
+- **[k8s/TROUBLESHOOTING.md](k8s/TROUBLESHOOTING.md)** - Common issues & solutions
+- **[k8s/SETUP-SUMMARY.md](k8s/SETUP-SUMMARY.md)** - Initial setup walkthrough
+
+### Important Notes
+
+1. **Sail must be running** - Workers need MySQL and Redis from Sail
+2. **Rebuild after code changes** - Workers use a Docker image that needs rebuilding
+3. **Temporary image** - Using Sail-based image (3GB), should be optimized for production
+
+---
+
 ## 💻 Local Setup (Without Docker)
 
 ### Prerequisites

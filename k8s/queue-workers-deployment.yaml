@@ -1,0 +1,122 @@
+---
+# Default Queue Worker
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: commatix-queue-default
+  namespace: commatix
+  labels:
+    app: queue-worker
+    queue: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: queue-worker
+      queue: default
+  template:
+    metadata:
+      labels:
+        app: queue-worker
+        queue: default
+    spec:
+      containers:
+        - name: queue-worker
+          image: commatix-queue:latest
+          imagePullPolicy: Never  # Using Sail-based image temporarily - TODO: Create optimized production image
+          command: ["php", "artisan", "queue:work", "redis", "--queue=default", "--tries=3", "--timeout=90", "--verbose"]
+          env:
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: commatix-app
+                  key: app-key
+            - name: DB_HOST
+              value: "host.docker.internal"  # Point to Sail MySQL via Docker host
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: "commatix"
+            - name: DB_USERNAME
+              value: "root"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: commatix-db
+                  key: password
+            - name: REDIS_HOST
+              value: "host.docker.internal"  # Use Sail Redis via Docker host
+            - name: REDIS_PORT
+              value: "6379"
+            - name: CACHE_DRIVER
+              value: "redis"
+            - name: QUEUE_CONNECTION
+              value: "redis"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+# Campaign Queue Worker (High Priority)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: commatix-queue-campaigns
+  namespace: commatix
+  labels:
+    app: queue-worker
+    queue: campaigns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: queue-worker
+      queue: campaigns
+  template:
+    metadata:
+      labels:
+        app: queue-worker
+        queue: campaigns
+    spec:
+      containers:
+        - name: queue-worker
+          image: commatix-queue:latest
+          imagePullPolicy: Never  # Using Sail-based image temporarily - TODO: Create optimized production image
+          command: ["php", "artisan", "queue:work", "redis", "--queue=campaigns", "--tries=3", "--timeout=300", "--verbose"]
+          env:
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: commatix-app
+                  key: app-key
+            - name: DB_HOST
+              value: "host.docker.internal"  # Point to Sail MySQL via Docker host
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: "commatix"
+            - name: DB_USERNAME
+              value: "root"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: commatix-db
+                  key: password
+            - name: REDIS_HOST
+              value: "host.docker.internal"  # Use Sail Redis via Docker host
+            - name: REDIS_PORT
+              value: "6379"
+            - name: CACHE_DRIVER
+              value: "redis"
+            - name: QUEUE_CONNECTION
+              value: "redis"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"

@@ -1,0 +1,14 @@
+# Quick K8s image based on Sail (temporary solution)
+FROM sail-8.4/app:latest
+
+# Copy application code
+COPY --chown=sail:sail . /var/www/html
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Set proper permissions
+RUN chmod -R 775 storage bootstrap/cache
+
+# Default command
+CMD ["php", "artisan", "queue:work", "redis", "--verbose", "--tries=3", "--timeout=90"]
